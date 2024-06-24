@@ -8,16 +8,19 @@ import { DndContext, useDroppable } from "@dnd-kit/core";
 import { TimelineEvent } from "./timeline-event";
 import moment from "moment";
 import { db } from "@/db";
-import { useRouter } from "next/navigation";
 
 export default function Timeline({ projects }: { projects: Project[] }) {
-  const router = useRouter();
   const { isOver, setNodeRef } = useDroppable({
     id: "droppable",
   });
   const style = {
     color: isOver ? "green" : undefined,
   };
+  const [draggingOnDate, setDraggingOnDate] = useState<{
+    eventIndex: number;
+    start: Date;
+    target: Date;
+  } | null>(null);
   const [groupItemsIds, setGroupItemsIds] = useState<string[]>([]);
   const { groups, setGroupingMode, groupingMode } = useTimeline({
     initGroupingMode: { mode: "months in year", year: 2024 },
@@ -90,12 +93,14 @@ export default function Timeline({ projects }: { projects: Project[] }) {
     }
   }, [projectsPos]);
 
-  const handleDropEventTimeline = async (newX: number, index: number) => {
+  const getStartTargetDateByPos = (x: number, eventIndex: number) => {
     let startEleIndex = "";
+    let startDate: Date | null = null;
+    let targetDate: Date | null = null;
     for (let i = 0; i < groupItemsIds.length; i++) {
       const ele = document.getElementById(groupItemsIds[i]);
       if (ele) {
-        if (Math.abs(newX - ele.offsetLeft) <= 5) {
+        if (Math.abs(x - ele.offsetLeft) <= 5) {
           startEleIndex = groupItemsIds[i];
           break;
         }
@@ -103,23 +108,31 @@ export default function Timeline({ projects }: { projects: Project[] }) {
     }
 
     if (startEleIndex !== "") {
-      const project = projectsPos[index].project;
-      const startDate = moment(project.startDate);
-      const targetDate = moment(project.targetDate);
-      const diff = targetDate.diff(startDate, "days");
-      const newStartDate = new Date();
-      newStartDate.setDate(parseInt(startEleIndex.split("_")[0]));
-      newStartDate.setMonth(parseInt(startEleIndex.split("_")[1]) - 1);
-      const newTargetDate = new Date(
-        moment(newStartDate).add(diff, "days").toString()
-      );
+      const project = projectsPos[eventIndex].project;
+      const oldStartDate = moment(project.startDate);
+      const oldTargetDate = moment(project.targetDate);
+      const diff = oldTargetDate.diff(oldStartDate, "days");
+      startDate = new Date();
+      startDate.setDate(parseInt(startEleIndex.split("_")[0]));
+      startDate.setMonth(parseInt(startEleIndex.split("_")[1]) - 1);
+      targetDate = new Date(moment(startDate).add(diff, "days").toString());
+    }
+    return {
+      startDate,
+      targetDate,
+    };
+  };
 
+  const handleDropEventTimeline = async (newX: number, index: number) => {
+    setDraggingOnDate(null);
+    const { startDate, targetDate } = getStartTargetDateByPos(newX, index);
+    if (startDate && targetDate) {
+      const project = projectsPos[index].project;
       const respone = await db.projects.updateProjectDate(
         project.id,
-        newStartDate,
-        newTargetDate
+        startDate,
+        targetDate
       );
-
       if (respone) {
         const startDate = new Date(respone.startDate);
         const endDate = new Date(respone.targetDate);
@@ -142,6 +155,19 @@ export default function Timeline({ projects }: { projects: Project[] }) {
     }
   };
 
+  const handleOnDragging = (currentX: number | null, index: number) => {
+    if (!currentX) return;
+
+    const { startDate, targetDate } = getStartTargetDateByPos(currentX, index);
+    if (startDate && targetDate) {
+      setDraggingOnDate({
+        eventIndex: index,
+        start: startDate,
+        target: targetDate,
+      });
+    }
+  };
+
   return (
     <div className="w-full h-full flex flex-col">
       <div className="w-full flex-1 bg-[red] relative">
@@ -158,21 +184,24 @@ export default function Timeline({ projects }: { projects: Project[] }) {
                   : 0,
                 ...style,
               }}
-              className="left-0 top-[100px] z-[500] flex flex-col gap-[20px] overflow-x-auto absolute"
+              className="left-0 top-[100px] z-[500] flex flex-col gap-[50px] overflow-x-auto absolute pt-[40px]"
             >
               {projectsPos?.length > 0 &&
                 projectsPos.map((pos, i) => (
                   <TimelineEvent
+                    onDragging={(currentX) => handleOnDragging(currentX, i)}
                     onDrop={(newX) => handleDropEventTimeline(newX, i)}
                     key={pos.project.id}
                     pos={pos}
+                    draggingOnDate={draggingOnDate}
                   />
                 ))}
             </div>
           </DndContext>
           {groups.map((group) => (
             <div
-              className="flex flex-col items-start border-r-solid border-r-[1px] border-r-[--border-color] px-[10px]"
+              className="flex flex-col items-start border-r-solid border-r-[1px] 
+                        border-r-[--border-color] px-[10px] select-none"
               key={group.value}
             >
               <div className="text-[0.65rem] font-semibold text-[--base] py-[5px] pl-[6px]">
