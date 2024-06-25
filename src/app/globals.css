@@ -24,7 +24,7 @@ button {
 /* width */
 ::-webkit-scrollbar {
   width: 7px;
-  height: 7px;
+  height: 8px;
 }
 
 /* Track */
@@ -34,7 +34,7 @@ button {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #888;
+  background: var(--selected-bg);
 }
 
 /* Handle on hover */

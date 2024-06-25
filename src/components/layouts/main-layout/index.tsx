@@ -24,7 +24,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   if (!isClient) return null;
 
   return (
-    <div className="absolute w-full h-full flex flex-row bg-[--secondary]">
+    <div className="absolute w-full h-full flex flex-row bg-[--secondary] overflow-x-hidden">
       <Sidebar groups={mainSidebarGroups}>
         <div
           onClick={() => setOpenPopover(true)}

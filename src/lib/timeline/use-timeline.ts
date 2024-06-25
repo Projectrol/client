@@ -50,8 +50,8 @@ export default function useTimeline({
     const to = mode.to_year;
     const groups: TimelineGroup[] = Array(to - from + 1)
       .fill("")
-      .map((_, i) => {
-        const year = from + i;
+      .map((_, yIndex) => {
+        const year = from + yIndex;
         return {
           value: year,
           unit: TimelineUnit.YEAR,
@@ -72,16 +72,16 @@ export default function useTimeline({
     const mode = groupingMode as MonthsInYearMode;
     const groups: TimelineGroup[] = Array(12)
       .fill("")
-      .map((_, i) => {
-        const totalDaysInMonth = getTotalDaysInMonth(i + 1, mode.year);
+      .map((_, mIndex) => {
+        const totalDaysInMonth = getTotalDaysInMonth(mIndex + 1, mode.year);
         return {
-          value: i + 1,
+          value: mIndex + 1,
           unit: TimelineUnit.MONTH,
           items: Array(totalDaysInMonth)
             .fill("")
-            .map((_, i) => {
+            .map((_, dIndex) => {
               return {
-                value: i + 1,
+                value: dIndex + 1,
                 unit: TimelineUnit.DAY,
               };
             }),

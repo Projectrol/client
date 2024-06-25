@@ -8,7 +8,7 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { WorkspacesController } from "@/db/controllers/workspaces.controller";
 import Image from "next/image";
 import { ProjectRole, User } from "@/db/repositories/users.repo";
-import { ProjectStatus } from "@/db/repositories/projects.repo";
+import { CardStatus } from "@/db/repositories/projects.repo";
 
 const ProjectAttributesBar = ({
   startDate,
@@ -27,7 +27,7 @@ const ProjectAttributesBar = ({
   setTargetDate: (date: Date) => void;
   handleAssignMember: (user: User) => void;
   checkIfExisted: (id: number) => boolean;
-  status: ProjectStatus;
+  status: CardStatus;
 }) => {
   const workspaceMembers = WorkspacesController.getWorkspaceMembers(0);
   const [anchorEle, setAnchorEle] = useState<HTMLDivElement | null>(null);

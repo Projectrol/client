@@ -30,7 +30,7 @@ import { ProjectRole, User } from "@/db/repositories/users.repo";
 import {
   CreateProjectInput,
   Project,
-  ProjectStatus,
+  CardStatus,
 } from "@/db/repositories/projects.repo";
 import { db } from "@/db";
 import ProjectAttributesBar from "./project-attributes-bar";
@@ -60,8 +60,8 @@ function ProjectEditor({
   const summaryDivRef = useRef<HTMLDivElement>(null);
   const [focusElement, setFocusElement] = useState("name");
   const [projectName, setProjectName] = useState(initValue?.name ?? "");
-  const [status, setStatus] = useState<ProjectStatus>(
-    initValue?.status ?? ProjectStatus.BACKLOG
+  const [status, setStatus] = useState<CardStatus>(
+    initValue?.status ?? CardStatus.BACKLOG
   );
   const [summary, setSummary] = useState(initValue?.summary ?? "");
   const [startDate, setStartDate] = useState<Date | null>(
