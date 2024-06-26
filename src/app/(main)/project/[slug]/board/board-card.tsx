@@ -22,6 +22,7 @@ export default function BoardCard({ card }: { card: Card }) {
     ? {
         transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
         boxShadow: "0 0 10px 0 rgba(0,0,0,0.25)",
+        zIndex: 100,
       }
     : undefined;
 

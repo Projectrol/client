@@ -3,6 +3,7 @@ import CodeIcon from "@mui/icons-material/Code";
 import LayersIcon from "@mui/icons-material/Layers";
 import WorkspacesIcon from "@mui/icons-material/Workspaces";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
 export type SidebarItem = {
   title: string;
@@ -68,6 +69,16 @@ export const mainSidebarGroups: SidebarGroup[] = [
           />
         ),
         to: "/teams",
+      },
+      {
+        title: "Calendar",
+        icon: (
+          <CalendarMonthIcon
+            fontSize="inherit"
+            htmlColor="var(--text-header-color)"
+          />
+        ),
+        to: "/calendar",
       },
     ],
   },

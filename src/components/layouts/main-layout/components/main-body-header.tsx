@@ -3,7 +3,7 @@ const MainBodyHeader = ({
   children,
 }: {
   title: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }) => {
   return (
     <div

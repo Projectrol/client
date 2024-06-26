@@ -12,11 +12,15 @@ export const TimelineEvent = ({
   onClickOutside,
   onDrop,
   onDragging,
+  onMouseLeave,
+  onMouseOver,
   selectedProject,
   draggingOnDate,
 }: {
   pos: { project: Project; start: number; end: number };
   onClick?: () => void;
+  onMouseOver?: () => void;
+  onMouseLeave?: () => void;
   onClickOutside?: () => void;
   onDrop: (newX: number) => void;
   onDragging: (currentX: number | null) => void;
@@ -60,6 +64,8 @@ export const TimelineEvent = ({
 
   return (
     <div
+      onMouseOver={onMouseOver}
+      onMouseLeave={onMouseLeave}
       onBlur={onClickOutside}
       onClick={onClick}
       onDoubleClick={() => router.push(`/project/${pos.project.slug}/overview`)}
@@ -76,7 +82,7 @@ export const TimelineEvent = ({
       {...attributes}
       className={clsx(
         {
-          "h-[30px] text-[#ffffff] box-border shadow-sm text-[0.8rem] cursor-default relative select-none flex items-center px-[10px] rounded-md border-solid z-[600]":
+          "h-[75%] text-[#ffffff] box-border shadow-sm text-[0.8rem] cursor-default relative select-none flex items-center px-[10px] rounded-md border-solid z-[600]":
             true,
         },
         {
@@ -96,7 +102,9 @@ export const TimelineEvent = ({
           {moment(draggingOnDate.target).format("ddd, MMM DD")}
         </div>
       )}
-      <div>{pos.project.name}</div>
+      <div className="whitespace-nowrap overflow-hidden text-ellipsis w-full">
+        {pos.project.name}
+      </div>
     </div>
   );
 };

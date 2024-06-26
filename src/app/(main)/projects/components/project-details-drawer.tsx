@@ -15,7 +15,7 @@ export default function ProjectDetailsDrawer({
         transform: project ? "translateX(0)" : "translateX(100%)",
         transition: "transform 0.25s ease",
       }}
-      className="absolute right-[0px] top-[0px] h-full w-[350px] flex flex-col
+      className="absolute right-[0px] top-[0px] h-full w-[350px] flex flex-col shadow-md
                 bg-[--primary] z-[600] border-solid border-l-[1px] border-l-[--border-color]"
     >
       <div className="w-full p-[30px] text-[0.85rem] text-[--base] font-medium">

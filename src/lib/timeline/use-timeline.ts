@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { getTotalDaysInMonth, getTotalDaysInYear } from "./datetime";
+import { getTotalDaysInMonth } from "../datetime";
 
 export enum TimelineUnit {
   YEAR = "YEAR",

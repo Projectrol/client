@@ -8,6 +8,7 @@ export enum LAYOUT_COLORS {
   PRIMARY = "PRIMARY",
   SECONDARY = "SECONDARY",
   "HOVER-BG" = "HOVER-BG",
+  "SELECTED-OK-BG" = "SELECTED-OK-BG",
   "SELECTED-BG" = "SELECTED-BG",
   "BORDER-COLOR" = "BORDER-COLOR",
   "MODAL-BG" = "MODAL-BG",
@@ -42,9 +43,10 @@ const defaultButtonColors: { [key in BUTTON_TYPES]: ButtonColor } = {
 export const baseThemes: { [key: string]: ColorTheme } = {
   DARK: {
     layoutColors: {
-      BASE: "#FFFFFF",
-      PRIMARY: "#1e2022",
-      SECONDARY: "#1b1b1c",
+      BASE: "#fefefe",
+      PRIMARY: "#272a33",
+      SECONDARY: "#191b21",
+      "SELECTED-OK-BG": "rgba(90, 104, 207,0.4)",
       "HOVER-BG": "rgba(255,255,255,0.05)",
       "SELECTED-BG": "rgba(255,255,255,0.1)",
       "BORDER-COLOR": "rgba(255,255,255,0.05)",
@@ -57,6 +59,7 @@ export const baseThemes: { [key: string]: ColorTheme } = {
       BASE: "#121212",
       PRIMARY: "#fbfbfb",
       SECONDARY: "#ececec",
+      "SELECTED-OK-BG": "rgba(90, 104, 207,0.1)",
       "HOVER-BG": "rgba(0,0,0,0.05)",
       "SELECTED-BG": "rgba(0,0,0,0.1)",
       "BORDER-COLOR": "rgba(0,0,0,0.1)",

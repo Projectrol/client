@@ -4,7 +4,7 @@ import MainBodyHeader from "@/components/layouts/main-layout/components/main-bod
 import useCustomRouter from "@/hooks/useCustomRouter";
 import useRouteInfo from "@/hooks/useRouteInfo";
 import TableChartIcon from "@mui/icons-material/TableChart";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import EventNoteIcon from "@mui/icons-material/EventNote";
 import AddIcon from "@mui/icons-material/Add";
 
 const ProjectsHeader = ({
@@ -60,7 +60,7 @@ const ProjectsHeader = ({
               className="h-[35px] text-[0.8rem] gap-[3px] text-[--base]
               font-medium flex items-center justify-center cursor-pointer px-[5px]"
             >
-              <CalendarMonthIcon
+              <EventNoteIcon
                 color="inherit"
                 fontSize="inherit"
                 style={{

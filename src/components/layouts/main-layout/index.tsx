@@ -90,7 +90,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
           width: "calc(100% - 260px)",
           marginTop: "10px",
         }}
-        className="bg-[--primary] box-border rounded-md
+        className="bg-[--primary] box-border rounded-md overflow-y-auto
                   border-solid border-[1px] border-[--border-color]"
       >
         {children}

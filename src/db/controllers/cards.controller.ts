@@ -36,7 +36,7 @@ export const CardsController = {
     nanoid: string,
     newStatus: CardStatus
   ): Promise<boolean> {
-    await new Promise((resolve, _) => setTimeout(() => resolve(true), 100));
+    await new Promise((resolve, _) => setTimeout(() => resolve(true), 50));
     const index = cards.findIndex((c) => c.nanoid === nanoid);
     if (index === -1) return false;
     cards[index].status = newStatus;

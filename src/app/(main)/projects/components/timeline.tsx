@@ -1,7 +1,7 @@
 "use client";
 
 import { Project } from "@/db/repositories/projects.repo";
-import { monthNames } from "@/lib/timeline/datetime";
+import { monthNames } from "@/lib/datetime";
 import useTimeline, { TimelineUnit } from "@/lib/timeline/use-timeline";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -13,12 +13,18 @@ import {
 } from "@dnd-kit/core";
 import { TimelineEvent } from "./timeline-event";
 import moment from "moment";
-import { createSnapModifier } from "@dnd-kit/modifiers";
+import {
+  createSnapModifier,
+  restrictToParentElement,
+} from "@dnd-kit/modifiers";
 import { db } from "@/db";
 import ProjectDetailsDrawer from "./project-details-drawer";
+import clsx from "clsx";
+import { useRouter } from "next/navigation";
 
 export default function Timeline({ projects }: { projects: Project[] }) {
   const gridSize = 5; // pixels
+  const router = useRouter();
   const snapToGridModifier = createSnapModifier(gridSize);
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -38,6 +44,9 @@ export default function Timeline({ projects }: { projects: Project[] }) {
   } | null>(null);
   const [groupItemsIds, setGroupItemsIds] = useState<string[]>([]);
   const [currentEleLeft, setCurrentEleLeft] = useState(0);
+  const [mouseOverProjectId, setMouseOverProjectId] = useState<number | null>(
+    null
+  );
   const { groups, setGroupingMode, groupingMode } = useTimeline({
     initGroupingMode: { mode: "months in year", year: 2024 },
   });
@@ -184,6 +193,8 @@ export default function Timeline({ projects }: { projects: Project[] }) {
   const handleOnDragging = (currentX: number | null, index: number) => {
     if (!currentX) return;
 
+    setSelectedProject(projectsPos[index].project);
+
     const { startDate, targetDate } = getStartTargetDateByPos(currentX, index);
     if (startDate && targetDate) {
       setDraggingOnDate({
@@ -200,15 +211,75 @@ export default function Timeline({ projects }: { projects: Project[] }) {
         className="w-full h-[40px] bg-[--primary] flex items-center 
                   border-solid border-b-[1px] border-b-[--border-color]"
       ></div>
-      <div className="w-full flex-1 relative px-[10px]">
+      <div className="w-full flex-1 relative px-[0px]">
+        <div
+          className="w-[300px] h-full bg-[--primary] absolute flex flex-col 
+                        border-solid border-x-[1px] border-x-[--border-color]"
+        >
+          <div
+            className="w-full h-[48px] border-solid
+           border-b-[1px] border-b-[--border-color]"
+          ></div>
+          <div className="w-full flex flex-col">
+            {projectsPos.map((pos, i) => (
+              <div
+                onClick={() => {
+                  if (calendarDivRef && calendarDivRef.current) {
+                    calendarDivRef.current.scrollTo({
+                      left: pos.start,
+                      behavior: "smooth",
+                    });
+                  }
+                  setSelectedProject(pos.project);
+                }}
+                onMouseOver={() => setMouseOverProjectId(pos.project.id)}
+                onMouseLeave={() => setMouseOverProjectId(null)}
+                key={pos.project.id}
+                className={clsx(
+                  {
+                    "w-[100%] opacity-90 transition-colors text-[--base] px-[20px] h-[50px] text-[0.8rem] font-semibold flex items-center select-none":
+                      true,
+                  },
+                  {
+                    "bg-[--selected-ok-bg]":
+                      selectedProject?.id === pos.project.id,
+                  },
+
+                  {
+                    "bg-[--hover-bg]":
+                      mouseOverProjectId !== null &&
+                      mouseOverProjectId === pos.project.id,
+                  }
+                )}
+              >
+                <span
+                // onClick={() =>
+                //   router.push(`/project/${pos.project.slug}/overview`)
+                // }
+                // className="hover:underline cursor-pointer w-[70%] whitespace-nowrap text-ellipsis overflow-hidden"
+                >
+                  {pos.project.name}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
         <div
           onClick={(e) => {
             if (e.target === e.currentTarget) setSelectedProject(null);
           }}
+          style={
+            {
+              // marginRight: selectedProject ? "355px" : 0,
+            }
+          }
           ref={calendarDivRef}
-          className="w-full h-full flex flex-row bg-[--primary] overflow-x-auto relative"
+          className="h-full flex flex-row bg-[--primary] overflow-x-auto relative ml-[300px]"
         >
-          <DndContext modifiers={[snapToGridModifier]} sensors={sensors}>
+          <DndContext
+            modifiers={[snapToGridModifier, restrictToParentElement]}
+            sensors={sensors}
+          >
             <div
               onClick={(e) => {
                 if (e.target === e.currentTarget) setSelectedProject(null);
@@ -219,19 +290,46 @@ export default function Timeline({ projects }: { projects: Project[] }) {
                   ? calendarDivRef.current.scrollWidth + "px"
                   : 0,
               }}
-              className="left-0 top-[100px] z-[500] flex flex-col gap-[60px] overflow-x-auto absolute pt-[50px]"
+              className="left-0 top-[0px] z-[500] flex flex-col gap-[0px] overflow-x-auto absolute pt-[48px]"
             >
               {projectsPos?.length > 0 &&
                 projectsPos.map((pos, i) => (
-                  <TimelineEvent
+                  <div
+                    onMouseOver={() => setMouseOverProjectId(pos.project.id)}
+                    onMouseLeave={() => setMouseOverProjectId(null)}
                     onClick={() => setSelectedProject(pos.project)}
-                    selectedProject={selectedProject}
-                    onDragging={(currentX) => handleOnDragging(currentX, i)}
-                    onDrop={(newX) => handleDropEventTimeline(newX, i)}
                     key={pos.project.id}
-                    pos={pos}
-                    draggingOnDate={draggingOnDate}
-                  />
+                    className={clsx(
+                      {
+                        "w-full h-[50px] flex items-center transition-colors":
+                          true,
+                      },
+                      {
+                        "hover:bg-[--hover-bg]":
+                          selectedProject?.id !== pos.project.id,
+                      },
+                      {
+                        "bg-[--hover-bg]":
+                          mouseOverProjectId !== null &&
+                          mouseOverProjectId === pos.project.id,
+                      },
+                      {
+                        "bg-[--selected-ok-bg]":
+                          selectedProject?.id === pos.project.id,
+                      }
+                    )}
+                  >
+                    <TimelineEvent
+                      onMouseOver={() => setMouseOverProjectId(pos.project.id)}
+                      onMouseLeave={() => setMouseOverProjectId(null)}
+                      onClick={() => setSelectedProject(pos.project)}
+                      selectedProject={selectedProject}
+                      onDragging={(currentX) => handleOnDragging(currentX, i)}
+                      onDrop={(newX) => handleDropEventTimeline(newX, i)}
+                      pos={pos}
+                      draggingOnDate={draggingOnDate}
+                    />
+                  </div>
                 ))}
             </div>
           </DndContext>
@@ -250,7 +348,7 @@ export default function Timeline({ projects }: { projects: Project[] }) {
                   ? monthNames[group.value - 1].substring(0, 3).toUpperCase()
                   : group.value}
               </div>
-              <div className="flex flex-row">
+              <div className="flex flex-row border-dashed border-b-[1px] border-b-[--border-color]">
                 {group.items.map((item, itemIndex) => (
                   <div
                     style={{
@@ -283,7 +381,7 @@ export default function Timeline({ projects }: { projects: Project[] }) {
               left: currentEleLeft + 2.5 + "px",
               // transition: "all 0.5s ease",
             }}
-            className="absolute top-0 h-full bg-[--btn-ok-bg] w-[1.5px]"
+            className="absolute top-0 h-full bg-[--btn-ok-bg] w-[1.5px] z-[600]"
           >
             <div
               className="bg-[--btn-ok-bg] absolute flex items-center justify-center rounded-md
@@ -293,7 +391,7 @@ export default function Timeline({ projects }: { projects: Project[] }) {
             </div>
           </div>
         </div>
-        <ProjectDetailsDrawer project={selectedProject} />
+        {/* <ProjectDetailsDrawer project={selectedProject} /> */}
       </div>
     </div>
   );

@@ -1,6 +1,5 @@
 "use client";
 
-import ProjectEditor from "@/components/project-editor";
 import { CardStatus } from "@/db/repositories/projects.repo";
 import {
   DndContext,
@@ -13,15 +12,11 @@ import { useEffect } from "react";
 import useCardsByProjectSlug from "@/services/rquery/hooks/useCardsByProject";
 import { Card } from "@/db/repositories/cards.repo";
 import { db } from "@/db";
-import { useQueryClient } from "@tanstack/react-query";
-import { QUERY_KEYS } from "@/services/rquery/consts";
 import { useRouter } from "next/navigation";
 
 export default function ProjectBoardView({ slug }: { slug: string }) {
-  const queryClient = useQueryClient();
   const router = useRouter();
-  const { cards, isLoadingCardsByProjectSlug, getCardsByProjectSlugError } =
-    useCardsByProjectSlug(slug);
+  const { cards } = useCardsByProjectSlug(slug);
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -35,6 +30,7 @@ export default function ProjectBoardView({ slug }: { slug: string }) {
   const handleDragEnd = async (event: any) => {
     const droppedCard = event.active.data.current.card as Card;
     const newStatus = event.over.data.current.status;
+    droppedCard.status = newStatus;
     const response = await db.cards.updateCardStatus(
       droppedCard.nanoid,
       newStatus
