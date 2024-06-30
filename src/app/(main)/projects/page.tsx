@@ -35,7 +35,7 @@ const Projects = () => {
   };
 
   return (
-    <div className="w-full flex flex-col h-full">
+    <div className="relative w-full flex flex-col h-full">
       <ProjectsHeader
         displayMode={displayMode}
         onClickAddIcon={openModal}

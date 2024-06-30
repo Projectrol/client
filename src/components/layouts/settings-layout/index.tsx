@@ -12,7 +12,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="absolute w-full h-full flex flex-row bg-[--secondary]">
-      <Sidebar groups={settingsSidebarGroups}>
+      <Sidebar isOpen groups={settingsSidebarGroups}>
         <div
           onClick={() => router.back()}
           className="flex items-center justify-center gap-[4px] text-[--base] py-[5px] px-[5px] text-[0.85rem]"
@@ -23,12 +23,10 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
       </Sidebar>
       <div
         style={{
-          height: "calc(100% - 20px)",
+          height: "100%",
           width: "calc(100% - 260px)",
-          marginTop: "10px",
         }}
-        className="bg-[--primary] box-border rounded-md
-                  border-solid border-[1px] border-[--border-color]"
+        className="bg-[--primary] box-border border-solid border-l-[1px] border-l-[--border-color]"
       >
         <div className="w-full px-[20%] py-[60px] flex flex-col">
           <div className="w-full text-[--base] font-semibold text-[1.5rem]">

@@ -32,7 +32,6 @@ const ProjectAttributesBar = ({
   const workspaceMembers = WorkspacesController.getWorkspaceMembers(0);
   const [anchorEle, setAnchorEle] = useState<HTMLDivElement | null>(null);
   const [openPopupType, setOpenPopupType] = useState<string | null>(null);
-  const targetDateDivRef = useRef<HTMLDivElement>(null);
 
   return (
     <div className="w-full flex flex-row gap-[8px]">
@@ -77,7 +76,6 @@ const ProjectAttributesBar = ({
       />
 
       <div
-        ref={targetDateDivRef}
         onClick={(e) => {
           if (openPopupType === null) {
             setOpenPopupType("TARGET_DATE");
@@ -96,7 +94,6 @@ const ProjectAttributesBar = ({
       </div>
 
       <div
-        ref={targetDateDivRef}
         onClick={(e) => {
           if (openPopupType === null) {
             setOpenPopupType("MEMBERS");

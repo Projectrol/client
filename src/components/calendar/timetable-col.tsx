@@ -1,9 +1,20 @@
 "use client";
 
 import clsx from "clsx";
-import { monthNames } from "@/lib/datetime";
+import {
+  HourType,
+  monthNames,
+  to24WorkHourFormat,
+  toHourStringFormat,
+} from "@/lib/datetime";
 import { Project } from "@/db/repositories/projects.repo";
 import { useDroppable } from "@dnd-kit/core";
+import {
+  TaskInstance,
+  TaskInstanceWithEntity,
+} from "@/db/repositories/task-instances";
+import moment from "moment";
+import useCalendar from "@/hooks/use-calendar";
 
 export default function TimetableCol({
   cellsRenderData,
@@ -13,6 +24,8 @@ export default function TimetableCol({
   weeksOfMonth,
   currentYear,
   currentMonthIndex,
+  hidden = true,
+  taskInstances,
 }: {
   cellsRenderData?: {
     project: Project;
@@ -35,7 +48,10 @@ export default function TimetableCol({
   }[][];
   currentYear: number;
   currentMonthIndex: number;
+  hidden?: boolean;
+  taskInstances?: TaskInstanceWithEntity[];
 }) {
+  const { workHours } = useCalendar();
   const { isOver, setNodeRef } = useDroppable({
     id: date.dateId,
     data: {
@@ -51,22 +67,14 @@ export default function TimetableCol({
     <div
       ref={setNodeRef}
       style={{
-        width: "calc(100% / 7)",
-        height: "100%",
+        flex: 1,
+        display: hidden ? "none" : "flex",
         ...style,
       }}
-      className={clsx(
-        {
-          "flex flex-col items-start font-semibold justify-start py-[5px] text-[0.725rem] border-solid border-[--border-color] transition-colors":
-            true,
-        },
-        {
-          "border-r-[1px]": dayIndex % 6 !== 0 || dayIndex === 0,
-        },
-        {
-          "border-b-[1px]": wIndex < weeksOfMonth.length - 1,
-        }
-      )}
+      className={clsx({
+        "flex-col bg-[--hover-color] pt-[10px] items-center font-semibold justify-start text-[0.725rem] border-solid border-[--border-color] transition-colors":
+          true,
+      })}
       key={`${date.date}_${date.monthIndex}`}
     >
       <span
@@ -96,10 +104,59 @@ export default function TimetableCol({
           monthNames[date.monthIndex].substring(0, 3).toUpperCase()}{" "}
         {date.date}
       </span>
-      <div
-        id={date.dateId}
-        className="w-full flex-1 flex flex-col gap-[8px] mt-[10px] relative"
-      ></div>
+      <div id={date.dateId} className="w-full flex flex-col mt-[10px] relative">
+        {workHours.length > 0 &&
+          workHours.map((hour) => (
+            <div
+              className="w-full flex-flex-col border-solid border-[--border-color] border-b-[1px] cursor-pointer"
+              key={hour + "_" + hour.type.toString()}
+            >
+              <div className="w-full h-[45px] flex items-center px-[20px]  hover:underline select-none">
+                {hour.type === HourType.AM
+                  ? toHourStringFormat(hour.value)
+                  : toHourStringFormat(to24WorkHourFormat(hour))}
+              </div>
+
+              {taskInstances &&
+                taskInstances.length > 0 &&
+                taskInstances.find(
+                  (instance) =>
+                    instance.dtstart.getHours() === to24WorkHourFormat(hour)
+                ) && (
+                  <div className="w-full h-[80px] px-[20px] py-[15px] text-[--base] bg-[--secondary] rounded-md shadow-sm">
+                    {
+                      taskInstances.find(
+                        (instance) =>
+                          instance.dtstart.getHours() ===
+                          to24WorkHourFormat(hour)
+                      )!.taskEntity.title
+                    }
+                  </div>
+                )}
+            </div>
+          ))}
+      </div>
     </div>
   );
+}
+
+{
+  /* <div>
+{taskInstances &&
+  taskInstances.length > 0 &&
+  taskInstances.find(
+    (instance) =>
+      instance.dtstart.getHours() === to24WorkHourFormat(hour)
+  ) && (
+    <h1>
+      {
+        taskInstances.find(
+          (instance) =>
+            instance.dtstart.getHours() ===
+            to24WorkHourFormat(hour)
+        )!.taskEntity.title
+      }
+    </h1>
+  )}
+</div> */
 }

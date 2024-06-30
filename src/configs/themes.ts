@@ -56,12 +56,12 @@ export const baseThemes: { [key: string]: ColorTheme } = {
   },
   LIGHT: {
     layoutColors: {
-      BASE: "#121212",
-      PRIMARY: "#fbfbfb",
-      SECONDARY: "#ececec",
+      BASE: "#4e515a",
+      PRIMARY: "#ffffff",
+      SECONDARY: "#f9f8f8",
       "SELECTED-OK-BG": "rgba(90, 104, 207,0.1)",
       "HOVER-BG": "rgba(0,0,0,0.05)",
-      "SELECTED-BG": "rgba(0,0,0,0.1)",
+      "SELECTED-BG": "#e4e5f1",
       "BORDER-COLOR": "rgba(0,0,0,0.1)",
       "MODAL-BG": "#ffffff",
     },

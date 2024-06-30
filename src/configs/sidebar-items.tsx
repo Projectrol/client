@@ -25,16 +25,12 @@ export const mainSidebarGroups: SidebarGroup[] = [
     items: [
       {
         title: "Inbox",
-        icon: (
-          <InboxIcon fontSize="inherit" htmlColor="var(--text-header-color)" />
-        ),
+        icon: <InboxIcon fontSize="inherit" color="inherit" />,
         to: "/inbox",
       },
       {
         title: "My issues",
-        icon: (
-          <CodeIcon fontSize="inherit" htmlColor="var(--text-header-color)" />
-        ),
+        icon: <CodeIcon fontSize="inherit" color="inherit" />,
         to: "/my-issues",
       },
     ],
@@ -45,39 +41,22 @@ export const mainSidebarGroups: SidebarGroup[] = [
     items: [
       {
         title: "Roadmaps",
-        icon: (
-          <MapOutlinedIcon
-            fontSize="inherit"
-            htmlColor="var(--text-header-color)"
-          />
-        ),
+        icon: <MapOutlinedIcon fontSize="inherit" color="inherit" />,
         to: "/roadmaps",
       },
       {
         title: "Projects",
-        icon: (
-          <LayersIcon fontSize="inherit" htmlColor="var(--text-header-color)" />
-        ),
+        icon: <LayersIcon fontSize="inherit" color="inherit" />,
         to: "/projects?view_mode=table",
       },
       {
         title: "Teams",
-        icon: (
-          <WorkspacesIcon
-            fontSize="inherit"
-            htmlColor="var(--text-header-color)"
-          />
-        ),
+        icon: <WorkspacesIcon fontSize="inherit" color="inherit" />,
         to: "/teams",
       },
       {
         title: "Calendar",
-        icon: (
-          <CalendarMonthIcon
-            fontSize="inherit"
-            htmlColor="var(--text-header-color)"
-          />
-        ),
+        icon: <CalendarMonthIcon fontSize="inherit" color="inherit" />,
         to: "/calendar",
       },
     ],

@@ -17,6 +17,10 @@ import moment from "moment";
 import { db } from "@/db";
 import { useRouter } from "next/navigation";
 import TimetableCol from "./timetable-col";
+import {
+  TaskInstance,
+  TaskInstanceWithEntity,
+} from "@/db/repositories/task-instances";
 
 export default function Calendar({
   weeksOfMonth,
@@ -26,6 +30,8 @@ export default function Calendar({
   cellsRenderData,
   style,
   mode = "timetable",
+  hideWeekend = false,
+  taskInstances,
 }: {
   weeksOfMonth: {
     date: number;
@@ -48,6 +54,8 @@ export default function Calendar({
     }[];
   }[];
   mode?: "calendar" | "timetable";
+  hideWeekend?: boolean;
+  taskInstances?: TaskInstanceWithEntity[];
 }) {
   const router = useRouter();
   const sensors = useSensors(
@@ -131,8 +139,7 @@ export default function Calendar({
   return (
     <div
       id="calendar"
-      className="w-full h-full flex flex-col justify-start rounded-md 
-      shadow-md overflow-hidden relative"
+      className="w-full flex flex-col justify-start rounded-md relative"
       style={style}
     >
       <div className="w-full flex flex-wrap bg-[--secondary]">
@@ -141,7 +148,12 @@ export default function Calendar({
           .map((_, dayIndex) => (
             <div
               style={{
-                width: "calc(100% / 7)",
+                flex: 1,
+                display: hideWeekend
+                  ? dayIndex === 5 || dayIndex === 6
+                    ? "none"
+                    : "flex"
+                  : "flex",
               }}
               key={dayIndex + 1}
               className={clsx(
@@ -180,20 +192,44 @@ export default function Calendar({
                 />
               ))
             )}
-          {mode === "timetable" &&
-            weekOfMonth.length > 0 &&
-            weekOfMonth.map((date, dIndex) => (
-              <TimetableCol
-                key={date.dateId}
-                cellsRenderData={cellsRenderData}
-                currentMonthIndex={currentMonthIndex}
-                currentYear={currentYear}
-                date={date}
-                dayIndex={dIndex}
-                wIndex={dIndex}
-                weeksOfMonth={weeksOfMonth}
-              />
-            ))}
+          <div className="w-full overflow-y-auto">
+            {mode === "timetable" &&
+              weekOfMonth.length > 0 &&
+              weekOfMonth.map((date, dIndex) => (
+                <TimetableCol
+                  hidden={
+                    hideWeekend
+                      ? dIndex === 5 || dIndex === 6
+                        ? true
+                        : false
+                      : false
+                  }
+                  taskInstances={
+                    taskInstances
+                      ? taskInstances.filter((instance) => {
+                          const instanceStartDate = instance.dtstart.getDate();
+                          const instanceStartMonthIndex =
+                            instance.dtstart.getMonth();
+                          const instanceStartYear =
+                            instance.dtstart.getFullYear();
+                          const instanceDateId = `${instanceStartDate}_${instanceStartMonthIndex}_${instanceStartYear}`;
+                          if (date.dateId === instanceDateId) {
+                            return instance;
+                          }
+                        })
+                      : []
+                  }
+                  key={date.dateId}
+                  cellsRenderData={cellsRenderData}
+                  currentMonthIndex={currentMonthIndex}
+                  currentYear={currentYear}
+                  date={date}
+                  dayIndex={dIndex}
+                  wIndex={dIndex}
+                  weeksOfMonth={weeksOfMonth}
+                />
+              ))}
+          </div>
         </div>
       </DndContext>
     </div>

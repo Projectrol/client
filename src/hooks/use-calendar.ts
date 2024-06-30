@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { getWeeksOfMonthsInYear } from "../datetime";
+import {
+  HourType,
+  WorkHour,
+  getDayWorkHoursList,
+  getWeeksOfMonthsInYear,
+} from "../lib/datetime";
 
 export default function useCalendar() {
   const [year, setYear] = useState(new Date().getFullYear());
@@ -22,6 +27,15 @@ export default function useCalendar() {
       dateId: string;
     }[]
   >([]);
+  const [workHours, setWorkHours] = useState<WorkHour[]>([]);
+
+  useEffect(() => {
+    const workHours = getDayWorkHoursList({
+      workFromHour: { type: HourType.AM, value: 8 },
+      workToHour: { type: HourType.PM, value: 5 },
+    });
+    setWorkHours(workHours);
+  }, []);
 
   useEffect(() => {
     const weeksOfMonth = getWeeksOfMonthsInYear(year).find(
@@ -93,6 +107,7 @@ export default function useCalendar() {
   return {
     weekNo,
     setWeekNo,
+    workHours,
     weekOfMonth,
     currMonthWeeksCount,
     weeksOfMonth,

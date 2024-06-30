@@ -2,7 +2,6 @@
 
 import { Project } from "@/db/repositories/projects.repo";
 import { monthNames } from "@/lib/datetime";
-import useTimeline, { TimelineUnit } from "@/lib/timeline/use-timeline";
 import { useEffect, useRef, useState } from "react";
 import {
   DndContext,
@@ -21,6 +20,7 @@ import { db } from "@/db";
 import ProjectDetailsDrawer from "./project-details-drawer";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
+import useTimeline, { TimelineUnit } from "@/hooks/use-timeline";
 
 export default function Timeline({ projects }: { projects: Project[] }) {
   const gridSize = 5; // pixels
@@ -47,9 +47,16 @@ export default function Timeline({ projects }: { projects: Project[] }) {
   const [mouseOverProjectId, setMouseOverProjectId] = useState<number | null>(
     null
   );
-  const { groups, setGroupingMode, groupingMode } = useTimeline({
-    initGroupingMode: { mode: "months in year", year: 2024 },
+  const { groups, setGroupingMode, groupingMode, monthsInYears } = useTimeline({
+    initGroupingMode: {
+      mode: "months in years",
+      from_year: 2024,
+      to_year: 2026,
+    },
   });
+  const [eleOffsetLRangeList, setEleOffsetLRangeList] = useState<
+    { eleId: string; offsetLeft: number }[][]
+  >([]);
   const calendarDivRef = useRef<HTMLDivElement>(null);
   const [projectsPos, setProjectsPos] = useState<
     {
@@ -63,7 +70,7 @@ export default function Timeline({ projects }: { projects: Project[] }) {
     if (
       calendarDivRef &&
       calendarDivRef.current &&
-      groups.length > 0 &&
+      monthsInYears.length > 0 &&
       projects.length > 0
     ) {
       const projectsPos: any[] = [];
@@ -72,10 +79,12 @@ export default function Timeline({ projects }: { projects: Project[] }) {
         const endDate = new Date(project.targetDate);
         const start_month = startDate.getMonth() + 1;
         const start_day = startDate.getDate();
-        const start_id = start_day + "_" + start_month;
+        const start_id =
+          start_day + "_" + start_month + "_" + startDate.getFullYear();
         const end_month = endDate.getMonth() + 1;
         const end_day = endDate.getDate();
-        const end_id = end_day + "_" + end_month;
+        const end_id =
+          end_day + "_" + end_month + "_" + startDate.getFullYear();
         const startEle = document.getElementById(start_id);
         const endEle = document.getElementById(end_id);
 
@@ -89,35 +98,71 @@ export default function Timeline({ projects }: { projects: Project[] }) {
       });
       setProjectsPos(projectsPos);
     }
-  }, [groups, projects]);
+  }, [monthsInYears, projects]);
 
   useEffect(() => {
-    if (groups.length > 0) {
+    if (monthsInYears.length > 0) {
       const groupItemsIds: string[] = [];
-      groups.forEach((group) => {
-        group.items.forEach((item) => {
-          const id = item.value + "_" + group.value;
-          groupItemsIds.push(id);
+      monthsInYears.forEach((year) => {
+        year.groups.forEach((group) => {
+          group.items.forEach((item) => {
+            const id = item.value + "_" + group.value + "_" + year.value;
+            groupItemsIds.push(id);
+          });
         });
       });
       setGroupItemsIds(groupItemsIds);
     }
-  }, [groups]);
+  }, [monthsInYears]);
 
   useEffect(() => {
     if (groupItemsIds.length > 0) {
       const currentDate = new Date();
       const currentEleId =
-        currentDate.getDate() + "_" + (currentDate.getMonth() + 1);
+        currentDate.getDate() +
+        "_" +
+        (currentDate.getMonth() + 1) +
+        "_" +
+        currentDate.getFullYear();
       const currentEle = document.getElementById(currentEleId);
       if (!currentEle) return;
-      setCurrentEleLeft(currentEle.offsetLeft);
+      const offsetLeft = currentEle.offsetLeft;
+      setCurrentEleLeft(offsetLeft);
+
       if (calendarDivRef.current) {
+        const calendarWidth = calendarDivRef.current?.clientWidth;
+        let offsetValue = 1.5;
+        if (offsetLeft >= calendarWidth * 2) {
+          offsetValue = 1.08;
+        }
         calendarDivRef.current.scrollTo({
-          left: currentEle.offsetLeft / 2,
+          left: offsetLeft / offsetValue,
           behavior: "smooth",
         });
       }
+
+      const offsetLRangeList: { eleId: string; offsetLeft: number }[][] = [];
+      const offsetList: { eleId: string; offsetLeft: number }[] = [];
+      groupItemsIds.forEach((id) => {
+        const ele = document.getElementById(id);
+        if (ele) {
+          offsetList.push({
+            eleId: id,
+            offsetLeft: ele.offsetLeft,
+          });
+        }
+      });
+      offsetList.sort((a, b) => a.offsetLeft - b.offsetLeft);
+      let currentSubList: { eleId: string; offsetLeft: number }[] = [];
+      offsetList.forEach((item) => {
+        if (currentSubList.length < 100) {
+          currentSubList.push(item);
+        } else {
+          offsetLRangeList.push(currentSubList);
+          currentSubList = [item];
+        }
+      });
+      setEleOffsetLRangeList(offsetLRangeList);
     }
   }, [groupItemsIds]);
 
@@ -125,11 +170,19 @@ export default function Timeline({ projects }: { projects: Project[] }) {
     let startEleIndex = "";
     let startDate: Date | null = null;
     let targetDate: Date | null = null;
-    for (let i = 0; i < groupItemsIds.length; i++) {
-      const ele = document.getElementById(groupItemsIds[i]);
+    const targetList = eleOffsetLRangeList.find(
+      (subList) =>
+        subList[subList.length - 1].offsetLeft >= x &&
+        subList[0].offsetLeft <= x
+    );
+    if (!targetList) {
+      return { startDate, targetDate };
+    }
+    for (let i = 0; i < targetList.length; i++) {
+      const ele = targetList[i];
       if (ele) {
         if (Math.abs(x - ele.offsetLeft) <= 5) {
-          startEleIndex = groupItemsIds[i];
+          startEleIndex = targetList[i].eleId;
           break;
         }
       }
@@ -142,7 +195,7 @@ export default function Timeline({ projects }: { projects: Project[] }) {
       const diff = oldTargetDate.diff(oldStartDate, "days");
       const monthIndex = parseInt(startEleIndex.split("_")[1]) - 1;
       const day = parseInt(startEleIndex.split("_")[0]);
-      const year = new Date().getFullYear();
+      const year = parseInt(startEleIndex.split("_")[2]);
       startDate = new Date(year, monthIndex, day);
       targetDate = new Date(moment(startDate).add(diff, "days").toString());
     }
@@ -160,10 +213,11 @@ export default function Timeline({ projects }: { projects: Project[] }) {
     if (startDate && targetDate) {
       const start_month = startDate.getMonth() + 1;
       const start_day = startDate.getDate();
-      const start_id = start_day + "_" + start_month;
+      const start_id =
+        start_day + "_" + start_month + "_" + startDate.getFullYear();
       const end_month = targetDate.getMonth() + 1;
       const end_day = targetDate.getDate();
-      const end_id = end_day + "_" + end_month;
+      const end_id = end_day + "_" + end_month + "_" + startDate.getFullYear();
       const startEle = document.getElementById(start_id);
       const endEle = document.getElementById(end_id);
 
@@ -205,6 +259,124 @@ export default function Timeline({ projects }: { projects: Project[] }) {
     }
   };
 
+  const handleOnResizeFinish = async (newWidth: number, index: number) => {
+    const oldPos = Object.assign({}, projectsPos[index]);
+    const oldWidth = oldPos.end - oldPos.start;
+    let newTargetX = 0;
+    if (oldWidth > newWidth) {
+      newTargetX = oldPos.end - (oldWidth - newWidth);
+    } else {
+      newTargetX = oldPos.end + newWidth - oldWidth;
+    }
+    let targetEleIndex = "";
+    let targetDate: Date | null = null;
+
+    const targetList = eleOffsetLRangeList.find(
+      (subList) =>
+        subList[subList.length - 1].offsetLeft >= newTargetX &&
+        subList[0].offsetLeft <= newTargetX
+    );
+    if (!targetList) return;
+
+    for (let i = 0; i < targetList.length; i++) {
+      const ele = targetList[i];
+      if (ele) {
+        if (Math.abs(newTargetX - ele.offsetLeft) <= 5) {
+          targetEleIndex = targetList[i].eleId;
+          break;
+        }
+      }
+    }
+
+    if (targetEleIndex !== "") {
+      const monthIndex = parseInt(targetEleIndex.split("_")[1]) - 1;
+      const day = parseInt(targetEleIndex.split("_")[0]);
+      const year = parseInt(targetEleIndex.split("_")[2]);
+      targetDate = new Date(year, monthIndex, day);
+    }
+
+    const startDate = projects[index].startDate;
+
+    if (startDate && targetDate) {
+      const start_month = startDate.getMonth() + 1;
+      const start_day = startDate.getDate();
+      const start_id =
+        start_day + "_" + start_month + "_" + startDate.getFullYear();
+      const end_month = targetDate.getMonth() + 1;
+      const end_day = targetDate.getDate();
+      const end_id = end_day + "_" + end_month + "_" + startDate.getFullYear();
+      const startEle = document.getElementById(start_id);
+      const endEle = document.getElementById(end_id);
+
+      if (startEle && endEle) {
+        const newProjectsPos = [...projectsPos];
+        newProjectsPos[index].start = startEle.offsetLeft + 2.5;
+        newProjectsPos[index].end = endEle.offsetLeft + 2.5;
+        setProjectsPos(newProjectsPos);
+      }
+
+      const project = projectsPos[index].project;
+      const respone = await db.projects.updateProjectDate(
+        project.id,
+        startDate,
+        targetDate
+      );
+
+      if (!respone) {
+        const newProjectsPos = [...projectsPos];
+        newProjectsPos[index].start = oldPos.start;
+        newProjectsPos[index].end = oldPos.end;
+        setProjectsPos(newProjectsPos);
+      }
+    }
+  };
+
+  const handleOnResizing = async (newWidth: number, index: number) => {
+    const oldPos = Object.assign({}, projectsPos[index]);
+    const oldWidth = oldPos.end - oldPos.start;
+    let newTargetX = 0;
+    if (oldWidth > newWidth) {
+      newTargetX = oldPos.end - (oldWidth - newWidth);
+    } else {
+      newTargetX = oldPos.end + newWidth - oldWidth;
+    }
+    let targetEleIndex = "";
+    let targetDate: Date | null = null;
+
+    const targetList = eleOffsetLRangeList.find(
+      (subList) =>
+        subList[subList.length - 1].offsetLeft >= newTargetX &&
+        subList[0].offsetLeft <= newTargetX
+    );
+    if (!targetList) return;
+
+    for (let i = 0; i < targetList.length; i++) {
+      const ele = targetList[i];
+      if (ele) {
+        if (Math.abs(newTargetX - ele.offsetLeft) <= 5) {
+          targetEleIndex = targetList[i].eleId;
+          break;
+        }
+      }
+    }
+
+    if (targetEleIndex !== "") {
+      const monthIndex = parseInt(targetEleIndex.split("_")[1]) - 1;
+      const day = parseInt(targetEleIndex.split("_")[0]);
+      const year = parseInt(targetEleIndex.split("_")[2]);
+      targetDate = new Date(year, monthIndex, day);
+    }
+
+    if (targetDate) {
+      setSelectedProject(oldPos.project);
+      setDraggingOnDate({
+        eventIndex: index,
+        start: oldPos.project.startDate,
+        target: targetDate,
+      });
+    }
+  };
+
   return (
     <div className="w-full h-full flex flex-col overflow-x-hidden">
       <div
@@ -213,8 +385,8 @@ export default function Timeline({ projects }: { projects: Project[] }) {
       ></div>
       <div className="w-full flex-1 relative px-[0px]">
         <div
-          className="w-[300px] h-full bg-[--primary] absolute flex flex-col 
-                        border-solid border-x-[1px] border-x-[--border-color]"
+          className="w-[300px] h-full bg-[--primary] absolute flex flex-col
+                        border-solid border-r-[1px] border-r-[--border-color]"
         >
           <div
             className="w-full h-[48px] border-solid
@@ -326,6 +498,10 @@ export default function Timeline({ projects }: { projects: Project[] }) {
                       selectedProject={selectedProject}
                       onDragging={(currentX) => handleOnDragging(currentX, i)}
                       onDrop={(newX) => handleDropEventTimeline(newX, i)}
+                      onResizeFinish={(width) => handleOnResizeFinish(width, i)}
+                      onResizing={(width) => {
+                        handleOnResizing(width, i);
+                      }}
                       pos={pos}
                       draggingOnDate={draggingOnDate}
                     />
@@ -334,54 +510,64 @@ export default function Timeline({ projects }: { projects: Project[] }) {
             </div>
           </DndContext>
 
-          {groups.map((group) => (
-            <div
-              onClick={(e) => {
-                if (e.target === e.currentTarget) setSelectedProject(null);
-              }}
-              className="flex flex-col items-start border-dashed border-r-[1px] 
+          {groupingMode.mode === "months in years" &&
+            monthsInYears.map((year) =>
+              year.groups.map((group) => (
+                <div
+                  onClick={(e) => {
+                    if (e.target === e.currentTarget) setSelectedProject(null);
+                  }}
+                  className="flex flex-col items-start border-dashed border-r-[1px] 
                         border-r-[--border-color] select-none"
-              key={group.value}
-            >
-              <div className="text-[0.65rem] font-semibold text-[--base] py-[5px] pl-[6px]">
-                {group.unit === TimelineUnit.MONTH
-                  ? monthNames[group.value - 1].substring(0, 3).toUpperCase()
-                  : group.value}
-              </div>
-              <div className="flex flex-row border-dashed border-b-[1px] border-b-[--border-color]">
-                {group.items.map((item, itemIndex) => (
-                  <div
-                    style={{
-                      opacity: item.value % 5 === 0 || item.value === 1 ? 1 : 0,
-                      marginRight:
-                        itemIndex === group.items.length - 1 ? "10px" : 0,
-                      width: itemIndex === 0 ? "10px" : "5px",
-                      alignItems: itemIndex === 0 ? "flex-end" : "center",
-                    }}
-                    id={item.value + "_" + group.value}
-                    className="text-[0.7rem] text-[--text-header-color] flex flex-col"
-                    key={item.value + "_" + group.value}
-                  >
-                    <div
-                      style={{
-                        marginRight: itemIndex === 0 ? "2px" : 0,
-                      }}
-                      className="w-[1px] h-[5px] bg-[--text-header-color]"
-                    />
-                    {item.unit === TimelineUnit.MONTH
-                      ? monthNames[item.value - 1].substring(0, 3).toUpperCase()
-                      : item.value}
+                  key={group.value + "_" + year.value}
+                >
+                  <div className="text-[0.65rem] font-semibold text-[--base] py-[5px] pl-[6px]">
+                    {group.unit === TimelineUnit.MONTH
+                      ? monthNames[group.value - 1]
+                          .substring(0, 3)
+                          .toUpperCase() +
+                        " / " +
+                        year.value
+                      : group.value}
                   </div>
-                ))}
-              </div>
-            </div>
-          ))}
+                  <div className="flex flex-row border-dashed border-b-[1px] border-b-[--border-color]">
+                    {group.items.map((item, itemIndex) => (
+                      <div
+                        style={{
+                          opacity:
+                            item.value % 5 === 0 || item.value === 1 ? 1 : 0,
+                          marginRight:
+                            itemIndex === group.items.length - 1 ? "10px" : 0,
+                          width: itemIndex === 0 ? "10px" : "5px",
+                          alignItems: itemIndex === 0 ? "flex-end" : "center",
+                        }}
+                        id={item.value + "_" + group.value + "_" + year.value}
+                        className="text-[0.7rem] text-[--text-header-color] flex flex-col"
+                        key={item.value + "_" + group.value + "_" + year.value}
+                      >
+                        <div
+                          style={{
+                            marginRight: itemIndex === 0 ? "2px" : 0,
+                          }}
+                          className="w-[1px] h-[5px] bg-[--text-header-color]"
+                        />
+                        {item.unit === TimelineUnit.MONTH
+                          ? monthNames[item.value - 1]
+                              .substring(0, 3)
+                              .toUpperCase()
+                          : item.value}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))
+            )}
           <div
             style={{
               left: currentEleLeft + 2.5 + "px",
               // transition: "all 0.5s ease",
             }}
-            className="absolute top-0 h-full bg-[--btn-ok-bg] w-[1.5px] z-[600]"
+            className="absolute top-0 h-full bg-[--btn-ok-bg] w-[1.5px] z-[100]"
           >
             <div
               className="bg-[--btn-ok-bg] absolute flex items-center justify-center rounded-md

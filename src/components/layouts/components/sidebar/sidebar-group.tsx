@@ -14,13 +14,13 @@ const SideBarGroup = ({ group }: { group: SidebarGroup }) => {
       style={{
         width: "calc(100% - 15px)",
       }}
-      className="flex flex-col"
+      className="flex flex-col gap-[5px]"
     >
       {group.title !== "" && (
         <div
           onClick={() => group.showToggle && setOpen(!isOpen)}
-          className="w-full text-[--text-header-color] font-semibold text-[0.8rem]
-                px-[5px] py-[5px] rounded-sm
+          className="w-full text-[--base] font-semibold text-[0.85rem]
+                px-[10px] py-[6px] rounded-sm
                 hover:bg-[--hover-bg]"
         >
           <span className="pointer-events-none select-none">

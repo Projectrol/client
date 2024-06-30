@@ -19,49 +19,56 @@ export default function Layout({
     .slice(0, -2)
     .reduce((totalStr, currStr) => `${totalStr} ${currStr}`, "");
 
-  return (
-    <div className="w-full h-full flex flex-col">
-      <MainBodyHeader title="">
-        <div className="w-full flex py-[5px] items-center">
-          {workspaceSlice.workspace && (
-            <>
-              <span
-                onClick={() => router.push("/projects?view_mode=table")}
-                className="select-none text-[--base] cursor-pointer hover:underline"
-              >
-                {workspaceSlice.workspace.name}
-              </span>
-              <ChevronRightIcon fontSize="small" htmlColor="var(--base)" />
-              <span className="select-none text-[--base] capitalize">
-                {projectName}
-              </span>
-            </>
-          )}
-          <div
-            style={{
-              background:
-                viewMode === "overview" ? "var(--selected-bg)" : "transparent",
-            }}
-            className="text-[0.8rem] py-[4px] px-[10px] text-[--base] font-semibold rounded-md ml-[20px] mr-[10px]"
-          >
-            <button
-              onClick={() => router.push(`/project/${params.slug}/overview`)}
+  const renderTopLeftHeader = () => {
+    return (
+      <div className="w-full flex py-[5px] items-center">
+        {workspaceSlice.workspace && (
+          <>
+            <span
+              onClick={() => router.push("/projects?view_mode=table")}
+              className="select-none text-[--base] cursor-pointer hover:underline"
             >
-              Overview
-            </button>
-          </div>
+              {workspaceSlice.workspace.name}
+            </span>
+            <ChevronRightIcon fontSize="small" htmlColor="var(--base)" />
+            <span className="select-none text-[--base] capitalize">
+              {projectName}
+            </span>
+          </>
+        )}
+        <div
+          style={{
+            background:
+              viewMode === "overview" ? "var(--selected-bg)" : "transparent",
+          }}
+          className="text-[0.8rem] py-[4px] px-[10px] text-[--base] font-semibold rounded-md ml-[20px] mr-[10px]"
+        >
           <button
-            style={{
-              background:
-                viewMode === "board" ? "var(--selected-bg)" : "transparent",
-            }}
-            className="text-[0.8rem] py-[4px] px-[10px] text-[--base] font-semibold rounded-md"
-            onClick={() => router.push(`/project/${params.slug}/board`)}
+            onClick={() => router.push(`/project/${params.slug}/overview`)}
           >
-            Board
+            Overview
           </button>
         </div>
-      </MainBodyHeader>
+        <button
+          style={{
+            background:
+              viewMode === "board" ? "var(--selected-bg)" : "transparent",
+          }}
+          className="text-[0.8rem] py-[4px] px-[10px] text-[--base] font-semibold rounded-md"
+          onClick={() => router.push(`/project/${params.slug}/board`)}
+        >
+          Board
+        </button>
+      </div>
+    );
+  };
+
+  return (
+    <div className="w-full h-full flex flex-col">
+      <MainBodyHeader
+        leftStyle={{ padding: "15px 0" }}
+        topLeftElement={renderTopLeftHeader()}
+      />
       {children}
     </div>
   );

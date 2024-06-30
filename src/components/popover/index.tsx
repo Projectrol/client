@@ -9,6 +9,7 @@ export default function Popover({
   anchorEle,
   children,
   style,
+  autoFocus = true,
 }: {
   open: boolean;
   position:
@@ -18,11 +19,13 @@ export default function Popover({
     | "bottom right"
     | "bottom"
     | "center left"
-    | "center right";
-  anchorEle: HTMLDivElement | null;
+    | "center right"
+    | "top";
+  anchorEle: HTMLDivElement | HTMLInputElement | null;
   children: React.ReactNode;
   onClickOutside?: () => void;
   style?: React.CSSProperties;
+  autoFocus?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [left, setLeft] = useState(0);
@@ -59,10 +62,15 @@ export default function Popover({
         setLeft(anchorEle.offsetLeft - ref.current.offsetWidth);
         setTop(anchorEle.clientTop - anchorEle.offsetHeight);
         break;
+      case "top":
+        setLeft(anchorEle.offsetLeft);
+        setTop(anchorEle.clientTop - ref.current.offsetHeight);
+        break;
     }
   }, [position, anchorEle]);
 
   useEffect(() => {
+    if (!autoFocus) return;
     if (open) {
       ref.current?.focus();
       anchorEle?.classList.add("vulh-hover-bg");
@@ -71,7 +79,7 @@ export default function Popover({
       anchorEle?.classList.remove("vulh-hover-bg");
       anchorEle?.classList.remove("vulh-anchor-popover-on");
     }
-  }, [open, anchorEle]);
+  }, [open, anchorEle, autoFocus]);
 
   return (
     <div
@@ -93,7 +101,7 @@ export default function Popover({
         opacity: open ? "1" : "0",
         ...style,
       }}
-      className="absolute z-[500] bg-[--modal-bg] text-[--base] border-solid rounded-md shadow-md
+      className="absolute z-[1000] bg-[--modal-bg] text-[--base] border-solid rounded-md shadow-md
                 border-[1px] border-[--border-color] flex items-center outline-none"
     >
       {children}

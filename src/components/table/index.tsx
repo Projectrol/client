@@ -59,7 +59,7 @@ function Table({
         className="w-full flex items-center justify-between px-[20px] py-[8px]
                     border-b-solid border-b-[1px] border-b-[--border-color]"
       >
-        <div className="w-full flex items-center text-[0.77rem] text-[--text-header-color] px-[8px] py-[1px]">
+        <div className="w-full flex items-center text-[0.825rem] text-[--text-header-color] px-[8px] py-[1px]">
           {columns.map((col) => (
             <div
               style={{
