@@ -1,14 +1,12 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import Popover from "../../popover";
 import { DatePicker } from "../../date-picker";
 import moment from "moment";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import { WorkspacesController } from "@/db/controllers/workspaces.controller";
 import Image from "next/image";
-import { ProjectRole, User } from "@/db/repositories/users.repo";
-import { CardStatus } from "@/db/repositories/projects.repo";
+import { User } from "@/services/api/users-service";
 
 const ProjectAttributesBar = ({
   startDate,
@@ -22,14 +20,14 @@ const ProjectAttributesBar = ({
 }: {
   startDate: Date | null;
   targetDate: Date | null;
-  assignedMembers: Array<{ role: ProjectRole } & User>;
+  assignedMembers: User[];
   setStartDate: (date: Date) => void;
   setTargetDate: (date: Date) => void;
   handleAssignMember: (user: User) => void;
   checkIfExisted: (id: number) => boolean;
-  status: CardStatus;
+  status: string;
 }) => {
-  const workspaceMembers = WorkspacesController.getWorkspaceMembers(0);
+  const workspaceMembers: User[] = [];
   const [anchorEle, setAnchorEle] = useState<HTMLDivElement | null>(null);
   const [openPopupType, setOpenPopupType] = useState<string | null>(null);
 
@@ -160,13 +158,13 @@ const ProjectAttributesBar = ({
                   />
                   <div className="flex flex-row items-center gap-[10px]  text-[0.85rem] text-[--base] opacity-85 select-none">
                     <Image
-                      src={user.avatar ?? ""}
+                      src={user.settings.avatar ?? ""}
                       width={18}
                       height={18}
                       className="rounded-full"
                       alt="user-avatar"
                     />
-                    {user.username}
+                    {user.settings.avatar}
                   </div>
                 </div>
               ))}

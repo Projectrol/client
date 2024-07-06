@@ -13,10 +13,14 @@ const useRouteInfo = () => {
 
   useEffect(() => {
     if (pathname) {
+      const pathWithoutSlug = "/" + pathname.split("/").slice(2).join("/");
       let found = false;
       for (let i = 0; i < settingsSidebarGroups.length; i++) {
         for (let z = 0; z < settingsSidebarGroups[i].items.length; z++) {
-          if (pathname === settingsSidebarGroups[i].items[z].to.split("?")[0]) {
+          if (
+            pathWithoutSlug ===
+            settingsSidebarGroups[i].items[z].to.split("?")[0]
+          ) {
             setTitle(settingsSidebarGroups[i].items[z].title);
             setDescription(settingsSidebarGroups[i].items[z].description ?? "");
             found = true;
@@ -27,7 +31,9 @@ const useRouteInfo = () => {
       if (!found) {
         for (let i = 0; i < mainSidebarGroups.length; i++) {
           for (let z = 0; z < mainSidebarGroups[i].items.length; z++) {
-            if (pathname === mainSidebarGroups[i].items[z].to.split("?")[0]) {
+            if (
+              pathWithoutSlug === mainSidebarGroups[i].items[z].to.split("?")[0]
+            ) {
               setTitle(mainSidebarGroups[i].items[z].title);
               setDescription(mainSidebarGroups[i].items[z].description ?? "");
               break;

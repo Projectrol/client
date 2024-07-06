@@ -26,14 +26,18 @@ import Toolbar, { DefaultToolbarRender } from "@yoopta/toolbar";
 import LinkTool, { DefaultLinkToolRender } from "@yoopta/link-tool";
 import { useEffect, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
-import { ProjectRole, User } from "@/db/repositories/users.repo";
-import {
-  CreateProjectInput,
-  Project,
-  CardStatus,
-} from "@/db/repositories/projects.repo";
-import { db } from "@/db";
 import ProjectAttributesBar from "./project-attributes-bar";
+import {
+  CreateProjectRequest,
+  Project,
+  ProjectsService,
+} from "@/services/api/projects-service";
+import { User } from "@/services/api/users-service";
+import moment from "moment";
+import { useSelector } from "react-redux";
+import { State } from "@/services/redux/store";
+import { useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/services/rquery/consts";
 
 const toBase64 = (file: File) =>
   new Promise((resolve, reject) => {
@@ -56,23 +60,21 @@ function ProjectEditor({
   initValue?: Project;
   mode?: "create" | "edit";
 }) {
+  const queryClient = useQueryClient();
+  const workspaceSlice = useSelector((state: State) => state.workspace);
   const projectNameDivRef = useRef<HTMLDivElement>(null);
   const summaryDivRef = useRef<HTMLDivElement>(null);
   const [focusElement, setFocusElement] = useState("name");
   const [projectName, setProjectName] = useState(initValue?.name ?? "");
-  const [status, setStatus] = useState<CardStatus>(
-    initValue?.status ?? CardStatus.BACKLOG
-  );
-  const [summary, setSummary] = useState(initValue?.summary ?? "");
+  const [status, setStatus] = useState("Backlog");
+  const [summary, setSummary] = useState(initValue?.description ?? "");
   const [startDate, setStartDate] = useState<Date | null>(
-    initValue?.startDate ?? null
+    initValue?.dtstart ? new Date(initValue.dtstart) : null
   );
   const [targetDate, setTargetDate] = useState<Date | null>(
-    initValue?.targetDate ?? null
+    initValue?.dtend ? new Date(initValue?.dtend) : null
   );
-  const [assignedMembers, setAssignedMembers] = useState<
-    Array<{ role: ProjectRole } & User>
-  >([]);
+  const [assignedMembers, setAssignedMembers] = useState<User[]>([]);
   const editor = useMemo(() => createYooptaEditor(), []);
   const selectionRef = useRef<HTMLDivElement>(null);
 
@@ -113,7 +115,7 @@ function ProjectEditor({
       projectNameDivRef.current.innerHTML = initValue.name;
     }
     if (summaryDivRef.current) {
-      summaryDivRef.current.innerHTML = initValue.summary;
+      summaryDivRef.current.innerHTML = initValue.description;
     }
   }, [initValue]);
 
@@ -151,27 +153,25 @@ function ProjectEditor({
   const handleAssignMember = (user: User) => {
     const isExisted = checkIfExisted(user.id);
     if (!isExisted) {
-      setAssignedMembers((prev) => [
-        ...prev,
-        { ...user, role: ProjectRole.MEMBER },
-      ]);
+      setAssignedMembers((prev) => [...prev, { ...user, role: "MEMBER" }]);
     } else {
       setAssignedMembers((prev) => prev.filter((m) => m.id !== user.id));
     }
   };
 
-  const createProject = () => {
-    if (!startDate || !targetDate) return;
-    const input: CreateProjectInput = {
+  const createProject = async () => {
+    if (!startDate || !targetDate || !workspaceSlice.workspace) return;
+    const input: CreateProjectRequest = {
       name: projectNameDivRef.current?.innerText ?? "",
       summary: summaryDivRef.current?.innerText ?? "",
       description: JSON.stringify(editor.getEditorValue()),
-      startDate,
-      targetDate,
-      status,
+      dtstart: moment(startDate).utc().unix(),
+      dtend: moment(targetDate).utc().unix(),
+      workspace_id: workspaceSlice.workspace.id,
     };
-    const response = db.projects.create(input);
-    if (response) {
+    const response = await ProjectsService.CreateProject(input);
+    if (response.status === "success") {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.USE_PROJECTS] });
       onCreated && onCreated();
     }
   };

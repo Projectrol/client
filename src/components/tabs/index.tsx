@@ -29,13 +29,13 @@ export default function Tabs({
       {items.map((item) => (
         <div
           style={{
-            opacity: selectedKey === item.key ? 1 : 0.75,
+            opacity: selectedKey === item.key ? 1 : 0.6,
             borderBottom:
               selectedKey === item.key ? "3px solid var(--base)" : "none",
           }}
           key={item.key}
-          className="py-[5px]"
-        >
+          className="py-[5px] select-none"
+        > 
           {item.element}
         </div>
       ))}

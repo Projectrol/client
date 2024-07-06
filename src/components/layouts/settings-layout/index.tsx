@@ -5,14 +5,30 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { settingsSidebarGroups } from "@/configs/sidebar-items";
 import Sidebar from "../components/sidebar";
 import useRouteInfo from "@/hooks/useRouteInfo";
+import { useSelector } from "react-redux";
+import { State } from "@/services/redux/store";
 
 const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const { description, title } = useRouteInfo();
+  const workspaceSlice = useSelector((state: State) => state.workspace);
 
   return (
     <div className="absolute w-full h-full flex flex-row bg-[--secondary]">
-      <Sidebar isOpen groups={settingsSidebarGroups}>
+      <Sidebar
+        isOpen
+        groups={settingsSidebarGroups.map((group) => {
+          return {
+            ...group,
+            items: group.items.map((item) => {
+              return {
+                ...item,
+                to: `/${workspaceSlice.workspace?.slug}${item.to}`,
+              };
+            }),
+          };
+        })}
+      >
         <div
           onClick={() => router.back()}
           className="flex items-center justify-center gap-[4px] text-[--base] py-[5px] px-[5px] text-[0.85rem]"

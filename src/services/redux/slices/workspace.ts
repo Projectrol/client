@@ -1,4 +1,4 @@
-import { Workspace } from "@/db/repositories/workspaces.repo";
+import { Workspace } from "@/services/api/workspaces-service";
 import { createSlice } from "@reduxjs/toolkit";
 
 type State = {

@@ -24,7 +24,7 @@ const MainBodyHeader = ({
       style={style}
       className="w-full border-b-solid border-b-[1px] flex flex-row items-center
                       text-[1.2rem] font-semibold text-[--base]
-                      border-b-[--border-color] px-[30px]"
+                      border-b-[--border-color] px-[25px]"
     >
       <div style={leftStyle} className="flex flex-col">
         <div className="w-full flex flex-row">

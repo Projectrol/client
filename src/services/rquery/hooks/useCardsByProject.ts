@@ -1,16 +1,13 @@
-import { db } from "@/db";
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "../consts";
-import { Card } from "@/db/repositories/cards.repo";
 
 async function getCardsByProjectSlug({
   queryKey,
 }: {
   queryKey: any;
-}): Promise<Card[]> {
+}): Promise<any[]> {
   const slug = queryKey[1];
-  const cards = await db.cards.getAllCardsByProjectSlug(slug);
-  return cards;
+  return [];
 }
 
 const useCardsByProjectSlug = (slug: string) => {

@@ -8,9 +8,12 @@ const SideBarItem = ({ item }: { item: SidebarItem }) => {
   const pathname = usePathname();
   const router = useRouter();
   const className = clsx(
-    "w-full flex items-center h-[35px] gap-[8px] px-[5px] py-[5px] rounded-sm",
-    pathname === item.to.split("?")[0] && "bg-[--selected-bg]",
-    pathname !== item.to.split("?")[0] && "hover:bg-[--hover-bg]"
+    {
+      "w-full flex items-center h-[35px] gap-[8px] px-[8px] py-[5px] rounded-sm":
+        true,
+    },
+    { "bg-[--selected-bg]": pathname === item.to.split("?")[0] },
+    { "hover:bg-[--hover-bg]": pathname !== item.to.split("?")[0] }
   );
   return (
     <div
@@ -19,7 +22,7 @@ const SideBarItem = ({ item }: { item: SidebarItem }) => {
       className={className}
     >
       <div className="mb-[3.5px] text-[1.2rem] text-[--base]">{item.icon}</div>
-      <div className="text-[--base] text-[0.825rem] font-[500] pointer-events-none select-none">
+      <div className="text-[--base] text-[0.8rem] font-[500] pointer-events-none select-none">
         {item.title}
       </div>
     </div>

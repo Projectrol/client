@@ -10,8 +10,12 @@ import { useSelector } from "react-redux";
 import MenuIcon from "@mui/icons-material/Menu";
 import { State } from "@/services/redux/store";
 import Image from "next/image";
+import SearchBar from "@/components/search-bar";
+import useTheme from "@/hooks/useTheme";
+import { UsersService } from "@/services/api/users-service";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
+  const { getTheme } = useTheme();
   const [isClient, setClient] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -23,32 +27,88 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
     setClient(true);
   }, []);
 
+  const handleLogout = async () => {
+    const success = await UsersService.Logout();
+    if (success) {
+      router.push("/login");
+    }
+  };
+
   if (!isClient) return null;
+
+  const headerLightStyle = {
+    background: "#41295a" /* fallback for old browsers */,
+    backgroundImage:
+      "-webkit-linear-gradient(to right, #2F0743, #41295a)" /* Chrome 10-25, Safari 5.1-6 */,
+    backgroundColor:
+      "linear-gradient(to right, #2F0743, #41295a)" /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */,
+  };
 
   return (
     <div className="w-full flex flex-col h-full absolute overflow-y-hidden">
-      <div className="w-full bg-[--secondary] border-solid border-b-[1px] border-[--border-color] px-[15px] py-[10px]">
-        <button onClick={() => setOpenSideMenu(!isOpenSideMenu)}>
-          <MenuIcon />
-        </button>
+      <div
+        style={getTheme() === "LIGHT" ? headerLightStyle : {}}
+        className="w-full bg-[--secondary] border-solid border-b-[1px] border-[--border-color] 
+                    px-[15px] flex flex-row items-center"
+      >
+        <div className="w-[30%]">
+          <button onClick={() => setOpenSideMenu(!isOpenSideMenu)}>
+            <MenuIcon
+              htmlColor={
+                getTheme() === "LIGHT" ? "var(--primary)" : "var(--base)"
+              }
+            />
+          </button>
+        </div>
+        <div className="w-[40%] flex justify-center">
+          <SearchBar />
+        </div>
+        <div className="w-[30%]" />
       </div>
 
       <div className="w-full flex-1 flex flex-row bg-[--secondary]">
-        <Sidebar isOpen={isOpenSideMenu} groups={mainSidebarGroups}>
+        <Sidebar
+          isOpen={isOpenSideMenu}
+          groups={mainSidebarGroups.map((group) => {
+            return {
+              ...group,
+              items: group.items.map((item) => {
+                return {
+                  ...item,
+                  to: `/${workspaceSlice.workspace?.slug}${item.to}`,
+                };
+              }),
+            };
+          })}
+        >
           <div
             onClick={() => setOpenPopover(true)}
             ref={ref}
-            className="flex items-center justify-center gap-[4px] text-[--base] py-[5px] px-[5px] text-[0.85rem] 
-                     rounded-sm hover:bg-[--hover-bg]"
+            style={{
+              width: "calc(100% - 15px)",
+            }}
+            className="flex items-center justify-start gap-[4px] text-[--base] py-[8px] px-[10px] text-[0.85rem] 
+                     rounded-md hover:bg-[--hover-bg]"
           >
-            <div className="flex items-center gap-[5px] pointer-events-none select-none">
-              <Image
-                src={workspaceSlice.workspace?.logo ?? ""}
-                alt="logo"
-                width={22}
-                height={22}
-                className="rounded-md mb-[3.5px]"
-              />
+            <div className="flex items-center justify-start gap-[10px] pointer-events-none select-none">
+              {workspaceSlice.workspace?.settings.logo !== "default" ? (
+                <Image
+                  src={workspaceSlice.workspace?.settings.logo ?? ""}
+                  alt="logo"
+                  width={22}
+                  height={22}
+                  className="rounded-md mb-[3.5px]"
+                />
+              ) : (
+                <div
+                  className="uppercase w-[32px] h-[32px] bg-[--btn-ok-bg] flex items-center text-[0.75rem]
+                      justify-center text-[#ffffff] rounded-full"
+                >
+                  {workspaceSlice.workspace.name
+                    .split(" ")
+                    .map((word) => word.charAt(0))}
+                </div>
+              )}
               {workspaceSlice?.workspace?.name}
             </div>
             <KeyboardArrowDownIcon
@@ -69,24 +129,27 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
               <div
                 onClick={() => {
                   setOpenPopover(false);
-                  router.push("/settings/preferences");
+                  router.push(
+                    `/${workspaceSlice.workspace?.slug}/settings/preferences`
+                  );
                 }}
-                className="w-[95%] text-[--base] font-medium text-[0.8rem] opacity-85
-                          px-[10px] py-[5px] hover:bg-[--hover-bg] rounded-md select-none"
+                className="w-[95%] text-[--base] font-medium text-[0.8rem]
+                          px-[10px] py-[5px] hover:bg-[--hover-bg] rounded-sm select-none"
               >
                 Preferences
               </div>
               <div className="w-full h-[1px] bg-[--border-color]"></div>
               <div
-                className="w-[95%] text-[--base] font-medium text-[0.8rem] opacity-85
-                          px-[10px] py-[5px] hover:bg-[--hover-bg] rounded-md select-none"
+                className="w-[95%] text-[--base] font-medium text-[0.8rem]
+                          px-[10px] py-[5px] hover:bg-[--hover-bg] rounded-sm select-none"
               >
                 Manage members
               </div>
               <div className="w-full h-[1px] bg-[--border-color]"></div>
               <div
-                className="w-[95%] text-[--base] font-medium text-[0.8rem] opacity-85
-                          px-[10px] py-[5px] hover:bg-[--hover-bg] rounded-md select-none"
+                onClick={handleLogout}
+                className="w-[95%] text-[--base] font-medium text-[0.8rem]
+                          px-[10px] py-[5px] hover:bg-[--hover-bg] rounded-sm select-none"
               >
                 Log out
               </div>

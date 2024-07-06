@@ -28,7 +28,7 @@ export type ColorTheme = {
 const defaultButtonColors: { [key in BUTTON_TYPES]: ButtonColor } = {
   OK: {
     color: "#FFFFFF",
-    bg: "#5a68cf",
+    bg: "#6715cf",
   },
   CANCEL: {
     color: "#121212",

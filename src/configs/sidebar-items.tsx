@@ -70,6 +70,7 @@ export const settingsSidebarGroups: SidebarGroup[] = [
     items: [
       {
         title: "Profile",
+        description: "Manage your profile",
         to: "/settings/profile",
         icon: null,
       },
