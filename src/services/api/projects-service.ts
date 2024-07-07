@@ -15,6 +15,7 @@ export type Project = {
   created_by: number;
   name: string;
   slug: string;
+  summary: string;
   description: string;
   dtstart: string;
   dtend: string;
@@ -63,6 +64,40 @@ export const ProjectsService = {
         withCredentials: true,
       });
       const data = response.data;
+      return {
+        status: "success",
+        data,
+      };
+    } catch (err: any) {
+      return {
+        status: "fail",
+        error: err.response.data.error,
+      };
+    }
+  },
+  async GetProjectDetails(
+    workspaceSlug: string,
+    projectSlug: string
+  ): Promise<
+    | {
+        status: "success";
+        data: {
+          project: Project;
+        };
+      }
+    | {
+        status: "fail";
+        error: string;
+      }
+  > {
+    try {
+      const response = await baseAxios.get(
+        `/projects/${workspaceSlug}/${projectSlug}`,
+        {
+          withCredentials: true,
+        }
+      );
+      const data = response.data as { project: Project };
       return {
         status: "success",
         data,

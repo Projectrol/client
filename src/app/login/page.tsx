@@ -102,7 +102,7 @@ export default function Login() {
             Welcome to Projectrol
           </div>
           <div className="w-full flex flex-col">
-            <div className="w-full text-[#fffff] text-[0.85rem] font-medium mb-[6px]">
+            <div className="w-full text-[#fffff] text-[0.8rem] font-semibold mb-[10px]">
               Email address
             </div>
             <div className="w-full">
@@ -140,7 +140,7 @@ export default function Login() {
             </div>
           </div>
           <div className="w-full flex flex-col">
-            <div className="w-full text-[#fffff] text-[0.85rem] font-medium mb-[6px]">
+            <div className="w-full text-[#fffff] text-[0.8rem] font-semibold mb-[10px]">
               Password
             </div>
             <div className="w-full">

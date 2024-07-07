@@ -115,7 +115,7 @@ function ProjectEditor({
       projectNameDivRef.current.innerHTML = initValue.name;
     }
     if (summaryDivRef.current) {
-      summaryDivRef.current.innerHTML = initValue.description;
+      summaryDivRef.current.innerHTML = initValue.summary;
     }
   }, [initValue]);
 
