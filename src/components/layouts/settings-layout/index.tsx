@@ -42,7 +42,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
           height: "100%",
           width: "calc(100% - 260px)",
         }}
-        className="bg-[--primary] box-border border-solid border-l-[1px] border-l-[--border-color]"
+        className="bg-[--primary] box-border border-solid border-l-[1px] border-l-[--border-color] overflow-y-auto"
       >
         <div className="w-full px-[20%] py-[60px] flex flex-col">
           <div className="w-full text-[--base] font-semibold text-[1.5rem]">

@@ -80,6 +80,12 @@ export const settingsSidebarGroups: SidebarGroup[] = [
         to: "/settings/preferences",
         icon: null,
       },
+      {
+        title: "Notifications",
+        description: "Manage your notifications settings",
+        to: "/settings/notifications",
+        icon: null,
+      },
     ],
   },
 ];

@@ -1,5 +1,5 @@
-import { Workspace } from "@/db/repositories/workspaces.repo";
 import { baseAxios } from "./base-axios";
+import { Workspace } from "./workspaces-service";
 
 export type UserSettings = {
   name: string;

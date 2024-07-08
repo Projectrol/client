@@ -1,6 +1,4 @@
-import { CardStatus } from "@/db/repositories/projects.repo";
-
-const StatusColors: { [key in CardStatus]: string } = {
+const StatusColors: { [key: string]: string } = {
   Backlog: "#F57C00",
   Canceled: "#90A4AE",
   In_Progress: "#FDD835",

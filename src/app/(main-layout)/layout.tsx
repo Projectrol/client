@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import Projects from "./[ws-slug]/projects/page";
 import Inbox from "./[ws-slug]/inbox/page";
-import CalendarPage from "./[ws-slug]/calendar/page";
+// import CalendarPage from "./[ws-slug]/calendar/page";
 import MyIssues from "./[ws-slug]/my-issues/page";
 import Teams from "./[ws-slug]/teams/page";
 import ProjectOverview from "./[ws-slug]/project/[slug]/overview/page";

@@ -1,0 +1,11 @@
+.setting-toggle.react-toggle--checked .react-toggle-track {
+  background-color: var(--btn-ok-bg);
+}
+
+.setting-toggle.react-toggle--checked .react-toggle-track:hover {
+  background-color: red;
+}
+
+.setting-toggle.react-toggle .react-toggle-track:hover {
+  background-color: black;
+}
