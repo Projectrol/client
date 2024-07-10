@@ -11,7 +11,9 @@ export default function Home() {
 
   useEffect(() => {
     if (workspaceSlice.workspace) {
-      router.push(`/${workspaceSlice.workspace.slug}/inbox`);
+      router.push(
+        `/${workspaceSlice.workspace.general_information.slug}/inbox`
+      );
     }
   }, [router, workspaceSlice]);
 

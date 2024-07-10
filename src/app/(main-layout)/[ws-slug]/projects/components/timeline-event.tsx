@@ -149,7 +149,7 @@ export const TimelineEvent = ({
         onClick={onClick}
         onDoubleClick={() =>
           router.push(
-            `/${workspaceSlice.workspace?.slug}/project/${pos.project.slug}/overview`
+            `/${workspaceSlice.workspace?.general_information.slug}/project/${pos.project.slug}/overview`
           )
         }
         id={`event-${pos.project.id}`}

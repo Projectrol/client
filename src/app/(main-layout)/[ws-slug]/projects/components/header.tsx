@@ -48,7 +48,7 @@ const ProjectsHeader = ({
           <span
             onClick={() => {
               shallowPush(
-                `/${workspaceSlice.workspace?.slug}/projects?view_mode=table`
+                `/${workspaceSlice.workspace?.general_information.slug}/projects?view_mode=table`
               );
               setDisplayMode("table");
             }}
@@ -64,7 +64,7 @@ const ProjectsHeader = ({
           <span
             onClick={() => {
               shallowPush(
-                `/${workspaceSlice.workspace?.slug}/projects?view_mode=timeline`
+                `/${workspaceSlice.workspace?.general_information.slug}/projects?view_mode=timeline`
               );
               setDisplayMode("timeline");
             }}

@@ -2,7 +2,6 @@
 
 import Toggle from "react-toggle";
 import "react-toggle/style.css";
-import "./notification-toggle.css";
 
 export default function NotficationsToggleItem({
   title,
@@ -23,9 +22,9 @@ export default function NotficationsToggleItem({
         </div>
         <div className="w-full text-[--base] text-[0.85rem]">{description}</div>
       </div>
-      <div className="flex-1 flex justify-end ">
+      <div className="flex-1 flex justify-end w-full">
         <Toggle
-          className="setting-toggle"
+          className="custom-toggle"
           style={{
             background: "red",
           }}

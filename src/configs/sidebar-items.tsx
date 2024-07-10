@@ -63,7 +63,7 @@ export const mainSidebarGroups: SidebarGroup[] = [
   },
 ];
 
-export const settingsSidebarGroups: SidebarGroup[] = [
+export const userSettingsSidebarGroups: SidebarGroup[] = [
   {
     title: "My account",
     showToggle: false,
@@ -84,6 +84,21 @@ export const settingsSidebarGroups: SidebarGroup[] = [
         title: "Notifications",
         description: "Manage your notifications settings",
         to: "/settings/notifications",
+        icon: null,
+      },
+    ],
+  },
+];
+
+export const workspaceSettingsGroups: SidebarGroup[] = [
+  {
+    title: "",
+    showToggle: false,
+    items: [
+      {
+        title: "Roles & Permissions",
+        description: "Manage workspace's roles & permissions",
+        to: "/settings/permissions",
         icon: null,
       },
     ],

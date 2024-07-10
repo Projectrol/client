@@ -75,7 +75,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
               items: group.items.map((item) => {
                 return {
                   ...item,
-                  to: `/${workspaceSlice.workspace?.slug}${item.to}`,
+                  to: `/${workspaceSlice.workspace?.general_information.slug}${item.to}`,
                 };
               }),
             };
@@ -104,12 +104,12 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
                   className="uppercase w-[32px] h-[32px] bg-[--btn-ok-bg] flex items-center text-[0.75rem]
                       justify-center text-[#ffffff] rounded-full"
                 >
-                  {workspaceSlice.workspace.name
+                  {workspaceSlice.workspace.general_information.name
                     .split(" ")
                     .map((word) => word.charAt(0))}
                 </div>
               )}
-              {workspaceSlice?.workspace?.name}
+              {workspaceSlice?.workspace?.general_information.name}
             </div>
             <KeyboardArrowDownIcon
               htmlColor="var(--text-header-color)"
@@ -130,7 +130,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
                 onClick={() => {
                   setOpenPopover(false);
                   router.push(
-                    `/${workspaceSlice.workspace?.slug}/settings/preferences`
+                    `/${workspaceSlice.workspace?.general_information.slug}/settings/preferences`
                   );
                 }}
                 className="w-[95%] text-[--base] font-medium text-[0.8rem]

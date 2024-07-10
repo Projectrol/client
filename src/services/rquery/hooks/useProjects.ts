@@ -1,7 +1,6 @@
-import { db } from "@/db";
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "../consts";
-import { Workspace } from "@/services/api/workspaces-service";
+import { WorkspaceDetails } from "@/services/api/workspaces-service";
 import { Project, ProjectsService } from "@/services/api/projects-service";
 
 async function getAllProjects({
@@ -17,9 +16,9 @@ async function getAllProjects({
   return [];
 }
 
-const useProjects = (workspace: Workspace | null) => {
+const useProjects = (workspace: WorkspaceDetails | null) => {
   const { data, isLoading, error } = useQuery({
-    queryKey: [QUERY_KEYS.USE_PROJECTS, workspace?.id],
+    queryKey: [QUERY_KEYS.USE_PROJECTS, workspace?.general_information.id],
     queryFn: getAllProjects,
     enabled: !!workspace,
   });

@@ -1,12 +1,16 @@
 "use client";
 
 import { UsersService } from "@/services/api/users-service";
-import { setWorkspace } from "@/services/redux/slices/workspace";
+import {
+  setWorkspace,
+  setWorkspaceRoles,
+} from "@/services/redux/slices/workspace";
 import { State } from "@/services/redux/store";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "./loading";
+import { WorkspacesService } from "@/services/api/workspaces-service";
 
 const WorkspacesProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setLoading] = useState(true);
@@ -27,15 +31,23 @@ const WorkspacesProvider = ({ children }: { children: React.ReactNode }) => {
         router.push("/workspace-setup/new");
       } else {
         setNew(false);
-        const { id, name, slug, settings } = response.data.workspaces[0];
-        dispatch(
-          setWorkspace({
-            id,
-            name,
-            slug,
-            settings,
-          })
+        const getWSDetailsRes = await WorkspacesService.GetWorkspaceDetails(
+          response.data.workspaces[0].id
         );
+        if (getWSDetailsRes.status === "success") {
+          dispatch(setWorkspace(getWSDetailsRes.data.details));
+        } else {
+          dispatch(setWorkspace(null));
+        }
+
+        const getWSRolesRes = await WorkspacesService.GetWokspaceRoles(
+          response.data.workspaces[0].id
+        );
+        if (getWSRolesRes.status === "success") {
+          dispatch(setWorkspaceRoles(getWSRolesRes.data.roles));
+        } else {
+          dispatch(setWorkspaceRoles([]));
+        }
       }
       setLoading(false);
     };

@@ -49,3 +49,19 @@ button {
 .vulh-anchor-popover-on {
   pointer-events: none;
 }
+
+.custom-toggle.react-toggle {
+  transform: scale(0.7);
+}
+
+.custom-toggle.react-toggle--checked .react-toggle-track {
+  background-color: var(--btn-ok-bg);
+}
+
+.custom-toggle.react-toggle--checked .react-toggle-track:hover {
+  background-color: red;
+}
+
+.custom-toggle.react-toggle .react-toggle-track:hover {
+  background-color: black;
+}

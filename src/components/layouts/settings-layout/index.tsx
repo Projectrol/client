@@ -2,7 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import { settingsSidebarGroups } from "@/configs/sidebar-items";
+import {
+  userSettingsSidebarGroups,
+  workspaceSettingsGroups,
+} from "@/configs/sidebar-items";
 import Sidebar from "../components/sidebar";
 import useRouteInfo from "@/hooks/useRouteInfo";
 import { useSelector } from "react-redux";
@@ -13,21 +16,40 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const { description, title } = useRouteInfo();
   const workspaceSlice = useSelector((state: State) => state.workspace);
 
+  const getWorkspaceSettingsGroups = () => {
+    return workspaceSettingsGroups.map((group) => {
+      return {
+        ...group,
+        title: workspaceSlice.workspace?.general_information.name ?? "",
+        items: group.items.map((item) => {
+          return {
+            ...item,
+            to: `/${workspaceSlice.workspace?.general_information.slug}${item.to}`,
+          };
+        }),
+      };
+    });
+  };
+
+  const getUserSetttingsGroups = () => {
+    return userSettingsSidebarGroups.map((group) => {
+      return {
+        ...group,
+        items: group.items.map((item) => {
+          return {
+            ...item,
+            to: `/${workspaceSlice.workspace?.general_information.slug}${item.to}`,
+          };
+        }),
+      };
+    });
+  };
+
   return (
     <div className="absolute w-full h-full flex flex-row bg-[--secondary]">
       <Sidebar
         isOpen
-        groups={settingsSidebarGroups.map((group) => {
-          return {
-            ...group,
-            items: group.items.map((item) => {
-              return {
-                ...item,
-                to: `/${workspaceSlice.workspace?.slug}${item.to}`,
-              };
-            }),
-          };
-        })}
+        groups={[...getWorkspaceSettingsGroups(), ...getUserSetttingsGroups()]}
       >
         <div
           onClick={() => router.back()}
@@ -44,7 +66,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
         }}
         className="bg-[--primary] box-border border-solid border-l-[1px] border-l-[--border-color] overflow-y-auto"
       >
-        <div className="w-full px-[20%] py-[60px] flex flex-col">
+        <div className="w-full px-[100px] py-[60px] flex flex-col">
           <div className="w-full text-[--base] font-semibold text-[1.5rem]">
             {title}
           </div>

@@ -1,7 +1,8 @@
 import {
   SidebarGroup,
   mainSidebarGroups,
-  settingsSidebarGroups,
+  userSettingsSidebarGroups,
+  workspaceSettingsGroups,
 } from "@/configs/sidebar-items";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -15,14 +16,15 @@ const useRouteInfo = () => {
     if (pathname) {
       const pathWithoutSlug = "/" + pathname.split("/").slice(2).join("/");
       let found = false;
-      for (let i = 0; i < settingsSidebarGroups.length; i++) {
-        for (let z = 0; z < settingsSidebarGroups[i].items.length; z++) {
-          if (
-            pathWithoutSlug ===
-            settingsSidebarGroups[i].items[z].to.split("?")[0]
-          ) {
-            setTitle(settingsSidebarGroups[i].items[z].title);
-            setDescription(settingsSidebarGroups[i].items[z].description ?? "");
+      const settingGroups = [
+        ...workspaceSettingsGroups,
+        ...userSettingsSidebarGroups,
+      ];
+      for (let i = 0; i < settingGroups.length; i++) {
+        for (let z = 0; z < settingGroups[i].items.length; z++) {
+          if (pathWithoutSlug === settingGroups[i].items[z].to.split("?")[0]) {
+            setTitle(settingGroups[i].items[z].title);
+            setDescription(settingGroups[i].items[z].description ?? "");
             found = true;
             break;
           }

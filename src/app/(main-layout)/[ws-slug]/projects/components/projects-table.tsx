@@ -34,7 +34,7 @@ export default function ProjectsTable({
                 <p
                   onClick={() =>
                     router.push(
-                      `/${workspaceSlice.workspace?.slug}/project/${item.slug}/overview`
+                      `/${workspaceSlice.workspace?.general_information.slug}/project/${item.slug}/overview`
                     )
                   }
                   className="font-semibold cursor-pointer hover:underline"

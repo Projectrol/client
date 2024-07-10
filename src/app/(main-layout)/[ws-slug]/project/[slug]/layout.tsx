@@ -27,12 +27,12 @@ export default function Layout({
             <span
               onClick={() =>
                 router.push(
-                  `/${workspaceSlice.workspace?.slug}/projects?view_mode=table`
+                  `/${workspaceSlice.workspace?.general_information.slug}/projects?view_mode=table`
                 )
               }
               className="select-none text-[--base] cursor-pointer hover:underline"
             >
-              {workspaceSlice.workspace.name}
+              {workspaceSlice.workspace.general_information.name}
             </span>
             <ChevronRightIcon fontSize="small" htmlColor="var(--base)" />
             <span className="select-none text-[--base] capitalize">
@@ -50,7 +50,7 @@ export default function Layout({
           <button
             onClick={() =>
               router.push(
-                `/${workspaceSlice.workspace?.slug}/project/${params.slug}/overview`
+                `/${workspaceSlice.workspace?.general_information.slug}/project/${params.slug}/overview`
               )
             }
           >
@@ -65,7 +65,7 @@ export default function Layout({
           className="text-[0.8rem] py-[4px] px-[10px] text-[--base] font-semibold rounded-md"
           onClick={() =>
             router.push(
-              `/${workspaceSlice.workspace?.slug}/project/${params.slug}/board`
+              `/${workspaceSlice.workspace?.general_information.slug}/project/${params.slug}/board`
             )
           }
         >
