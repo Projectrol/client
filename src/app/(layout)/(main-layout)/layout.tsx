@@ -1,17 +1,7 @@
 "use client";
 
 import MainLayout from "@/components/layouts/main-layout";
-import { usePathname } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
-import Projects from "./[ws-slug]/projects/page";
-import Inbox from "./[ws-slug]/inbox/page";
-// import CalendarPage from "./[ws-slug]/calendar/page";
-import MyIssues from "./[ws-slug]/my-issues/page";
-import Teams from "./[ws-slug]/teams/page";
-import ProjectOverview from "./[ws-slug]/project/[slug]/overview/page";
-import WorkspacesProvider from "../workspaces-provider";
-import Auth from "../auth";
-import ThemeProvider from "../theme-provider";
+import { Suspense } from "react";
 
 export default function Layout({
   children,
@@ -54,14 +44,8 @@ export default function Layout({
   // }, [pathName]);
 
   return (
-    <Auth>
-      <WorkspacesProvider>
-        <ThemeProvider>
-          <MainLayout>
-            <Suspense>{children}</Suspense>
-          </MainLayout>
-        </ThemeProvider>
-      </WorkspacesProvider>
-    </Auth>
+    <MainLayout>
+      <Suspense>{children}</Suspense>
+    </MainLayout>
   );
 }

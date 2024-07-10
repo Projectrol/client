@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import ReduxProvider from "@/services/redux/provider";
-import ThemeProvider from "./theme-provider";
+import ThemeProvider from "./(layout)/theme-provider";
 import ReactQueryProvider from "@/services/rquery/provider";
 import Auth from "./auth";
 

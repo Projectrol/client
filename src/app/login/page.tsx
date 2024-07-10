@@ -13,7 +13,7 @@ import useAuth from "@/hooks/use-auth";
 import Loading from "../loading";
 import logo from "/public/images/logo.png";
 import Image from "next/image";
-import ThemeProvider from "../theme-provider";
+import ThemeProvider from "../(layout)/theme-provider";
 
 export default function Login() {
   const { user, isAuthenticating } = useAuth();

@@ -9,7 +9,7 @@ import { State } from "@/services/redux/store";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Loading from "./loading";
+import Loading from "../loading";
 import { WorkspacesService } from "@/services/api/workspaces-service";
 
 const WorkspacesProvider = ({ children }: { children: React.ReactNode }) => {
@@ -31,18 +31,14 @@ const WorkspacesProvider = ({ children }: { children: React.ReactNode }) => {
         router.push("/workspace-setup/new");
       } else {
         setNew(false);
-        const [getWSDetailsRes, getWSRolesRes, getUserRoleInWSRes] =
-          await Promise.all([
-            await WorkspacesService.GetWorkspaceDetails(
-              response.data.workspaces[0].id
-            ),
-            await WorkspacesService.GetWokspaceRoles(
-              response.data.workspaces[0].id
-            ),
-            await WorkspacesService.GetUserRoleInWorkspace(
-              response.data.workspaces[0].id
-            ),
-          ]);
+        const [getWSDetailsRes, getWSRolesRes] = await Promise.all([
+          await WorkspacesService.GetWorkspaceDetails(
+            response.data.workspaces[0].id
+          ),
+          await WorkspacesService.GetWokspaceRoles(
+            response.data.workspaces[0].id
+          ),
+        ]);
         if (getWSDetailsRes.status === "success") {
           dispatch(setWorkspace(getWSDetailsRes.data.details));
         } else {
