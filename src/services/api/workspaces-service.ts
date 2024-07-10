@@ -223,10 +223,41 @@ export const WorkspacesService = {
       }
   > {
     try {
-      const response = await baseAxios.get(`/workspace-roles/${workspaceId}`, {
+      const response = await baseAxios.get(`/workspaces/${workspaceId}/roles`, {
         withCredentials: true,
       });
       const data = response.data as { roles: WorkspaceRole[] };
+      return {
+        status: "success",
+        data,
+      };
+    } catch (err: any) {
+      return {
+        status: "fail",
+        error: err.response.data.error,
+      };
+    }
+  },
+  async GetUserRoleInWorkspace(workspaceId: number): Promise<
+    | {
+        status: "success";
+        data: {
+          role: WorkspaceRole;
+        };
+      }
+    | {
+        status: "fail";
+        error: string;
+      }
+  > {
+    try {
+      const response = await baseAxios.get(
+        `/workspaces/${workspaceId}/user/role`,
+        {
+          withCredentials: true,
+        }
+      );
+      const data = response.data as { role: WorkspaceRole };
       return {
         status: "success",
         data,

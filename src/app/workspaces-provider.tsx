@@ -31,18 +31,23 @@ const WorkspacesProvider = ({ children }: { children: React.ReactNode }) => {
         router.push("/workspace-setup/new");
       } else {
         setNew(false);
-        const getWSDetailsRes = await WorkspacesService.GetWorkspaceDetails(
-          response.data.workspaces[0].id
-        );
+        const [getWSDetailsRes, getWSRolesRes, getUserRoleInWSRes] =
+          await Promise.all([
+            await WorkspacesService.GetWorkspaceDetails(
+              response.data.workspaces[0].id
+            ),
+            await WorkspacesService.GetWokspaceRoles(
+              response.data.workspaces[0].id
+            ),
+            await WorkspacesService.GetUserRoleInWorkspace(
+              response.data.workspaces[0].id
+            ),
+          ]);
         if (getWSDetailsRes.status === "success") {
           dispatch(setWorkspace(getWSDetailsRes.data.details));
         } else {
           dispatch(setWorkspace(null));
         }
-
-        const getWSRolesRes = await WorkspacesService.GetWokspaceRoles(
-          response.data.workspaces[0].id
-        );
         if (getWSRolesRes.status === "success") {
           dispatch(setWorkspaceRoles(getWSRolesRes.data.roles));
         } else {
