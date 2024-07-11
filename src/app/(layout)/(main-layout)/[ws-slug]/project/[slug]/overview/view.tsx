@@ -13,8 +13,10 @@ export default function ProjectOverviewView({ slug }: { slug: string }) {
   useEffect(() => {
     if (workspaceSlice.workspace && slug) {
       const workspaceSlug = workspaceSlice.workspace.general_information.slug;
+      const workspaceId = workspaceSlice.workspace.general_information.id;
       const getProject = async () => {
         const response = await ProjectsService.GetProjectDetails(
+          workspaceId,
           workspaceSlug,
           slug
         );

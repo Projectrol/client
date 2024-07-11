@@ -10,6 +10,7 @@ import Popover from "@/components/popover";
 import { useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { State } from "@/services/redux/store";
+import ComponentRenderByPermission from "@/components/authorization/component-render-by-permission";
 
 const ProjectsHeader = ({
   setDisplayMode,
@@ -105,19 +106,26 @@ const ProjectsHeader = ({
         }}
         anchorEle={anchorEle.current}
       >
-        <div className="flex flex-col">
-          <div
-            onClick={onClickAddIcon}
-            className="w-full text-[--base] text-[0.8rem] pl-[5px] pr-[10px] py-[6px] flex items-center gap-[2.5px] font-medium cursor-pointer hover:bg-[--hover-bg]"
-          >
-            <AddIcon
-              className="text-[--base]"
-              fontSize="inherit"
-              style={{ fontSize: "1rem" }}
-            />
-            Create new project
+        <ComponentRenderByPermission
+          requiredPermission={{
+            permissionType: "can_create",
+            resourceTag: "projects",
+          }}
+        >
+          <div className="flex flex-col">
+            <div
+              onClick={onClickAddIcon}
+              className="w-full text-[--base] text-[0.8rem] pl-[5px] pr-[10px] py-[6px] flex items-center gap-[2.5px] font-medium cursor-pointer hover:bg-[--hover-bg]"
+            >
+              <AddIcon
+                className="text-[--base]"
+                fontSize="inherit"
+                style={{ fontSize: "1rem" }}
+              />
+              Create new project
+            </div>
           </div>
-        </div>
+        </ComponentRenderByPermission>
       </Popover>
     </>
   );

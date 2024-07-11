@@ -6,7 +6,7 @@ import clsx from "clsx";
 import Button from "@/components/button";
 import { BUTTON_TYPES, baseThemes } from "@/configs/themes";
 import MainLayout from "@/components/layouts/main-layout";
-import Projects from "@/app/(main-layout)/[ws-slug]/projects/page";
+// import Projects from "@/app/(main-layout)/[ws-slug]/projects/page";
 import useTheme from "@/hooks/useTheme";
 import { useSelector } from "react-redux";
 import { State } from "@/services/redux/store";

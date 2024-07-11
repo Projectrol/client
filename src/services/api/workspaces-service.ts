@@ -17,6 +17,11 @@ export type WorkspaceDetails = {
 };
 
 export type ResourceTag = "workspaces" | "tasks" | "projects";
+export type PermissionType =
+  | "can_read"
+  | "can_create"
+  | "can_delete"
+  | "can_update";
 
 export type Permission = {
   id: number;
@@ -55,7 +60,7 @@ export const WorkspacesService = {
       }
   > {
     try {
-      const response = await baseAxios.post("/workspaces/create", bodyData, {
+      const response = await baseAxios.post("/workspaces", bodyData, {
         withCredentials: true,
       });
       const data = response.data;

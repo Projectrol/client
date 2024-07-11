@@ -49,7 +49,10 @@ export const ProjectsService = {
       };
     }
   },
-  async CreateProject(bodyData: CreateProjectRequest): Promise<
+  async CreateProject(
+    workspaceId: number,
+    bodyData: CreateProjectRequest
+  ): Promise<
     | {
         status: "success";
         data: any;
@@ -60,9 +63,13 @@ export const ProjectsService = {
       }
   > {
     try {
-      const response = await baseAxios.post(`/projects/create`, bodyData, {
-        withCredentials: true,
-      });
+      const response = await baseAxios.post(
+        `/workspaces/${workspaceId}/projects/create`,
+        bodyData,
+        {
+          withCredentials: true,
+        }
+      );
       const data = response.data;
       return {
         status: "success",
@@ -76,6 +83,7 @@ export const ProjectsService = {
     }
   },
   async GetProjectDetails(
+    workspaceId: number,
     workspaceSlug: string,
     projectSlug: string
   ): Promise<
@@ -92,7 +100,7 @@ export const ProjectsService = {
   > {
     try {
       const response = await baseAxios.get(
-        `/projects/${workspaceSlug}/${projectSlug}`,
+        `/workspaces/${workspaceId}/projects/${workspaceSlug}/${projectSlug}`,
         {
           withCredentials: true,
         }

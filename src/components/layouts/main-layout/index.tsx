@@ -1,6 +1,6 @@
 "use client";
 
-import { mainSidebarGroups } from "@/configs/sidebar-items";
+import { mainSidebarGroups, SidebarGroup } from "@/configs/sidebar-items";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import Sidebar from "../components/sidebar";
 import Popover from "@/components/popover";
@@ -13,6 +13,7 @@ import Image from "next/image";
 import SearchBar from "@/components/search-bar";
 import useTheme from "@/hooks/useTheme";
 import { UsersService } from "@/services/api/users-service";
+import { Permission } from "@/services/api/workspaces-service";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const { getTheme } = useTheme();
@@ -22,6 +23,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const [isOpenPopover, setOpenPopover] = useState(false);
   const workspaceSlice = useSelector((state: State) => state.workspace);
   const [isOpenSideMenu, setOpenSideMenu] = useState(true);
+  const userPermissions = useSelector((state: State) => state.user.permissions);
 
   useEffect(() => {
     setClient(true);
@@ -32,6 +34,23 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
     if (success) {
       router.push("/login");
     }
+  };
+
+  const getValidItems = (
+    groups: SidebarGroup[],
+    userPermissions: Permission[]
+  ): SidebarGroup[] => {
+    return groups.map((group) => {
+      return {
+        ...group,
+        items: group.items.filter(
+          (item) =>
+            userPermissions.findIndex(
+              (uP) => uP.resource_tag === item.resource_tag && uP.can_read
+            ) !== -1 || !item.resource_tag
+        ),
+      };
+    });
   };
 
   if (!isClient) return null;
@@ -67,95 +86,99 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
       </div>
 
       <div className="w-full flex-1 flex flex-row bg-[--secondary]">
-        <Sidebar
-          isOpen={isOpenSideMenu}
-          groups={mainSidebarGroups.map((group) => {
-            return {
-              ...group,
-              items: group.items.map((item) => {
+        {userPermissions.length > 0 && (
+          <Sidebar
+            isOpen={isOpenSideMenu}
+            groups={getValidItems(mainSidebarGroups, userPermissions).map(
+              (group) => {
                 return {
-                  ...item,
-                  to: `/${workspaceSlice.workspace?.general_information.slug}${item.to}`,
+                  ...group,
+                  items: group.items.map((item) => {
+                    return {
+                      ...item,
+                      to: `/${workspaceSlice.workspace?.general_information.slug}${item.to}`,
+                    };
+                  }),
                 };
-              }),
-            };
-          })}
-        >
-          <div
-            onClick={() => setOpenPopover(true)}
-            ref={ref}
-            style={{
-              width: "calc(100% - 15px)",
-            }}
-            className="flex items-center justify-start gap-[4px] text-[--base] py-[8px] px-[10px] text-[0.85rem] 
-                     rounded-md hover:bg-[--hover-bg]"
+              }
+            )}
           >
-            <div className="flex items-center justify-start gap-[10px] pointer-events-none select-none">
-              {workspaceSlice.workspace?.settings.logo !== "default" ? (
-                <Image
-                  src={workspaceSlice.workspace?.settings.logo ?? ""}
-                  alt="logo"
-                  width={22}
-                  height={22}
-                  className="rounded-md mb-[3.5px]"
-                />
-              ) : (
-                <div
-                  className="uppercase w-[32px] h-[32px] bg-[--btn-ok-bg] flex items-center text-[0.75rem]
-                      justify-center text-[#ffffff] rounded-full"
-                >
-                  {workspaceSlice.workspace.general_information.name
-                    .split(" ")
-                    .map((word) => word.charAt(0))}
-                </div>
-              )}
-              {workspaceSlice?.workspace?.general_information.name}
-            </div>
-            <KeyboardArrowDownIcon
-              htmlColor="var(--text-header-color)"
+            <div
+              onClick={() => setOpenPopover(true)}
+              ref={ref}
               style={{
-                fontSize: "1rem",
+                width: "calc(100% - 15px)",
               }}
-            />
-          </div>
-          <Popover
-            onClickOutside={() => setOpenPopover(false)}
-            open={isOpenPopover}
-            anchorEle={ref.current}
-            style={{ marginTop: "5px" }}
-            position="bottom"
-          >
-            <div className="w-[230px] flex flex-col items-center justify-start py-[5px] gap-[5px]">
-              <div
-                onClick={() => {
-                  setOpenPopover(false);
-                  router.push(
-                    `/${workspaceSlice.workspace?.general_information.slug}/settings/preferences`
-                  );
+              className="flex items-center justify-start gap-[4px] text-[--base] py-[8px] px-[10px] text-[0.85rem] 
+                     rounded-md hover:bg-[--hover-bg]"
+            >
+              <div className="flex items-center justify-start gap-[10px] pointer-events-none select-none">
+                {workspaceSlice.workspace?.settings.logo !== "default" ? (
+                  <Image
+                    src={workspaceSlice.workspace?.settings.logo ?? ""}
+                    alt="logo"
+                    width={22}
+                    height={22}
+                    className="rounded-md mb-[3.5px]"
+                  />
+                ) : (
+                  <div
+                    className="uppercase w-[32px] h-[32px] bg-[--btn-ok-bg] flex items-center text-[0.75rem]
+                      justify-center text-[#ffffff] rounded-full"
+                  >
+                    {workspaceSlice.workspace.general_information.name
+                      .split(" ")
+                      .map((word) => word.charAt(0))}
+                  </div>
+                )}
+                {workspaceSlice?.workspace?.general_information.name}
+              </div>
+              <KeyboardArrowDownIcon
+                htmlColor="var(--text-header-color)"
+                style={{
+                  fontSize: "1rem",
                 }}
-                className="w-[95%] text-[--base] font-medium text-[0.8rem]
-                          px-[10px] py-[5px] hover:bg-[--hover-bg] rounded-sm select-none"
-              >
-                Preferences
-              </div>
-              <div className="w-full h-[1px] bg-[--border-color]"></div>
-              <div
-                className="w-[95%] text-[--base] font-medium text-[0.8rem]
-                          px-[10px] py-[5px] hover:bg-[--hover-bg] rounded-sm select-none"
-              >
-                Manage members
-              </div>
-              <div className="w-full h-[1px] bg-[--border-color]"></div>
-              <div
-                onClick={handleLogout}
-                className="w-[95%] text-[--base] font-medium text-[0.8rem]
-                          px-[10px] py-[5px] hover:bg-[--hover-bg] rounded-sm select-none"
-              >
-                Log out
-              </div>
+              />
             </div>
-          </Popover>
-        </Sidebar>
+            <Popover
+              onClickOutside={() => setOpenPopover(false)}
+              open={isOpenPopover}
+              anchorEle={ref.current}
+              style={{ marginTop: "5px" }}
+              position="bottom"
+            >
+              <div className="w-[230px] flex flex-col items-center justify-start py-[5px] gap-[5px]">
+                <div
+                  onClick={() => {
+                    setOpenPopover(false);
+                    router.push(
+                      `/${workspaceSlice.workspace?.general_information.slug}/settings/preferences`
+                    );
+                  }}
+                  className="w-[95%] text-[--base] font-medium text-[0.8rem]
+                          px-[10px] py-[5px] hover:bg-[--hover-bg] rounded-sm select-none"
+                >
+                  Preferences
+                </div>
+                <div className="w-full h-[1px] bg-[--border-color]"></div>
+                <div
+                  className="w-[95%] text-[--base] font-medium text-[0.8rem]
+                          px-[10px] py-[5px] hover:bg-[--hover-bg] rounded-sm select-none"
+                >
+                  Manage members
+                </div>
+                <div className="w-full h-[1px] bg-[--border-color]"></div>
+                <div
+                  onClick={handleLogout}
+                  className="w-[95%] text-[--base] font-medium text-[0.8rem]
+                          px-[10px] py-[5px] hover:bg-[--hover-bg] rounded-sm select-none"
+                >
+                  Log out
+                </div>
+              </div>
+            </Popover>
+          </Sidebar>
+        )}
         <div
           style={{
             height: "100%",

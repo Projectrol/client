@@ -167,9 +167,12 @@ function ProjectEditor({
       description: JSON.stringify(editor.getEditorValue()),
       dtstart: moment(startDate).utc().unix(),
       dtend: moment(targetDate).utc().unix(),
-      workspace_id: workspaceSlice.workspace.id,
+      workspace_id: workspaceSlice.workspace.general_information.id,
     };
-    const response = await ProjectsService.CreateProject(input);
+    const response = await ProjectsService.CreateProject(
+      input.workspace_id,
+      input
+    );
     if (response.status === "success") {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.USE_PROJECTS] });
       onCreated && onCreated();

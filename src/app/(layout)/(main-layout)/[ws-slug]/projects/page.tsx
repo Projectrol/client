@@ -15,6 +15,8 @@ import Timeline from "./components/timeline";
 import { useSelector } from "react-redux";
 import { State } from "@/services/redux/store";
 import { ProjectsService } from "@/services/api/projects-service";
+import ComponentRenderByPermission from "@/components/authorization/component-render-by-permission";
+import PageRenderByPermission from "@/components/authorization/page-render-by-permission";
 
 const Projects = () => {
   const workspaceSlice = useSelector((state: State) => state.workspace);
@@ -39,45 +41,54 @@ const Projects = () => {
   };
 
   return (
-    <div className="relative w-full flex flex-col h-full">
-      <ProjectsHeader
-        displayMode={displayMode}
-        onClickAddIcon={openModal}
-        setDisplayMode={setDisplayMode}
-      />
+    <PageRenderByPermission>
+      <div className="relative w-full flex flex-col h-full">
+        <ProjectsHeader
+          displayMode={displayMode}
+          onClickAddIcon={openModal}
+          setDisplayMode={setDisplayMode}
+        />
 
-      {displayMode === "table" && (
-        <ProjectsTable loading={isLoadingProjects} projects={projects} />
-      )}
-      {displayMode === "timeline" && (
-        <div className="w-full h-full flex flex-col">
-          <Timeline projects={projects} />
-        </div>
-      )}
-
-      {!isLoadingProjects && projects.length === 0 && (
-        <div className="w-full flex-1">
-          <div className="w-full h-full flex flex-col items-center justify-center">
-            <LayersIcon
-              htmlColor="var(--text-header-color)"
-              style={{ fontSize: "8rem" }}
-            />
-            <div className="text-[--base] font-semibold text-[1.2rem] mt-[20px]">{`You don't have any project. Let's create one`}</div>
-            <button
-              onClick={() => openModal()}
-              className="bg-[--btn-ok-bg] text-[--btn-ok-color] font-medium text-[0.8rem] px-[15px] py-[6px] rounded-md mt-[20px]"
-            >
-              New project
-            </button>
+        {displayMode === "table" && (
+          <ProjectsTable loading={isLoadingProjects} projects={projects} />
+        )}
+        {displayMode === "timeline" && (
+          <div className="w-full h-full flex flex-col">
+            <Timeline projects={projects} />
           </div>
-        </div>
-      )}
-      <Modal showFooter={false} isOpen={isOpenModal} close={closeModal}>
-        <div className="w-[850px] h-[550px]">
-          <ProjectEditor onCreated={handleOnCreated} onCancel={closeModal} />
-        </div>
-      </Modal>
-    </div>
+        )}
+
+        {!isLoadingProjects && projects.length === 0 && (
+          <ComponentRenderByPermission
+            requiredPermission={{
+              permissionType: "can_create",
+              resourceTag: "projects",
+            }}
+          >
+            <div className="w-full flex-1">
+              <div className="w-full h-full flex flex-col items-center justify-center">
+                <LayersIcon
+                  htmlColor="var(--text-header-color)"
+                  style={{ fontSize: "8rem" }}
+                />
+                <div className="text-[--base] font-semibold text-[1.2rem] mt-[20px]">{`You don't have any project. Let's create one`}</div>
+                <button
+                  onClick={() => openModal()}
+                  className="bg-[--btn-ok-bg] text-[--btn-ok-color] font-medium text-[0.8rem] px-[15px] py-[6px] rounded-md mt-[20px]"
+                >
+                  New project
+                </button>
+              </div>
+            </div>
+          </ComponentRenderByPermission>
+        )}
+        <Modal showFooter={false} isOpen={isOpenModal} close={closeModal}>
+          <div className="w-[850px] h-[550px]">
+            <ProjectEditor onCreated={handleOnCreated} onCancel={closeModal} />
+          </div>
+        </Modal>
+      </div>
+    </PageRenderByPermission>
   );
 };
 

@@ -55,7 +55,7 @@ const WorkspacesProvider = ({ children }: { children: React.ReactNode }) => {
     if (userSlice.user) {
       getUserWorkspaces();
     }
-  }, [userSlice, dispatch, router]);
+  }, [userSlice.user, dispatch, router]);
 
   if (isLoading) {
     return <Loading />;

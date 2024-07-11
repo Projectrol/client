@@ -4,12 +4,14 @@ import LayersIcon from "@mui/icons-material/Layers";
 import WorkspacesIcon from "@mui/icons-material/Workspaces";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import { ResourceTag } from "@/services/api/workspaces-service";
 
 export type SidebarItem = {
   title: string;
   description?: string;
   icon: React.ReactNode;
   to: string;
+  resource_tag?: ResourceTag;
 };
 
 export type SidebarGroup = {
@@ -46,6 +48,7 @@ export const mainSidebarGroups: SidebarGroup[] = [
       },
       {
         title: "Projects",
+        resource_tag: "projects",
         icon: <LayersIcon fontSize="inherit" color="inherit" />,
         to: "/projects?view_mode=table",
       },
