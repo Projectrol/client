@@ -1,7 +1,7 @@
 "use client";
 
 import { StatusColors } from "@/configs/status-colors";
-import { Project } from "@/db/repositories/projects.repo";
+import { Project } from "@/services/api/projects-service";
 import moment from "moment";
 
 export default function ProjectDetailsDrawer({
@@ -30,24 +30,24 @@ export default function ProjectDetailsDrawer({
               <div
                 style={{
                   background: project
-                    ? StatusColors[project.status]
+                    ? StatusColors["Backlog"]
                     : "var(--primary)",
                 }}
                 className="w-[15px] aspect-square rounded-full"
               />
-              {project?.status.replaceAll("_", " ")}
+              Backlog
             </div>
           </div>
           <div className="w-full flex flex-row">
             <div className="w-[40%]">Start date</div>
             <div className="flex-1 flex items-center gap-[8px]">
-              {project && moment(project.startDate).format("MMM DD, YYYY")}
+              {project && moment(project.dtstart).format("MMM DD, YYYY")}
             </div>
           </div>
           <div className="w-full flex flex-row">
             <div className="w-[40%]">Target date</div>
             <div className="flex-1 flex items-center gap-[8px]">
-              {project && moment(project.targetDate).format("MMM DD, YYYY")}
+              {project && moment(project.dtend).format("MMM DD, YYYY")}
             </div>
           </div>
         </div>

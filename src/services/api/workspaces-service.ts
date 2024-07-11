@@ -187,7 +187,10 @@ export const WorkspacesService = {
       };
     }
   },
-  async UpdateRolePermission(bodyData: UpdateRolePermissionRequest): Promise<
+  async UpdateRolePermission(
+    workspaceId: number,
+    bodyData: UpdateRolePermissionRequest
+  ): Promise<
     | {
         status: "success";
         data: {
@@ -200,9 +203,13 @@ export const WorkspacesService = {
       }
   > {
     try {
-      const response = await baseAxios.patch(`/permissions`, bodyData, {
-        withCredentials: true,
-      });
+      const response = await baseAxios.patch(
+        `/workspaces/${workspaceId}/roles`,
+        bodyData,
+        {
+          withCredentials: true,
+        }
+      );
       const data = response.data as { role: WorkspaceRole };
       return {
         status: "success",

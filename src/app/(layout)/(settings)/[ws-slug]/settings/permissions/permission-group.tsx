@@ -70,7 +70,10 @@ export default function PermissionGroup({
       role_id: role.id,
       update_type: checked ? "remove" : "add",
     };
-    const response = await WorkspacesService.UpdateRolePermission(data);
+    const response = await WorkspacesService.UpdateRolePermission(
+      workspaceSlice.workspace.general_information.id,
+      data
+    );
     if (response.status === "success") {
       const getWorkspaceRolesRes = await WorkspacesService.GetWokspaceRoles(
         workspaceSlice.workspace.general_information.id
