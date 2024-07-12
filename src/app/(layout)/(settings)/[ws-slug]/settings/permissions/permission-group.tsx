@@ -24,6 +24,7 @@ export default function PermissionGroup({
   hideDivider: boolean;
 }) {
   const dispatch = useDispatch();
+  const userPermissions = useSelector((state: State) => state.user.permissions);
   const workspaceSlice = useSelector((state: State) => state.workspace);
   const checkIfChecked = (p: Permission, r: WorkspaceRole) => {
     const permissionAction = p.can_create
@@ -86,7 +87,7 @@ export default function PermissionGroup({
 
   return (
     <div className="w-full flex flex-col gap-[20px] mb-[30px]">
-      <div className="w-full uppercase font-semibold text-[--base] text-[0.85rem]">
+      <div className="w-full uppercase font-semibold text-[--base] opacity-90 text-[0.75rem] tracking-wider">
         {rTag}
       </div>
       {permissions.map((p) => (
@@ -106,6 +107,11 @@ export default function PermissionGroup({
                 className="flex-1 flex items-center justify-center"
               >
                 <Toggle
+                  disabled={
+                    userPermissions.findIndex(
+                      (uP) => uP.resource_tag === "roles" && uP.can_update
+                    ) === -1
+                  }
                   className="custom-toggle"
                   style={{
                     transform: "scale(0.8)",

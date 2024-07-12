@@ -100,7 +100,7 @@ export const ProjectsService = {
   > {
     try {
       const response = await baseAxios.get(
-        `/workspaces/${workspaceId}/projects/${workspaceSlug}/${projectSlug}`,
+        `/workspaces/${workspaceId}/projects/${projectSlug}`,
         {
           withCredentials: true,
         }

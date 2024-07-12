@@ -1,5 +1,6 @@
 "use client";
 
+import PageRenderByPermission from "@/components/authorization/page-render-by-permission";
 import MainBodyHeader from "@/components/layouts/main-layout/components/main-body-header";
 import { State } from "@/services/redux/store";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -50,7 +51,7 @@ export default function Layout({
           <button
             onClick={() =>
               router.push(
-                `/${workspaceSlice.workspace?.general_information.slug}/project/${params.slug}/overview`
+                `/${workspaceSlice.workspace?.general_information.slug}/projects/${params.slug}/overview`
               )
             }
           >
@@ -65,7 +66,7 @@ export default function Layout({
           className="text-[0.8rem] py-[4px] px-[10px] text-[--base] font-semibold rounded-md"
           onClick={() =>
             router.push(
-              `/${workspaceSlice.workspace?.general_information.slug}/project/${params.slug}/board`
+              `/${workspaceSlice.workspace?.general_information.slug}/projects/${params.slug}/board`
             )
           }
         >
@@ -76,12 +77,14 @@ export default function Layout({
   };
 
   return (
-    <div className="w-full h-full flex flex-col">
-      <MainBodyHeader
-        leftStyle={{ padding: "15px 0" }}
-        topLeftElement={renderTopLeftHeader()}
-      />
-      {children}
-    </div>
+    <PageRenderByPermission>
+      <div className="w-full h-full flex flex-col">
+        <MainBodyHeader
+          leftStyle={{ padding: "15px 0" }}
+          topLeftElement={renderTopLeftHeader()}
+        />
+        {children}
+      </div>
+    </PageRenderByPermission>
   );
 }

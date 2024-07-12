@@ -12,6 +12,7 @@ export type SidebarItem = {
   icon: React.ReactNode;
   to: string;
   resource_tag?: ResourceTag;
+  hidden?: boolean;
 };
 
 export type SidebarGroup = {
@@ -103,6 +104,14 @@ export const workspaceSettingsGroups: SidebarGroup[] = [
         description: "Manage workspace's roles & permissions",
         to: "/settings/permissions",
         icon: null,
+      },
+      {
+        title: "Add New Role",
+        description: "You can add new role to this workspace",
+        to: "/settings/add-role",
+        icon: null,
+        hidden: true,
+        resource_tag: "roles",
       },
     ],
   },

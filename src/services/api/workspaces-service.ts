@@ -16,7 +16,12 @@ export type WorkspaceDetails = {
   settings: WorkspaceSettings;
 };
 
-export type ResourceTag = "workspaces" | "tasks" | "projects";
+export type ResourceTag =
+  | "workspaces"
+  | "tasks"
+  | "projects"
+  | "roles"
+  | "members-roles";
 export type PermissionType =
   | "can_read"
   | "can_create"
@@ -46,6 +51,12 @@ export type UpdateRolePermissionRequest = {
   resource_tag: string;
   action: string;
   update_type: "remove" | "add";
+};
+
+export type CreateNewRoleRequest = {
+  workspace_id: number;
+  role_name: string;
+  permission_ids: number[];
 };
 
 export const WorkspacesService = {
@@ -176,6 +187,41 @@ export const WorkspacesService = {
         withCredentials: true,
       });
       const data = response.data as { permissions: Permission[] };
+      return {
+        status: "success",
+        data,
+      };
+    } catch (err: any) {
+      return {
+        status: "fail",
+        error: err.response.data.error,
+      };
+    }
+  },
+  async CreateNewRole(
+    workspaceId: number,
+    bodyData: CreateNewRoleRequest
+  ): Promise<
+    | {
+        status: "success";
+        data: {
+          id: number;
+        };
+      }
+    | {
+        status: "fail";
+        error: string;
+      }
+  > {
+    try {
+      const response = await baseAxios.post(
+        `/workspaces/${workspaceId}/roles`,
+        bodyData,
+        {
+          withCredentials: true,
+        }
+      );
+      const data = response.data as { id: number };
       return {
         status: "success",
         data,

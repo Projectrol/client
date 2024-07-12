@@ -21,12 +21,14 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
       return {
         ...group,
         title: workspaceSlice.workspace?.general_information.name ?? "",
-        items: group.items.map((item) => {
-          return {
-            ...item,
-            to: `/${workspaceSlice.workspace?.general_information.slug}${item.to}`,
-          };
-        }),
+        items: group.items
+          .filter((item) => !item.hidden)
+          .map((item) => {
+            return {
+              ...item,
+              to: `/${workspaceSlice.workspace?.general_information.slug}${item.to}`,
+            };
+          }),
       };
     });
   };

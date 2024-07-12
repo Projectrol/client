@@ -20,8 +20,7 @@ export default function PageRenderByPermission({
 
   useEffect(() => {
     if (pathName && userPermissions.length > 0) {
-      const resourceTag = pathName.split("/").slice(-1)[0];
-
+      const resourceTag = pathName.split("/").slice(2)[0];
       const isValid =
         userPermissions.findIndex(
           (uP) => uP.resource_tag === resourceTag && uP.can_read

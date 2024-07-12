@@ -1,17 +1,19 @@
 "use client";
 
 import Loading from "@/app/loading";
-import { UsersService } from "@/services/api/users-service";
-import { Permission, ResourceTag } from "@/services/api/workspaces-service";
-import { setUser } from "@/services/redux/slices/user";
+import { Permission } from "@/services/api/workspaces-service";
 import { State } from "@/services/redux/store";
 import usePermissions from "@/services/rquery/hooks/use-permissions";
-import { Tuple } from "@reduxjs/toolkit";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PermissionGroup from "./permission-group";
+import Button from "@/components/button";
+import { BUTTON_TYPES } from "@/configs/themes";
+import { useRouter } from "next/navigation";
 
 const Permissions = () => {
+  const router = useRouter();
+  const userPermissions = useSelector((state: State) => state.user.permissions);
   const { permissions, getPermissionsError, isLoadingPermissions } =
     usePermissions();
   const [permissionGroups, setPermissionGroups] = useState<{
@@ -48,9 +50,31 @@ const Permissions = () => {
 
   if (permissionGroups) {
     return (
-      <div className="w-full flex flex-col -mt-[30px]">
-        <div className="w-full flex flex-col mt-[60px] bg-[--secondary] px-[30px] py-[30px] rounded-md border-solid shadow-sm">
-          <div className="w-full flex pb-[20px]">
+      <div className="w-full flex flex-col">
+        <div className="w-full flex justify-end pt-[25px]">
+          <Button
+            disabled={
+              userPermissions.findIndex(
+                (uP) => uP.resource_tag === "roles" && uP.can_create
+              ) === -1
+            }
+            style={{
+              fontSize: "0.8rem",
+              padding: "8px 14px",
+              borderRadius: "4px",
+            }}
+            type={BUTTON_TYPES.OK}
+            onClick={() =>
+              router.push(
+                `/${wokspaceSlice.workspace?.general_information.slug}/settings/add-role`
+              )
+            }
+          >
+            Add New Role
+          </Button>
+        </div>
+        <div className="w-full flex flex-col mt-[20px] bg-[--secondary] px-[30px] pt-[10px] rounded-md border-solid shadow-md">
+          <div className="w-full flex pb-[20px] sticky top-0 mt-0 mb-[30px] bg-[--secondary] items-center py-[20px] z-[10] border-solid border-b-[1px] border-b-[--border-color]">
             <div className="w-[60%] text-[--text-header-color] font-semibold text-[0.75rem] uppercase">
               Actions
             </div>
