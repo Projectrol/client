@@ -3,6 +3,7 @@
 import { UsersService } from "@/services/api/users-service";
 import {
   setWorkspace,
+  setWorkspaceMembers,
   setWorkspaceRoles,
 } from "@/services/redux/slices/workspace";
 import { State } from "@/services/redux/store";
@@ -31,14 +32,18 @@ const WorkspacesProvider = ({ children }: { children: React.ReactNode }) => {
         router.push("/workspace-setup/new");
       } else {
         setNew(false);
-        const [getWSDetailsRes, getWSRolesRes] = await Promise.all([
-          await WorkspacesService.GetWorkspaceDetails(
-            response.data.workspaces[0].id
-          ),
-          await WorkspacesService.GetWokspaceRoles(
-            response.data.workspaces[0].id
-          ),
-        ]);
+        const [getWSDetailsRes, getWSRolesRes, getWSMembersRes] =
+          await Promise.all([
+            await WorkspacesService.GetWorkspaceDetails(
+              response.data.workspaces[0].id
+            ),
+            await WorkspacesService.GetWokspaceRoles(
+              response.data.workspaces[0].id
+            ),
+            await WorkspacesService.GetWorkspaceMembers(
+              response.data.workspaces[0].id
+            ),
+          ]);
         if (getWSDetailsRes.status === "success") {
           dispatch(setWorkspace(getWSDetailsRes.data.details));
         } else {
@@ -48,6 +53,11 @@ const WorkspacesProvider = ({ children }: { children: React.ReactNode }) => {
           dispatch(setWorkspaceRoles(getWSRolesRes.data.roles));
         } else {
           dispatch(setWorkspaceRoles([]));
+        }
+        if (getWSMembersRes.status === "success") {
+          dispatch(setWorkspaceMembers(getWSMembersRes.data.members));
+        } else {
+          dispatch(setWorkspaceMembers([]));
         }
       }
       setLoading(false);

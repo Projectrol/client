@@ -104,9 +104,9 @@ const NotficationsSettings = () => {
 
   if (!isLoading && settings) {
     return (
-      <div className="w-full flex flex-col">
-        <div className="w-full flex flex-col mt-[60px]">
-          <div className="w-full text-[1rem] text-[--base] font-semibold mb-[15px]">
+      <div className="w-full flex flex-col bg-[--secondary] px-[30px] py-[25px] mt-[20px] rounded-md shadow-md">
+        <div className="w-full flex flex-col">
+          <div className="w-full text-[1rem] text-[--base] font-semibold mb-[15px] opacity-70">
             Notifications methods
           </div>
           <div className="w-full flex flex-col gap-[30px] pt-[5px]">
@@ -126,7 +126,7 @@ const NotficationsSettings = () => {
         </div>
         <div className="w-full h-[1px] bg-[--border-color] mt-[30px]"></div>
         <div className="w-full flex flex-col mt-[30px]">
-          <div className="w-full text-[1rem] text-[--base] font-semibold mb-[15px]">
+          <div className="w-full text-[1rem] text-[--base] font-semibold mb-[15px] opacity-70">
             Notifications settings
           </div>
           <NotificationsTypeSettings
@@ -147,7 +147,6 @@ const NotficationsSettings = () => {
             settingsString={settings.event_noti_settings}
             onToggle={handleOnToggle}
           />
-          <div className="w-full h-[1px] bg-[--border-color] mt-[30px]"></div>
         </div>
       </div>
     );

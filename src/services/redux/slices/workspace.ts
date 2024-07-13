@@ -1,5 +1,6 @@
 import {
   WorkspaceDetails,
+  WorkspaceMember,
   WorkspaceRole,
 } from "@/services/api/workspaces-service";
 import { createSlice } from "@reduxjs/toolkit";
@@ -7,11 +8,13 @@ import { createSlice } from "@reduxjs/toolkit";
 type State = {
   workspace: WorkspaceDetails | null;
   workspaceRoles: WorkspaceRole[];
+  workspaceMembers: WorkspaceMember[];
 };
 
 const initialState: State = {
   workspace: null,
   workspaceRoles: [],
+  workspaceMembers: [],
 };
 
 const workspaceSlice = createSlice({
@@ -24,8 +27,12 @@ const workspaceSlice = createSlice({
     setWorkspaceRoles(state, action: { payload: WorkspaceRole[] }) {
       state.workspaceRoles = action.payload;
     },
+    setWorkspaceMembers(state, action: { payload: WorkspaceMember[] }) {
+      state.workspaceMembers = action.payload;
+    },
   },
 });
 
-export const { setWorkspace, setWorkspaceRoles } = workspaceSlice.actions;
+export const { setWorkspace, setWorkspaceRoles, setWorkspaceMembers } =
+  workspaceSlice.actions;
 export default workspaceSlice.reducer;

@@ -59,6 +59,15 @@ export type CreateNewRoleRequest = {
   permission_ids: number[];
 };
 
+export type WorkspaceMember = {
+  id: number;
+  email: string;
+  role_id: number;
+  name?: string;
+  avatar?: string;
+  phone_no?: string;
+};
+
 export const WorkspacesService = {
   async CreateWorkspace(bodyData: { name: string; logo: string }): Promise<
     | {
@@ -316,6 +325,35 @@ export const WorkspacesService = {
         }
       );
       const data = response.data as { role: WorkspaceRole };
+      return {
+        status: "success",
+        data,
+      };
+    } catch (err: any) {
+      return {
+        status: "fail",
+        error: err.response.data.error,
+      };
+    }
+  },
+  async GetWorkspaceMembers(workspaceId: number): Promise<
+    | {
+        status: "success";
+        data: { members: WorkspaceMember[] };
+      }
+    | {
+        status: "fail";
+        error: string;
+      }
+  > {
+    try {
+      const response = await baseAxios.get(
+        `/workspaces/${workspaceId}/members`,
+        {
+          withCredentials: true,
+        }
+      );
+      const data = response.data as { members: WorkspaceMember[] };
       return {
         status: "success",
         data,
