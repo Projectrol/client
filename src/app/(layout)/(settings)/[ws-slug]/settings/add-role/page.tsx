@@ -21,6 +21,7 @@ import { setWorkspaceRoles } from "@/services/redux/slices/workspace";
 const AddRole = () => {
   const dispatch = useDispatch();
   const workspaceSlice = useSelector((state: State) => state.workspace);
+  const [isInitial, setInitial] = useState(true);
   const [roleName, setRoleName] = useState("");
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const router = useRouter();
@@ -60,6 +61,26 @@ const AddRole = () => {
       }
     }
   }, [userPermissions, router]);
+
+  useEffect(() => {
+    if (roleName.trim().length > 0 && isInitial) {
+      setInitial(false);
+    }
+    const existed = workspaceSlice.workspaceRoles.find(
+      (role) => role.role_name.toLowerCase() === roleName.toLowerCase()
+    );
+    if (existed) {
+      setErrors((prev) => [
+        ...prev,
+        `role_name:A role with a name "${roleName.toLowerCase()}" is already existed this workspace`,
+      ]);
+    } else {
+      setErrors([]);
+    }
+    if (roleName.trim().length === 0) {
+      setErrors((prev) => [...prev, `role_name:Role name can't be empty`]);
+    }
+  }, [roleName, workspaceSlice]);
 
   const handleChange = (id: number) => {
     const isExisted = selectedIds.includes(id);
@@ -122,11 +143,7 @@ const AddRole = () => {
         <ToastContainer />
         <div className="w-full flex justify-end pt-[25px]">
           <Button
-            disabled={
-              userPermissions.findIndex(
-                (uP) => uP.resource_tag === "roles" && uP.can_create
-              ) === -1
-            }
+            disabled={errors.length > 0}
             style={{
               fontSize: "0.8rem",
               padding: "8px 14px",
@@ -146,9 +163,11 @@ const AddRole = () => {
             style={{
               borderWidth: "1px",
               borderStyle: "solid",
-              borderColor: errors.find((error) => error.includes("role_name"))
-                ? "var(--btn-delete-bg)"
-                : "transparent",
+              borderColor:
+                !isInitial &&
+                errors.find((error) => error.includes("role_name"))
+                  ? "var(--btn-delete-bg)"
+                  : "transparent",
             }}
             className={`outline-none bg-[--secondary] focus:bg-[--border-color] rounded-sm 
               transition-colors shadow-sm py-[8px] px-[12px] text-[--base] text-[0.9rem]`}
@@ -157,21 +176,22 @@ const AddRole = () => {
             value={roleName}
             onChange={(e) => setRoleName(e.target.value)}
           />
-          {errors.find((error) => error.includes("role_name")) && (
-            <span
-              style={{
-                color: "var(--btn-delete-bg)",
-                fontWeight: 500,
-              }}
-              className="w-full pt-[8px] text-[0.85rem]"
-            >
-              {
-                errors
-                  .find((error) => error.includes("role_name"))
-                  ?.split(":")[1]
-              }
-            </span>
-          )}
+          {!isInitial &&
+            errors.find((error) => error.includes("role_name")) && (
+              <span
+                style={{
+                  color: "var(--btn-delete-bg)",
+                  fontWeight: 500,
+                }}
+                className="w-full pt-[8px] text-[0.85rem]"
+              >
+                {
+                  errors
+                    .find((error) => error.includes("role_name"))
+                    ?.split(":")[1]
+                }
+              </span>
+            )}
         </div>
         <div>
           <div className="w-full pb-[20px] font-medium text-[0.9rem] text-[--base]">

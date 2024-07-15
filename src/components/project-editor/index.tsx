@@ -32,12 +32,12 @@ import {
   Project,
   ProjectsService,
 } from "@/services/api/projects-service";
-import { User } from "@/services/api/users-service";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { State } from "@/services/redux/store";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/services/rquery/consts";
+import { WorkspaceMember } from "@/services/api/workspaces-service";
 
 const toBase64 = (file: File) =>
   new Promise((resolve, reject) => {
@@ -74,7 +74,7 @@ function ProjectEditor({
   const [targetDate, setTargetDate] = useState<Date | null>(
     initValue?.dtend ? new Date(initValue?.dtend) : null
   );
-  const [assignedMembers, setAssignedMembers] = useState<User[]>([]);
+  const [assignedMembers, setAssignedMembers] = useState<WorkspaceMember[]>([]);
   const editor = useMemo(() => createYooptaEditor(), []);
   const selectionRef = useRef<HTMLDivElement>(null);
 
@@ -150,7 +150,7 @@ function ProjectEditor({
     return assignedMembers.findIndex((m) => m.id === id) !== -1;
   };
 
-  const handleAssignMember = (user: User) => {
+  const handleAssignMember = (user: WorkspaceMember) => {
     const isExisted = checkIfExisted(user.id);
     if (!isExisted) {
       setAssignedMembers((prev) => [...prev, { ...user, role: "MEMBER" }]);

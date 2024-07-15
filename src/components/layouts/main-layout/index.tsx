@@ -162,13 +162,6 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
                 </div>
                 <div className="w-full h-[1px] bg-[--border-color]"></div>
                 <div
-                  className="w-[95%] text-[--base] font-medium text-[0.8rem]
-                          px-[10px] py-[5px] hover:bg-[--hover-bg] rounded-sm select-none"
-                >
-                  Manage members
-                </div>
-                <div className="w-full h-[1px] bg-[--border-color]"></div>
-                <div
                   onClick={handleLogout}
                   className="w-[95%] text-[--base] font-medium text-[0.8rem]
                           px-[10px] py-[5px] hover:bg-[--hover-bg] rounded-sm select-none"

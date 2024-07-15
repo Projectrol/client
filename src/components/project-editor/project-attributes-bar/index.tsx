@@ -6,7 +6,9 @@ import { DatePicker } from "../../date-picker";
 import moment from "moment";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Image from "next/image";
-import { User } from "@/services/api/users-service";
+import { State } from "@/services/redux/store";
+import { useSelector } from "react-redux";
+import { WorkspaceMember } from "@/services/api/workspaces-service";
 
 const ProjectAttributesBar = ({
   startDate,
@@ -20,14 +22,16 @@ const ProjectAttributesBar = ({
 }: {
   startDate: Date | null;
   targetDate: Date | null;
-  assignedMembers: User[];
+  assignedMembers: WorkspaceMember[];
   setStartDate: (date: Date) => void;
   setTargetDate: (date: Date) => void;
-  handleAssignMember: (user: User) => void;
+  handleAssignMember: (member: WorkspaceMember) => void;
   checkIfExisted: (id: number) => boolean;
   status: string;
 }) => {
-  const workspaceMembers: User[] = [];
+  const workspaceMembers = useSelector(
+    (state: State) => state.workspace.workspaceMembers
+  );
   const [anchorEle, setAnchorEle] = useState<HTMLDivElement | null>(null);
   const [openPopupType, setOpenPopupType] = useState<string | null>(null);
 
@@ -90,26 +94,6 @@ const ProjectAttributesBar = ({
           ? "Target date"
           : moment(targetDate).format("MMM DD, YYYY")}
       </div>
-
-      <div
-        onClick={(e) => {
-          if (openPopupType === null) {
-            setOpenPopupType("MEMBERS");
-            setAnchorEle(e.currentTarget);
-          } else {
-            setOpenPopupType(null);
-            setAnchorEle(null);
-          }
-        }}
-        className="rounded-md border-solid border-[2px] border-[--border-color]
-                  text-[0.75rem] px-[8px] py-[3px] select-none hover:bg-[--hover-bg]"
-      >
-        {assignedMembers.length > 0
-          ? `${assignedMembers.length}` +
-            `${assignedMembers.length === 1 ? " member" : " members"}`
-          : "Members"}
-      </div>
-
       <Popover
         onClickOutside={() => {
           setOpenPopupType(null);
@@ -139,36 +123,6 @@ const ProjectAttributesBar = ({
               setOpenPopupType(null);
             }}
           />
-        )}
-        {openPopupType === "MEMBERS" && (
-          <div
-            className="w-[280px] bg-[--primary] flex flex-col px-[6px] py-[5px] gap-[0px] 
-          border-solid border-[1px] border-[--border-color] rounded-md"
-          >
-            {workspaceMembers.length > 0 &&
-              workspaceMembers.map((user) => (
-                <div
-                  key={user.id}
-                  className="w-full flex items-center gap-[10px] hover:bg-[--hover-bg] py-[5px] px-[10px] rounded-md"
-                >
-                  <input
-                    checked={checkIfExisted(user.id) ? true : false}
-                    onClick={() => handleAssignMember(user)}
-                    type="checkbox"
-                  />
-                  <div className="flex flex-row items-center gap-[10px]  text-[0.85rem] text-[--base] opacity-85 select-none">
-                    <Image
-                      src={user.settings.avatar ?? ""}
-                      width={18}
-                      height={18}
-                      className="rounded-full"
-                      alt="user-avatar"
-                    />
-                    {user.settings.avatar}
-                  </div>
-                </div>
-              ))}
-          </div>
         )}
         {openPopupType === "STATUS" && (
           <div

@@ -113,6 +113,12 @@ export const workspaceSettingsGroups: SidebarGroup[] = [
         hidden: true,
         resource_tag: "roles",
       },
+      {
+        title: "Members",
+        description: "Manage workspace's member's",
+        to: "/settings/members",
+        icon: null,
+      },
     ],
   },
 ];
