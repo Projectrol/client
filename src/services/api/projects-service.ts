@@ -7,6 +7,7 @@ export type CreateProjectRequest = {
   description: string;
   dtstart: number;
   dtend: number;
+  is_private: boolean;
 };
 
 export type Project = {
