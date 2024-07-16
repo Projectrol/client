@@ -4,9 +4,9 @@ import LayersIcon from "@mui/icons-material/Layers";
 import useModal from "@/hooks/useModal";
 import Modal from "@/components/modal";
 import ProjectEditor from "@/components/project-editor";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ProjectsTable from "./components/projects-table";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import ProjectsHeader from "./components/header";
 import useProjects from "@/services/rquery/hooks/useProjects";
 import { useQueryClient } from "@tanstack/react-query";
@@ -14,11 +14,11 @@ import { QUERY_KEYS } from "@/services/rquery/consts";
 import Timeline from "./components/timeline";
 import { useSelector } from "react-redux";
 import { State } from "@/services/redux/store";
-import { ProjectsService } from "@/services/api/projects-service";
 import ComponentRenderByPermission from "@/components/authorization/component-render-by-permission";
 import PageRenderByPermission from "@/components/authorization/page-render-by-permission";
 
 const Projects = () => {
+  const router = useRouter();
   const workspaceSlice = useSelector((state: State) => state.workspace);
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
@@ -45,7 +45,11 @@ const Projects = () => {
       <div className="relative w-full flex flex-col h-full">
         <ProjectsHeader
           displayMode={displayMode}
-          onClickAddIcon={openModal}
+          onClickAddIcon={() =>
+            router.push(
+              `/${workspaceSlice.workspace?.general_information.slug}/projects/new`
+            )
+          }
           setDisplayMode={setDisplayMode}
         />
 
@@ -73,7 +77,11 @@ const Projects = () => {
                 />
                 <div className="text-[--base] font-semibold text-[1.2rem] mt-[20px]">{`You don't have any project. Let's create one`}</div>
                 <button
-                  onClick={() => openModal()}
+                  onClick={() =>
+                    router.push(
+                      `/${workspaceSlice.workspace?.general_information.slug}/projects/new`
+                    )
+                  }
                   className="bg-[--btn-ok-bg] text-[--btn-ok-color] font-medium text-[0.8rem] px-[15px] py-[6px] rounded-md mt-[20px]"
                 >
                   New project
