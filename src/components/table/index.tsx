@@ -60,12 +60,12 @@ function Table({
                     border-b-solid border-b-[1px] border-b-[--border-color]"
       >
         <div className="w-full flex items-center text-[0.825rem] text-[--text-header-color] px-[8px] py-[1px]">
-          {columns.map((col) => (
+          {columns.map((col, colIndex) => (
             <div
               style={{
                 width: `${(col.width / totalColumnsWidth) * 100}%`,
               }}
-              key={col.field}
+              key={col.field + "_" + colIndex}
             >
               {col.headerTitle}
             </div>
@@ -80,9 +80,9 @@ function Table({
                     border-b-solid border-b-[1px] border-b-[--border-color] hover:bg-[--hover-bg]"
             key={i}
           >
-            {columns.map((col) => (
+            {columns.map((col, colIndex) => (
               <div
-                key={col.field}
+                key={col.field + "_" + colIndex}
                 style={{
                   width: `${(col.width / totalColumnsWidth) * 100}%`,
                   overflowX: "hidden",

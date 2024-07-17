@@ -54,6 +54,14 @@ export const mainSidebarGroups: SidebarGroup[] = [
         to: "/projects?view_mode=table",
       },
       {
+        title: "Projects",
+        resource_tag: "projects",
+        description: "13",
+        icon: <LayersIcon fontSize="inherit" color="inherit" />,
+        to: "/projects/new",
+        hidden: true,
+      },
+      {
         title: "Teams",
         icon: <WorkspacesIcon fontSize="inherit" color="inherit" />,
         to: "/teams",

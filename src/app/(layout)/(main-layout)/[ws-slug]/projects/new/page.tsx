@@ -7,6 +7,7 @@ import Embed from "@yoopta/embed";
 import Link from "@yoopta/link";
 import Callout from "@yoopta/callout";
 import Accordion from "@yoopta/accordion";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { NumberedList, BulletedList, TodoList } from "@yoopta/lists";
 import {
   Bold,
@@ -40,6 +41,7 @@ import ProjectAttributesBar from "@/components/project-editor/project-attributes
 import { useRouter } from "next/navigation";
 import Button from "@/components/button";
 import { BUTTON_TYPES } from "@/configs/themes";
+import MainBodyHeader from "@/components/layouts/main-layout/components/main-body-header";
 
 const toBase64 = (file: File) =>
   new Promise((resolve, reject) => {
@@ -187,23 +189,29 @@ function NewProject({
   };
 
   return (
-    <div className="w-[100%] overflow-y-auto">
-      <div className="w-full py-[15px] px-[40px] mb-[5px] shadow-sm flex items-center justify-between">
-        <button
-          className="text-[--base]"
-          onClick={() =>
-            router.push(
-              `/${workspaceSlice.workspace?.general_information.slug}/projects?view_mode=table`
-            )
-          }
-        >
-          Back
-        </button>
-      </div>
-      <div className="w-full text-[--base] px-[40px] pb-[5px] pt-[10px] text-[1.4rem] mb-[10px] font-semibold">
-        Create New project
-      </div>
-      <div className="w-[100%] flex flex-wrap justify-between px-[40px]">
+    <div className="w-[90%] overflow-y-auto">
+      <MainBodyHeader
+        title=""
+        topLeftElement={
+          <div className="py-[15px] flex items-center gap-[2px]">
+            <button
+              className="text-[--base]"
+              onClick={() =>
+                router.push(
+                  `/${workspaceSlice.workspace?.general_information.slug}/projects?view_mode=table`
+                )
+              }
+            >
+              <ArrowBackIosIcon
+                fontSize="inherit"
+                style={{ fontSize: "1rem" }}
+              />
+            </button>
+            Create New Project
+          </div>
+        }
+      />
+      <div className="w-[100%] flex flex-wrap justify-between px-[40px] pt-[20px]">
         <div className="w-[49%] flex flex-col gap-[10px] mb-[20px]">
           <div className="w-full text-[--base] text-[0.9rem] font-semibold">
             Project name

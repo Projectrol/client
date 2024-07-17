@@ -85,7 +85,6 @@ export const ProjectsService = {
   },
   async GetProjectDetails(
     workspaceId: number,
-    workspaceSlug: string,
     projectSlug: string
   ): Promise<
     | {

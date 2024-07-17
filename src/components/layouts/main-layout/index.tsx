@@ -43,12 +43,14 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
     return groups.map((group) => {
       return {
         ...group,
-        items: group.items.filter(
-          (item) =>
-            userPermissions.findIndex(
-              (uP) => uP.resource_tag === item.resource_tag && uP.can_read
-            ) !== -1 || !item.resource_tag
-        ),
+        items: group.items
+          .filter((item) => !item.hidden)
+          .filter(
+            (item) =>
+              userPermissions.findIndex(
+                (uP) => uP.resource_tag === item.resource_tag && uP.can_read
+              ) !== -1 || !item.resource_tag
+          ),
       };
     });
   };

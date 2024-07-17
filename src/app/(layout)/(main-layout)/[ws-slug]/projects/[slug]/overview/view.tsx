@@ -1,36 +1,33 @@
 "use client";
 
+import Loading from "@/app/loading";
 import ProjectEditor from "@/components/project-editor";
 import { Project, ProjectsService } from "@/services/api/projects-service";
 import { State } from "@/services/redux/store";
+import useProjectDetails from "@/services/rquery/hooks/use-project-details";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 export default function ProjectOverviewView({ slug }: { slug: string }) {
-  const [project, setProject] = useState<Project | null>(null);
   const workspaceSlice = useSelector((state: State) => state.workspace);
-
-  useEffect(() => {
-    if (workspaceSlice.workspace && slug) {
-      const workspaceSlug = workspaceSlice.workspace.general_information.slug;
-      const workspaceId = workspaceSlice.workspace.general_information.id;
-      const getProject = async () => {
-        const response = await ProjectsService.GetProjectDetails(
-          workspaceId,
-          workspaceSlug,
-          slug
-        );
-        if (response.status === "success") {
-          setProject(response.data.project);
-        }
-      };
-      getProject();
-    }
-  }, [slug, workspaceSlice]);
-
-  return (
-    <div className="w-full">
-      {project && <ProjectEditor initValue={project} mode="edit" />}
-    </div>
+  const { details, error, isLoading } = useProjectDetails(
+    workspaceSlice.workspace,
+    slug
   );
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (!isLoading && error) {
+    return <h1>{error.message}</h1>;
+  }
+
+  if (!isLoading && details) {
+    return (
+      <div className="w-full">
+        {details && <ProjectEditor initValue={details} mode="edit" />}
+      </div>
+    );
+  }
 }
