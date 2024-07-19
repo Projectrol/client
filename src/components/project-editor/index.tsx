@@ -168,6 +168,7 @@ function ProjectEditor({
       dtstart: moment(startDate).utc().unix(),
       dtend: moment(targetDate).utc().unix(),
       workspace_id: workspaceSlice.workspace.general_information.id,
+      is_private: true,
     };
     const response = await ProjectsService.CreateProject(
       input.workspace_id,
@@ -180,7 +181,7 @@ function ProjectEditor({
   };
 
   return (
-    <div className="w-[90%] h-[100%] flex flex-col mx-auto py-[20px]">
+    <div className="w-[95%] h-[100%] flex flex-col mx-auto py-[20px]">
       <div className="w-full">
         <div
           ref={projectNameDivRef}

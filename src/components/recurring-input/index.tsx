@@ -1,20 +1,11 @@
 "use client";
 
-import {
-  ByWeekDayRule,
-  RecurringConfig,
-  RecurringType,
-} from "@/db/repositories/task-entities.repo";
 import { dayNames, fulldayNames } from "@/lib/datetime";
 import { useEffect, useState } from "react";
 
 export default function RecurringInput() {
-  const [recurringType, setRecurringType] = useState(
-    RecurringType.DAILY.toString()
-  );
-  const [byWeekDayRule, setByWeekDayRule] = useState<ByWeekDayRule | null>(
-    null
-  );
+  const [recurringType, setRecurringType] = useState("DAILY");
+  const [byWeekDayRule, setByWeekDayRule] = useState<any | null>(null);
 
   useEffect(() => {
     if (recurringType.includes("byweekday")) {
@@ -36,16 +27,12 @@ export default function RecurringInput() {
                   border-[--border-color] hover:border-[--text-header-color] outline-none
                   text-[0.825rem] py-[6px] select-none hover:bg-[--hover-bg] mr-[10px]"
       >
-        <option value={RecurringType.DAILY}>Everyday</option>
-        <option value={RecurringType.WEEKLY}>Every week</option>
-        <option value={RecurringType.MONTHLY}>Every month</option>
-        <option
-          value={RecurringType.MONTHLY + "_" + "byweekday"}
-        >{`Every month's`}</option>
-        <option value={RecurringType.YEARLY}>Every year</option>
-        <option
-          value={RecurringType.YEARLY + "_" + "byweekday"}
-        >{`Every year's`}</option>
+        <option value={"DAILY"}>Everyday</option>
+        <option value={"WEEKLY"}>Every week</option>
+        <option value={"MONTHLY"}>Every month</option>
+        <option value={"MONTHLY" + "_" + "byweekday"}>{`Every month's`}</option>
+        <option value={"YEARLY"}>Every year</option>
+        <option value={"YEARLY" + "_" + "byweekday"}>{`Every year's`}</option>
         <option value={"EVERY"}>{`Every...`}</option>
       </select>
       {recurringType.includes("byweekday") && byWeekDayRule && (

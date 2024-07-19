@@ -1,16 +1,21 @@
 "use client";
 
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import PageRenderByPermission from "@/components/authorization/page-render-by-permission";
 import MainBodyHeader from "@/components/layouts/main-layout/components/main-body-header";
 import { State } from "@/services/redux/store";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { usePathname, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
+import Popover from "@/components/popover";
+import { useRef, useState } from "react";
 
 export default function Layout({
   params,
   children,
 }: Readonly<{ children: React.ReactNode; params: { slug: string } }>) {
+  const [isOpenOptionMenu, setOpenOptionMenu] = useState(false);
+  const anchorEle = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const viewMode = pathname.split("/").slice(-1)[0];
   const workspaceSlice = useSelector((state: State) => state.workspace);
@@ -41,12 +46,46 @@ export default function Layout({
             </span>
           </>
         )}
+        <div className="text-[0.8rem] text-[--base] font-semibold rounded-md">
+          <div
+            onClick={() => setOpenOptionMenu(!isOpenOptionMenu)}
+            ref={anchorEle}
+            className="w-[25px] h-[25px] rounded-sm flex items-center justify-center mx-[10px] cursor-pointer hover:bg-[--hover-bg]"
+          >
+            <MoreHorizIcon
+              fontSize="inherit"
+              color="inherit"
+              style={{ fontSize: "1.25rem", color: "var(--base)" }}
+            />
+          </div>
+          <Popover
+            onClickOutside={() => setOpenOptionMenu(false)}
+            autoFocus
+            position="bottom"
+            open={isOpenOptionMenu}
+            anchorEle={anchorEle.current}
+            style={{
+              marginTop: "5px",
+              overflow: "hidden",
+            }}
+          >
+            <div className="w-[200px] bg-[--primary] flex flex-col">
+              <div className="w-full cursor-pointer hover:bg-[--hover-bg] py-[8px] px-[10px] text-[--base]">
+                Manage members
+              </div>
+              <div className="w-full h-[1px] bg-[--selected-bg]" />
+              <div className="w-full cursor-pointer hover:bg-[--hover-bg] py-[8px] px-[10px] text-[--btn-delete-bg]">
+                Delete
+              </div>
+            </div>
+          </Popover>
+        </div>
         <div
           style={{
             background:
               viewMode === "overview" ? "var(--selected-bg)" : "transparent",
           }}
-          className="text-[0.8rem] py-[4px] px-[10px] text-[--base] font-semibold rounded-md ml-[20px] mr-[10px]"
+          className="text-[0.8rem] py-[4px] px-[10px] text-[--base] font-semibold rounded-md mr-[10px] ml-[20px]"
         >
           <button
             onClick={() =>

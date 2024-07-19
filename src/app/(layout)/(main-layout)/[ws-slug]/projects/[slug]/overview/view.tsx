@@ -26,7 +26,7 @@ export default function ProjectOverviewView({ slug }: { slug: string }) {
   if (!isLoading && details) {
     return (
       <div className="w-full">
-        {details && <ProjectEditor initValue={details} mode="edit" />}
+        {details && <ProjectEditor initValue={details.project} mode="edit" />}
       </div>
     );
   }

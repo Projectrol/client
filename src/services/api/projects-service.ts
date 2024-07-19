@@ -23,6 +23,11 @@ export type Project = {
   created_at: string;
 };
 
+export type ProjectDetails = {
+  project: Project;
+  memberIds: number[];
+};
+
 export const ProjectsService = {
   async GetProjectsByWorkspaceId(id: number): Promise<
     | {
@@ -90,7 +95,7 @@ export const ProjectsService = {
     | {
         status: "success";
         data: {
-          project: Project;
+          details: ProjectDetails;
         };
       }
     | {
@@ -105,7 +110,7 @@ export const ProjectsService = {
           withCredentials: true,
         }
       );
-      const data = response.data as { project: Project };
+      const data = response.data as { details: ProjectDetails };
       return {
         status: "success",
         data,

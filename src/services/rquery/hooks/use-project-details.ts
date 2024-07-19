@@ -1,13 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "../consts";
-import { Project, ProjectsService } from "@/services/api/projects-service";
+import {
+  Project,
+  ProjectDetails,
+  ProjectsService,
+} from "@/services/api/projects-service";
 import { WorkspaceDetails } from "@/services/api/workspaces-service";
 
 async function getProjectDetails({
   queryKey,
 }: {
   queryKey: any;
-}): Promise<Project | null> {
+}): Promise<ProjectDetails | null> {
   const workspaceId = queryKey[1];
   const projectSlug = queryKey[2];
   const response = await ProjectsService.GetProjectDetails(
@@ -17,7 +21,7 @@ async function getProjectDetails({
   if (response.status === "fail") {
     return Promise.reject(new Error(response.error));
   }
-  return response.data.project;
+  return response.data.details;
 }
 
 const useProjectDetails = (

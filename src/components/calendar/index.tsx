@@ -1,6 +1,5 @@
 "use client";
 
-import { Project } from "@/db/repositories/projects.repo";
 import { dayNames } from "@/lib/datetime";
 import clsx from "clsx";
 import React from "react";
@@ -14,14 +13,9 @@ import {
 } from "@dnd-kit/core";
 import CalendarCell from "./calendar-cell";
 import moment from "moment";
-import { db } from "@/db";
 import { useRouter } from "next/navigation";
 import TimetableCol from "./timetable-col";
-import {
-  TaskInstance,
-  TaskInstanceWithEntity,
-} from "@/db/repositories/task-instances";
-
+import { Project } from "@/services/api/projects-service";
 export default function Calendar({
   weeksOfMonth,
   weekOfMonth,
@@ -55,7 +49,7 @@ export default function Calendar({
   }[];
   mode?: "calendar" | "timetable";
   hideWeekend?: boolean;
-  taskInstances?: TaskInstanceWithEntity[];
+  taskInstances?: any[];
 }) {
   const router = useRouter();
   const sensors = useSensors(
@@ -85,8 +79,8 @@ export default function Calendar({
     const startDate = dateId.split("_")[0];
 
     const startMonthIndex = dateId.split("_")[1];
-    const oldStartDate = moment(project.startDate);
-    const oldTargetDate = moment(project.targetDate);
+    const oldStartDate = moment(project.dtstart);
+    const oldTargetDate = moment(project.dtend);
     const diff = oldTargetDate.diff(oldStartDate, "days");
     const newStartDate = new Date(
       2024,
@@ -98,22 +92,22 @@ export default function Calendar({
       moment(newStartDate).add(diff, "days").toString()
     );
 
-    const respone = await db.projects.updateProjectDate(
-      project.id,
-      newStartDate,
-      newTargetDate
-    );
+    // const respone = await db.projects.updateProjectDate(
+    //   project.id,
+    //   newStartDate,
+    //   newTargetDate
+    // );
 
-    if (respone) {
-      router.refresh();
-    }
+    // if (respone) {
+    //   router.refresh();
+    // }
   };
 
   const handleUpdateTargetDate = async (dateId: string, project: Project) => {
     const targetDate = dateId.split("_")[0];
     const targetMonthIndex = dateId.split("_")[1];
-    const oldStartDate = moment(project.startDate);
-    const oldTargetDate = moment(project.targetDate);
+    const oldStartDate = moment(project.dtstart);
+    const oldTargetDate = moment(project.dtend);
     const diff = oldTargetDate.diff(oldStartDate, "days");
     const newTargetDate = new Date(
       2024,
@@ -125,15 +119,15 @@ export default function Calendar({
       moment(newTargetDate).subtract(diff, "days").toString()
     );
 
-    const respone = await db.projects.updateProjectDate(
-      project.id,
-      newStartDate,
-      newTargetDate
-    );
+    // const respone = await db.projects.updateProjectDate(
+    //   project.id,
+    //   newStartDate,
+    //   newTargetDate
+    // );
 
-    if (respone) {
-      router.refresh();
-    }
+    // if (respone) {
+    //   router.refresh();
+    // }
   };
 
   return (

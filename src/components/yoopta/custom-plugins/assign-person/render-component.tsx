@@ -1,9 +1,7 @@
 "use client";
 
 import Popover from "@/components/popover";
-import { db } from "@/db";
-import { User } from "@/db/repositories/users.repo";
-import { WorkspaceRoleEnum } from "@/db/repositories/workspace-role";
+import { User } from "@/services/api/users-service";
 import { PluginElementRenderProps } from "@yoopta/editor";
 import { useEffect, useRef, useState } from "react";
 
@@ -14,18 +12,18 @@ export default function AssignPersonRenderElement({
   const anchorEle = useRef<HTMLDivElement>(null);
   const [wsMembers, setWSMembers] = useState<
     ({
-      role: WorkspaceRoleEnum;
+      role: string;
     } & User)[]
   >();
 
   useEffect(() => {
-    const getWSMembers = async () => {
-      const members = db.workspaces.getWorkspaceMembers(0);
-      if (members?.length > 0) {
-        setWSMembers(members);
-      }
-    };
-    getWSMembers();
+    // const getWSMembers = async () => {
+    //   const members = db.workspaces.getWorkspaceMembers(0);
+    //   if (members?.length > 0) {
+    //     setWSMembers(members);
+    //   }
+    // };
+    // getWSMembers();
   }, []);
 
   return (
