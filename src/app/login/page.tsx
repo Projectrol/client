@@ -91,8 +91,9 @@ export default function Login() {
         <form
           onSubmit={handleSubmit(login)}
           style={{
-            marginTop: "calc(100vh - 600px)",
             marginLeft: "calc((100% - 450px)/2)",
+            top: "50%",
+            transform: "translateY(-50%)",
             color: baseThemes["LIGHT"].layoutColors.BASE,
           }}
           className="flex flex-col gap-[25px] items-center w-[450px] bg-[#ffffff] m-auto absolute

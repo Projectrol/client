@@ -9,11 +9,13 @@ import { usePathname, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import Popover from "@/components/popover";
 import { useRef, useState } from "react";
+import Drawer from "@/components/drawer";
 
 export default function Layout({
   params,
   children,
 }: Readonly<{ children: React.ReactNode; params: { slug: string } }>) {
+  const [isOpenMembersPopup, setOpenMembersPopup] = useState(false);
   const [isOpenOptionMenu, setOpenOptionMenu] = useState(false);
   const anchorEle = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
@@ -55,7 +57,7 @@ export default function Layout({
             <MoreHorizIcon
               fontSize="inherit"
               color="inherit"
-              style={{ fontSize: "1.25rem", color: "var(--base)" }}
+              style={{ fontSize: "1.1rem", color: "var(--base)" }}
             />
           </div>
           <Popover
@@ -70,7 +72,10 @@ export default function Layout({
             }}
           >
             <div className="w-[200px] bg-[--primary] flex flex-col">
-              <div className="w-full cursor-pointer hover:bg-[--hover-bg] py-[8px] px-[10px] text-[--base]">
+              <div
+                onClick={() => setOpenMembersPopup(true)}
+                className="w-full cursor-pointer hover:bg-[--hover-bg] py-[8px] px-[10px] text-[--base]"
+              >
                 Manage members
               </div>
               <div className="w-full h-[1px] bg-[--selected-bg]" />
