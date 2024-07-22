@@ -19,7 +19,7 @@ const Sidebar = ({
         left: isOpen ? 0 : "-250px",
         transition: "left 0.25s ease-in",
       }}
-      className="w-[250px] h-full bg-[--secondary] flex flex-col py-[15px] pl-[15px] relative"
+      className="w-[250px] h-full flex flex-col py-[15px] pl-[15px] relative"
     >
       <div className="w-full color-[--base] font-semibold flex pb-[15px]">
         {children}

@@ -307,9 +307,10 @@ function NewProject({
         <div className="w-full flex-1 flex items-center justify-end mt-[30px]">
           <Button
             style={{
-              padding: "10px 25px",
+              padding: "10px 20px",
               borderRadius: "5px",
-              fontSize: "0.9rem",
+              fontSize: "0.85rem",
+              fontWeight: 500,
             }}
             type={BUTTON_TYPES.OK}
             onClick={createProject}

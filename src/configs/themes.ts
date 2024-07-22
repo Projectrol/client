@@ -28,7 +28,7 @@ export type ColorTheme = {
 const defaultButtonColors: { [key in BUTTON_TYPES]: ButtonColor } = {
   OK: {
     color: "#FFFFFF",
-    bg: "#6715cf",
+    bg: "#077368",
   },
   CANCEL: {
     color: "#121212",
@@ -44,9 +44,9 @@ export const baseThemes: { [key: string]: ColorTheme } = {
   DARK: {
     layoutColors: {
       BASE: "#fefefe",
-      PRIMARY: "#272a33",
-      SECONDARY: "#191b21",
-      "SELECTED-OK-BG": "rgba(90, 104, 207,0.4)",
+      PRIMARY: "#000000",
+      SECONDARY: "#0d0d0d",
+      "SELECTED-OK-BG": "rgba(7,115,104,0.3)",
       "HOVER-BG": "rgba(255,255,255,0.05)",
       "SELECTED-BG": "rgba(255,255,255,0.1)",
       "BORDER-COLOR": "rgba(255,255,255,0.05)",
@@ -57,9 +57,9 @@ export const baseThemes: { [key: string]: ColorTheme } = {
   LIGHT: {
     layoutColors: {
       BASE: "#4e515a",
-      PRIMARY: "#ffffff",
-      SECONDARY: "#f9f8f8",
-      "SELECTED-OK-BG": "rgba(90, 104, 207,0.1)",
+      SECONDARY: "#ffffff",
+      PRIMARY: "#f9f8f8",
+      "SELECTED-OK-BG": "rgba(7,115,104,0.2)",
       "HOVER-BG": "rgba(0,0,0,0.05)",
       "SELECTED-BG": "#e4e5f1",
       "BORDER-COLOR": "rgba(0,0,0,0.1)",

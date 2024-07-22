@@ -45,7 +45,11 @@ export default function Layout({
 
   return (
     <MainLayout>
-      <Suspense>{children}</Suspense>
+      <Suspense>
+        <div className="w-full h-full bg-[--secondary] shadow-md">
+          {children}
+        </div>
+      </Suspense>
     </MainLayout>
   );
 }

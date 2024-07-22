@@ -58,11 +58,11 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   if (!isClient) return null;
 
   const headerLightStyle = {
-    background: "#41295a" /* fallback for old browsers */,
+    background: "#077368" /* fallback for old browsers */,
     backgroundImage:
-      "-webkit-linear-gradient(to right, #2F0743, #41295a)" /* Chrome 10-25, Safari 5.1-6 */,
+      "-webkit-linear-gradient(to right, #077368, #1b2b29)" /* Chrome 10-25, Safari 5.1-6 */,
     backgroundColor:
-      "linear-gradient(to right, #2F0743, #41295a)" /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */,
+      "linear-gradient(to right, #077368, #1b2b29)" /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */,
   };
 
   return (
@@ -180,6 +180,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
             flex: 1,
             marginLeft: isOpenSideMenu ? 0 : "-250px",
             transition: "all 0.25s ease-in",
+            padding: "10px",
           }}
           className="bg-[--primary] box-border overflow-y-auto border-solid border-l-[1px] border-l-[--border-color]"
         >

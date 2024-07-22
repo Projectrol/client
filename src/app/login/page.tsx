@@ -14,6 +14,7 @@ import Loading from "../loading";
 import logo from "/public/images/logo.png";
 import Image from "next/image";
 import ThemeProvider from "../(layout)/theme-provider";
+import "./style.css";
 
 export default function Login() {
   const { user, isAuthenticating } = useAuth();
@@ -69,25 +70,21 @@ export default function Login() {
 
   return (
     <ThemeProvider>
-      <div className="w-screen h-screen absolute left-0 top-0 bg-[#fafbfc] overflow-hidden">
-        <div className="w-full absolute top-0 left-0 z-[100] py-[30px] px-[40px]">
-          <Image src={logo.src} width={200} height={50} alt="logo" />
-        </div>
-        <div
-          className="brightness-100"
-          style={{
-            backgroundImage: `url("${loginBg.src}")`,
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            top: 0,
-            left: 0,
-            transform: "scaleY(-1)",
-          }}
+      <div id="slider">
+        <div className="bolaMov1"></div>
+        <div className="bolaMov2"></div>
+        <div className="bolaMov3"></div>
+        <div className="bolaMov4"></div>
+        <div className="bolaMov5"></div>
+
+        <Image
+          src={logo.src}
+          width={200}
+          height={50}
+          alt="logo"
+          className="mt-[25px] ml-[40px]"
         />
+
         <form
           onSubmit={handleSubmit(login)}
           style={{
@@ -96,14 +93,16 @@ export default function Login() {
             transform: "translateY(-50%)",
             color: baseThemes["LIGHT"].layoutColors.BASE,
           }}
-          className="flex flex-col gap-[25px] items-center w-[450px] bg-[#ffffff] m-auto absolute
-                    rounded-lg shadow-2xl z-[100] px-[50px] pt-[40px] py-[60px]"
+          className="flex flex-col gap-[25px] items-center w-[450px] bg-[#272a33] m-auto absolute
+                    rounded-lg shadow-2xl z-[100] px-[50px] pt-[40px] py-[100px]"
         >
-          <div className={`w-full text-[2rem] font-semibold text-center`}>
+          <div
+            className={`w-full text-[2rem] font-semibold text-center text-[#fff] pb-[20px]`}
+          >
             Welcome to Projectrol
           </div>
           <div className="w-full flex flex-col">
-            <div className="w-full text-[#fffff] text-[0.8rem] font-semibold mb-[10px]">
+            <div className="w-full text-[#fff] text-[0.9rem] font-semibold mb-[10px]">
               Email address
             </div>
             <div className="w-full">
@@ -141,7 +140,7 @@ export default function Login() {
             </div>
           </div>
           <div className="w-full flex flex-col">
-            <div className="w-full text-[#fffff] text-[0.8rem] font-semibold mb-[10px]">
+            <div className="w-full text-[#fff] text-[0.9rem] font-semibold mb-[10px]">
               Password
             </div>
             <div className="w-full">
@@ -182,11 +181,13 @@ export default function Login() {
               width: "100%",
               borderRadius: "5px",
               padding: "12px 0px",
-              marginTop: "10px",
+              marginTop: "20px",
               fontSize: "0.9rem",
               fontWeight: 700,
-              background: baseThemes["LIGHT"].buttonColors.OK.bg,
+              background:
+                "linear-gradient(300deg, #0eb9a8 0%, #077368 60%, #0eb9a8 100%)",
               color: baseThemes["LIGHT"].buttonColors.OK.color,
+              backgroundSize: "300% 300%",
             }}
           >
             Log In
