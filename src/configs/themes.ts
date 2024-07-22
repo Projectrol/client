@@ -44,8 +44,8 @@ export const baseThemes: { [key: string]: ColorTheme } = {
   DARK: {
     layoutColors: {
       BASE: "#fefefe",
-      PRIMARY: "#000000",
-      SECONDARY: "#0d0d0d",
+      PRIMARY: "#18191a",
+      SECONDARY: "#242526",
       "SELECTED-OK-BG": "rgba(7,115,104,0.3)",
       "HOVER-BG": "rgba(255,255,255,0.05)",
       "SELECTED-BG": "rgba(255,255,255,0.1)",
