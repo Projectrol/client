@@ -375,13 +375,9 @@ export default function Timeline({ projects }: { projects: Project[] }) {
 
   return (
     <div className="w-full h-full flex flex-col overflow-x-hidden">
-      <div
-        className="w-full h-[40px] bg-[--primary] flex items-center 
-                  border-solid border-b-[1px] border-b-[--border-color]"
-      ></div>
       <div className="w-full flex-1 relative px-[0px]">
         <div
-          className="w-[300px] h-full bg-[--primary] absolute flex flex-col
+          className="w-[300px] h-full bg-[--secondary] absolute flex flex-col
                         border-solid border-r-[1px] border-r-[--border-color]"
         >
           <div
@@ -442,7 +438,7 @@ export default function Timeline({ projects }: { projects: Project[] }) {
             }
           }
           ref={calendarDivRef}
-          className="h-full flex flex-row bg-[--primary] overflow-x-auto relative ml-[300px]"
+          className="h-full flex flex-row bg-[--secondary] overflow-x-auto relative ml-[300px]"
         >
           <DndContext
             modifiers={[snapToGridModifier, restrictToParentElement]}

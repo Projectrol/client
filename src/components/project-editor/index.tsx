@@ -34,6 +34,7 @@ import {
 } from "@/services/api/projects-service";
 import moment from "moment";
 import { useSelector } from "react-redux";
+import { useTheme } from "next-themes";
 import { State } from "@/services/redux/store";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/services/rquery/consts";
@@ -61,7 +62,9 @@ function ProjectEditor({
   mode?: "create" | "edit";
 }) {
   const queryClient = useQueryClient();
+  const userSlice = useSelector((state: State) => state.user);
   const workspaceSlice = useSelector((state: State) => state.workspace);
+  const { setTheme, theme } = useTheme();
   const projectNameDivRef = useRef<HTMLDivElement>(null);
   const summaryDivRef = useRef<HTMLDivElement>(null);
   const [focusElement, setFocusElement] = useState("name");
@@ -145,6 +148,10 @@ function ProjectEditor({
         break;
     }
   }, [focusElement]);
+
+  useEffect(() => {
+    setTheme("dark");
+  }, []);
 
   const checkIfExisted = (id: number) => {
     return assignedMembers.findIndex((m) => m.id === id) !== -1;

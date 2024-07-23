@@ -2,10 +2,8 @@
 
 import Loading from "@/app/loading";
 import ProjectEditor from "@/components/project-editor";
-import { Project, ProjectsService } from "@/services/api/projects-service";
 import { State } from "@/services/redux/store";
 import useProjectDetails from "@/services/rquery/hooks/use-project-details";
-import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 export default function ProjectOverviewView({ slug }: { slug: string }) {

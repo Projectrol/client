@@ -169,7 +169,7 @@ const AddRole = () => {
                   ? "var(--btn-delete-bg)"
                   : "transparent",
             }}
-            className={`outline-none bg-[--secondary] focus:bg-[--border-color] rounded-sm 
+            className={`outline-none bg-[--primary] focus:bg-[--border-color] rounded-sm 
               transition-colors shadow-sm py-[8px] px-[12px] text-[--base] text-[0.9rem]`}
             type="text"
             placeholder="Enter role name..."

@@ -73,8 +73,8 @@ const Permissions = () => {
             Add New Role
           </Button>
         </div>
-        <div className="w-full flex flex-col mt-[20px] bg-[--secondary] px-[30px] pt-[10px] rounded-md border-solid shadow-md">
-          <div className="w-full flex pb-[20px] sticky top-0 mt-0 mb-[30px] bg-[--secondary] items-center py-[20px] z-[10] border-solid border-b-[1px] border-b-[--border-color]">
+        <div className="w-full flex flex-col mt-[20px] bg-[--secondary] pt-[10px] rounded-md border-solid">
+          <div className="w-full flex pb-[20px] sticky -top-[10px] mb-[30px] bg-[--secondary] items-center py-[20px] z-[10] border-solid border-b-[1px] border-b-[--border-color]">
             <div className="w-[60%] text-[--text-header-color] font-semibold text-[0.75rem] uppercase">
               Actions
             </div>

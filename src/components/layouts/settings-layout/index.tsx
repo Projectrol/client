@@ -66,9 +66,9 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
           height: "100%",
           width: "calc(100% - 260px)",
         }}
-        className="bg-[--primary] box-border border-solid border-l-[1px] border-l-[--border-color] overflow-y-auto"
+        className="bg-[--primary] p-[10px] box-border border-solid border-l-[1px] border-l-[--border-color] overflow-y-auto"
       >
-        <div className="w-full px-[60px] py-[40px] flex flex-col">
+        <div className="w-full min-h-full px-[60px] py-[40px] flex flex-col bg-[--secondary] shadow-md ">
           <div className="w-full text-[--base] font-semibold text-[1.5rem]">
             {title}
           </div>
