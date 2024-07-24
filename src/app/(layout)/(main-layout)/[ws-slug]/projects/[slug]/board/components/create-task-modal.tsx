@@ -36,7 +36,7 @@ export default function CreateTaskModal({
     >
       <div
         style={{
-          transition: isExpanded
+          transition: !isExpanded
             ? "transform 0.2s ease, height 0.25s ease, width 0.25s ease 0.25s, margin-top 0.25s ease, opacity 0.25s ease"
             : "transform 0.2s ease, height 0.25s ease 0.25s, width 0.25s ease, margin-top 0.25s ease 0.25s, opacity 0.25s ease",
           transform: isOpen ? "scale(1)" : "scale(0)",
