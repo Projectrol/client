@@ -262,7 +262,7 @@ function NewProject({
             overflowY: "auto",
           }}
           onClick={() => setFocusElement("description")}
-          className="w-[100%] mb-[15px] bg-[--selected-bg] px-[10px] rounded-sm shadow-sm"
+          className="w-[100%] mb-[15px] bg-[--selected-bg] px-[10px] rounded-sm shadow-sm text-[--base]"
           ref={selectionRef}
         >
           <YooptaEditor
@@ -295,7 +295,7 @@ function NewProject({
             )}
           />
         </div>
-        <div className="w-[100%] flex items-center gap-[8px] text-[0.95rem]">
+        <div className="w-[100%] flex items-center gap-[8px] text-[0.95rem] text-[--base]">
           <input
             checked={isPrivate}
             onChange={(e) => setPrivate(!isPrivate)}

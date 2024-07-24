@@ -1,9 +1,9 @@
 const StatusColors: { [key: string]: string } = {
-  Backlog: "#F57C00",
-  Canceled: "#90A4AE",
-  In_Progress: "#FDD835",
-  Completed: "#7C4DFF",
-  Planned: "#2196F3",
+  CANCELLED: "#90A4AE",
+  ON_PROGRESS: "#FDD835",
+  DONE: "#7C4DFF",
+  TODO: "#2196F3",
+  Backlog: "#077368",
 };
 
 export { StatusColors };

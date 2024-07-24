@@ -47,7 +47,7 @@ const ProjectAttributesBar = ({
             setAnchorEle(null);
           }
         }}
-        className="rounded-md border-solid border-[2px] border-[--border-color]
+        className="rounded-md border-solid border-[2px] border-[--border-color] text-[--base]
                   text-[0.85rem] px-[8px] py-[3px] select-none hover:bg-[--hover-bg]"
       >
         {!startDate ? "Start date" : moment(startDate).format("MMM DD, YYYY")}
@@ -71,7 +71,7 @@ const ProjectAttributesBar = ({
             setAnchorEle(null);
           }
         }}
-        className="rounded-md border-solid border-[2px] border-[--border-color]
+        className="rounded-md border-solid border-[2px] border-[--border-color] text-[--base]
                   text-[0.85rem] px-[8px] py-[3px] select-none hover:bg-[--hover-bg]"
       >
         {!targetDate
