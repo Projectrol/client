@@ -8,17 +8,23 @@ import {
 } from "@dnd-kit/core";
 import StatusBoard from "./status-board";
 import { useEffect, useState } from "react";
-import useCardsByProjectSlug from "@/services/rquery/hooks/useCardsByProject";
 import { useRouter } from "next/navigation";
 import { CardStatus } from "@/services/api/tasks-services";
 import CreateTaskModal from "./components/create-task-modal";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { State } from "@/services/redux/store";
 
 export default function ProjectBoardView({ slug }: { slug: string }) {
   const router = useRouter();
-  const [isOpenCreateTaskModal, setOpenCreateTaskModal] = useState(true);
+  const workspaceSlice = useSelector(
+    (state: State) => state.workspace.workspace
+  );
+  const [isOpenCreateTaskModal, setOpenCreateTaskModal] = useState(false);
   const [initStatus, setInitStatus] = useState<CardStatus>(CardStatus.TODO);
-  const { cards } = useCardsByProjectSlug(slug);
-
+  const [tasks, setTasks] = useState<
+    { nanoid: string; status: CardStatus; title: string }[]
+  >([]);
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -27,19 +33,27 @@ export default function ProjectBoardView({ slug }: { slug: string }) {
     })
   );
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const getTasks = async () => {
+      const url = `http://localhost:8080/api/workspaces/${workspaceSlice?.general_information.id}/tasks/${slug}`;
+      const response = await axios.get(url, {
+        withCredentials: true,
+      });
+      setTasks(response.data.tasks);
+    };
+    getTasks();
+  }, [workspaceSlice, slug]);
 
   const handleDragEnd = async (event: any) => {
-    // const droppedCard = event.active.data.current.card;
-    // const newStatus = event.over.data.current.status;
-    // droppedCard.status = newStatus;
-    // const response = await db.cards.updateCardStatus(
-    //   droppedCard.nanoid,
-    //   newStatus
-    // );
-    // if (response) {
-    //   router.replace(`/project/${slug}/board?time=${new Date().getTime()}`);
-    // }
+    const droppedCard = event.active.data.current.card;
+    const newStatus = event.over.data.current.status;
+    const updatedTasks = [...tasks];
+    const index = updatedTasks.findIndex(
+      (t) => t.nanoid === droppedCard.nanoid
+    );
+    if (index === -1) return;
+    updatedTasks[index].status = newStatus;
+    setTasks(updatedTasks);
   };
 
   return (
@@ -54,7 +68,7 @@ export default function ProjectBoardView({ slug }: { slug: string }) {
                 setInitStatus(status);
                 setOpenCreateTaskModal(true);
               }}
-              cards={cards.filter((c) => c.status === status)}
+              cards={tasks ? tasks.filter((t) => t.status === status) : []}
             />
           ))}
         </DndContext>

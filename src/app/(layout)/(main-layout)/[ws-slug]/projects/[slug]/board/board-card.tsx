@@ -37,16 +37,16 @@ export default function BoardCard({ card }: { card: any }) {
         {wsSlice.workspace?.general_information.name
           .substring(0, 3)
           .toUpperCase()}{" "}
-        - {card.id + 1}
+        - {card.nanoid}
       </div>
-      <div className="w-full flex items-center gap-[6px]">
+      <div className="w-full flex items-start gap-[6px]">
         <div
           style={{
             background: StatusColors[card.status],
           }}
-          className="w-[15px] aspect-square rounded-full"
+          className="w-[15px] aspect-square rounded-full mt-[2px]"
         />
-        <div className="flex-1 text-[0.825rem] text-[--base] font-medium">
+        <div className="flex-1 text-[0.825rem] text-[--base] font-medium text-ellipsis overflow-hidden">
           {card.title}
         </div>
       </div>
