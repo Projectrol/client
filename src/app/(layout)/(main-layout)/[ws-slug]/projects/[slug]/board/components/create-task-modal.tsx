@@ -16,12 +16,11 @@ import {
   Strike,
   Highlight,
 } from "@yoopta/marks";
-import { CardStatus } from "@/services/api/tasks-services";
+import { CardStatus, Label } from "@/services/api/tasks-services";
 import { useEffect, useMemo, useRef, useState } from "react";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 import CloseIcon from "@mui/icons-material/Close";
-import ProjectAttributesBar from "@/components/project-editor/project-attributes-bar";
 import { HeadingOne, HeadingThree, HeadingTwo } from "@yoopta/headings";
 import Code from "@yoopta/code";
 import ActionMenuList, {
@@ -37,6 +36,7 @@ import { useParams } from "next/navigation";
 import { useSelector } from "react-redux";
 import { State } from "@/services/redux/store";
 import axios from "axios";
+import TaskAttributesBar from "./task-attribute-bar";
 
 export default function CreateTaskModal({
   isOpen,
@@ -50,13 +50,16 @@ export default function CreateTaskModal({
   const workspaceSlice = useSelector(
     (state: State) => state.workspace.workspace
   );
+  const [assignedUserId, setAssignedUserId] = useState<number | null>(null);
   const params = useParams();
   const editor = useMemo(() => createYooptaEditor(), []);
   const selectionRef = useRef<HTMLDivElement>(null);
   const projectNameDivRef = useRef<HTMLDivElement>(null);
-  const summaryDivRef = useRef<HTMLDivElement>(null);
   const [focusElement, setFocusElement] = useState("name");
   const [projectName, setProjectName] = useState("");
+  const [status, setStatus] = useState<CardStatus>(initStatus);
+  const [label, setLabel] = useState<Label>(Label.BUG);
+  const [priority, setPriority] = useState(0);
   const [isExpanded, setExpanded] = useState(false);
   const plugins: any = [
     Paragraph,
@@ -93,6 +96,10 @@ export default function CreateTaskModal({
   };
 
   useEffect(() => {
+    setStatus(initStatus);
+  }, [initStatus]);
+
+  useEffect(() => {
     function handleChange(value: any) {
       console.log(value);
     }
@@ -119,11 +126,11 @@ export default function CreateTaskModal({
       project_slug: params["slug"],
       title: projectNameDivRef.current?.innerText,
       description: JSON.stringify(editor.getEditorValue()),
-      status: initStatus,
-      label: "Feature",
+      status,
+      label,
       is_published: true,
     };
-    const url = `http://localhost:8080/api/workspaces/${workspaceSlice?.general_information.id}/tasks`;
+    const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}/workspaces/${workspaceSlice?.general_information.id}/tasks`;
     await axios.post(url, body, {
       withCredentials: true,
     });
@@ -266,6 +273,16 @@ export default function CreateTaskModal({
             />
           </div>
         </div>
+        <div className="w-full pl-[50px] pb-[15px]">
+          <TaskAttributesBar
+            status={status}
+            setStatus={setStatus}
+            label={label}
+            setLabel={setLabel}
+            priority={priority}
+            setPriority={setPriority}
+          />
+        </div>
         <div className="w-full h-[1px] bg-[--border-color]" />
         <div className="w-full flex items-center justify-end px-[20px] pt-[10px] pb-[5px]">
           <Button
@@ -278,7 +295,7 @@ export default function CreateTaskModal({
             }}
             onClick={createTask}
           >
-            Create task {initStatus}
+            Create task
           </Button>
         </div>
       </div>

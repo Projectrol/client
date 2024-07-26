@@ -44,7 +44,13 @@ export default function Popover({
         break;
       case "bottom":
         setLeft(anchorEle.offsetLeft);
-        setTop(anchorEle.offsetTop + anchorEle.offsetHeight);
+        const top = anchorEle.offsetTop + anchorEle.offsetHeight;
+        const popupBottom = top + ref.current.offsetHeight + 40;
+        if (popupBottom > window.document.body.offsetHeight) {
+          setTop(top - 40);
+        } else {
+          setTop(top);
+        }
         break;
       case "bottom left":
         setLeft(anchorEle.offsetLeft - ref.current.offsetWidth);

@@ -28,7 +28,7 @@ export default function StatusBoard({
         background: isOver ? "var(--selected-bg)" : "var(--hover-bg)",
         transition: "background 0.2s ease",
       }}
-      className="h-full flex-1 flex flex-col rounded-sm px-[15px] py-[20px]"
+      className="h-full flex-1 flex flex-col rounded-sm px-[15px] py-[15px]"
     >
       <div className="flex items-center justify-center gap-[6px] w-full pb-[20px] text-[--base] font-semibold text-[0.85rem] opacity-95">
         <div

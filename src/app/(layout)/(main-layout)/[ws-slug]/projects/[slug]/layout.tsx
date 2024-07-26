@@ -8,8 +8,21 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { usePathname, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import Popover from "@/components/popover";
-import { useRef, useState } from "react";
+import { createContext, useRef, useState } from "react";
 import Drawer from "@/components/drawer";
+import { ProjectDetails } from "@/services/api/projects-service";
+import useProjectDetails from "@/services/rquery/hooks/use-project-details";
+import useProjectTasks from "@/services/rquery/hooks/use-project-tasks";
+
+type ProjectDetailsContext = {
+  details: ProjectDetails | null;
+  tasks: any[];
+};
+
+export const ProjectDetailsContext = createContext<ProjectDetailsContext>({
+  details: null,
+  tasks: [],
+});
 
 export default function Layout({
   params,
@@ -22,6 +35,15 @@ export default function Layout({
   const viewMode = pathname.split("/").slice(-1)[0];
   const workspaceSlice = useSelector((state: State) => state.workspace);
   const router = useRouter();
+  const { details, error, isLoading } = useProjectDetails(
+    workspaceSlice.workspace,
+    params.slug
+  );
+  const { tasks, getProjectTasksError, isLoadingProjectTasks } =
+    useProjectTasks(
+      workspaceSlice.workspace?.general_information.id,
+      params.slug
+    );
   const projectName = params.slug
     .split("-")
     .slice(0, -2)
@@ -122,13 +144,20 @@ export default function Layout({
 
   return (
     <PageRenderByPermission>
-      <div className="w-full h-full flex flex-col">
-        <MainBodyHeader
-          leftStyle={{ padding: "15px 0" }}
-          topLeftElement={renderTopLeftHeader()}
-        />
-        {children}
-      </div>
+      <ProjectDetailsContext.Provider
+        value={{
+          details,
+          tasks,
+        }}
+      >
+        <div className="w-full h-full flex flex-col">
+          <MainBodyHeader
+            leftStyle={{ padding: "15px 0" }}
+            topLeftElement={renderTopLeftHeader()}
+          />
+          {children}
+        </div>
+      </ProjectDetailsContext.Provider>
     </PageRenderByPermission>
   );
 }

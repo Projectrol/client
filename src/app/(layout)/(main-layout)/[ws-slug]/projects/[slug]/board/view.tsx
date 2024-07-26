@@ -7,24 +7,18 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import StatusBoard from "./status-board";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useContext, useState } from "react";
 import { CardStatus } from "@/services/api/tasks-services";
 import CreateTaskModal from "./components/create-task-modal";
-import axios from "axios";
-import { useSelector } from "react-redux";
-import { State } from "@/services/redux/store";
+import { ProjectDetailsContext } from "../layout";
 
-export default function ProjectBoardView({ slug }: { slug: string }) {
-  const router = useRouter();
-  const workspaceSlice = useSelector(
-    (state: State) => state.workspace.workspace
-  );
-  const [isOpenCreateTaskModal, setOpenCreateTaskModal] = useState(false);
+export default function ProjectBoardView() {
+  const [isOpenCreateTaskModal, setOpenCreateTaskModal] = useState(true);
   const [initStatus, setInitStatus] = useState<CardStatus>(CardStatus.TODO);
+  const value = useContext(ProjectDetailsContext);
   const [tasks, setTasks] = useState<
     { nanoid: string; status: CardStatus; title: string }[]
-  >([]);
+  >(value.tasks);
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -32,17 +26,6 @@ export default function ProjectBoardView({ slug }: { slug: string }) {
       },
     })
   );
-
-  useEffect(() => {
-    const getTasks = async () => {
-      const url = `http://localhost:8080/api/workspaces/${workspaceSlice?.general_information.id}/tasks/${slug}`;
-      const response = await axios.get(url, {
-        withCredentials: true,
-      });
-      setTasks(response.data.tasks);
-    };
-    getTasks();
-  }, [workspaceSlice, slug]);
 
   const handleDragEnd = async (event: any) => {
     const droppedCard = event.active.data.current.card;
