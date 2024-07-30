@@ -7,7 +7,7 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import StatusBoard from "./status-board";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CardStatus } from "@/services/api/tasks-services";
 import CreateTaskModal from "./components/create-task-modal";
 import { ProjectDetailsContext } from "../layout";
@@ -26,6 +26,12 @@ export default function ProjectBoardView() {
       },
     })
   );
+
+  useEffect(() => {
+    if (value) {
+      setTasks(value.tasks);
+    }
+  }, [value]);
 
   const handleDragEnd = async (event: any) => {
     const droppedCard = event.active.data.current.card;

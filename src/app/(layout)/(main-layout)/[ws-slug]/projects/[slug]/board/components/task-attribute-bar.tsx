@@ -58,7 +58,7 @@ const TaskAttributesBar = ({
           }
         }}
         className="rounded-md border-solid border-[2px] border-[--border-color] text-[--base]
-                  text-[0.75rem] px-[8px] py-[3px] select-none hover:bg-[--hover-bg] align-middle"
+                  text-[0.8rem] px-[8px] py-[3px] select-none hover:bg-[--hover-bg] align-middle"
       >
         {status.charAt(0) +
           status.replaceAll("_", " ").substring(1).toLowerCase()}
@@ -75,7 +75,7 @@ const TaskAttributesBar = ({
           }
         }}
         className="rounded-md border-solid border-[2px] border-[--border-color] text-[--base]
-                  text-[0.75rem] px-[8px] py-[3px] select-none hover:bg-[--hover-bg] align-middle"
+                  text-[0.8rem] px-[8px] py-[3px] select-none hover:bg-[--hover-bg] align-middle"
       >
         {label.charAt(0) +
           label.replaceAll("_", " ").substring(1).toLowerCase()}
@@ -92,7 +92,7 @@ const TaskAttributesBar = ({
           }
         }}
         className="rounded-md border-solid border-[2px] border-[--border-color] text-[--base]
-                  text-[0.75rem] px-[8px] py-[3px] select-none hover:bg-[--hover-bg] align-middle"
+                  text-[0.8rem] px-[8px] py-[3px] select-none hover:bg-[--hover-bg] align-middle"
       >
         {Priority[priority].charAt(0) +
           Priority[priority].replaceAll("_", " ").substring(1).toLowerCase()}
@@ -109,7 +109,7 @@ const TaskAttributesBar = ({
           }
         }}
         className="rounded-md border-solid border-[2px] border-[--border-color] text-[--base]
-                  text-[0.75rem] px-[8px] py-[3px] select-none hover:bg-[--hover-bg] align-middle"
+                  text-[0.8rem] px-[8px] py-[3px] select-none hover:bg-[--hover-bg] align-middle"
       >
         Assign this task to ...
       </div>
@@ -137,7 +137,7 @@ const TaskAttributesBar = ({
                 key={key}
                 className={clsx(
                   {
-                    "w-full px-[10px] text-[--base] text-[0.7rem] font-medium py-[8px] flex items-center cursor-pointer":
+                    "w-full px-[10px] text-[--base] text-[0.75rem] font-medium py-[8px] flex items-center cursor-pointer":
                       true,
                   },
                   {
@@ -166,7 +166,7 @@ const TaskAttributesBar = ({
                 key={key}
                 className={clsx(
                   {
-                    "w-full px-[10px] text-[--base] text-[0.7rem] font-medium py-[8px] flex items-center cursor-pointer":
+                    "w-full px-[10px] text-[--base] text-[0.75rem] font-medium py-[8px] flex items-center cursor-pointer":
                       true,
                   },
                   {
@@ -195,7 +195,7 @@ const TaskAttributesBar = ({
                 key={key}
                 className={clsx(
                   {
-                    "w-full px-[10px] text-[--base] text-[0.7rem] font-medium py-[8px] flex items-center cursor-pointer":
+                    "w-full px-[10px] text-[--base] text-[0.75rem] font-medium py-[8px] flex items-center cursor-pointer":
                       true,
                   },
                   {
