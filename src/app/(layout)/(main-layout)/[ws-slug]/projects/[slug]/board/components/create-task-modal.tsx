@@ -130,17 +130,10 @@ export default function CreateTaskModal({
       label,
       is_published: true,
     };
-    const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}/workspaces/${workspaceSlice?.general_information.id}/tasks`;
+    const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}/workspaces/${workspaceSlice?.general_information.id}/tasks/${params["slug"]}`;
     await axios.post(url, body, {
       withCredentials: true,
     });
-    console.log({ body });
-    // ProjectSlug string `json:"project_slug"`
-    // Title       string `json:"title"`
-    // Description string `json:"description"`
-    // Status      string `json:"status"`
-    // Label       string `json:"label"`
-    // IsPublished bool   `json:"is_published"`
   };
 
   return (

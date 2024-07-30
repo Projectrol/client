@@ -28,6 +28,19 @@ export type ProjectDetails = {
   memberIds: number[];
 };
 
+export type ProjectDocument = {
+  created_by: number;
+  updated_by: number;
+  nanoid: string;
+  name: string;
+  created_at: string;
+  updated_at?: string;
+};
+
+export type ProjectDocumentDetails = {
+  content?: string;
+} & ProjectDocument;
+
 export const ProjectsService = {
   async GetProjectsByWorkspaceId(id: number): Promise<
     | {
@@ -111,6 +124,115 @@ export const ProjectsService = {
         }
       );
       const data = response.data as { details: ProjectDetails };
+      return {
+        status: "success",
+        data,
+      };
+    } catch (err: any) {
+      return {
+        status: "fail",
+        error: err.response.data.error,
+      };
+    }
+  },
+  async GetProjectDocuments(
+    projectSlug: string,
+    workspaceId: number
+  ): Promise<
+    | {
+        status: "success";
+        data: { documents: ProjectDocument[] | null };
+      }
+    | {
+        status: "fail";
+        error: string;
+      }
+  > {
+    try {
+      const response = await baseAxios.get(
+        `/workspaces/${workspaceId}/documents/${projectSlug}`,
+        {
+          withCredentials: true,
+        }
+      );
+      const data = response.data as { documents: ProjectDocument[] | null };
+      return {
+        status: "success",
+        data,
+      };
+    } catch (err: any) {
+      return {
+        status: "fail",
+        error: err.response.data.error,
+      };
+    }
+  },
+  async GetProjectDocumentDetails(
+    projectSlug: string,
+    workspaceId: number,
+    nanoid: number
+  ): Promise<
+    | {
+        status: "success";
+        data: { details: ProjectDocumentDetails | null };
+      }
+    | {
+        status: "fail";
+        error: string;
+      }
+  > {
+    try {
+      const response = await baseAxios.get(
+        `/workspaces/${workspaceId}/documents/${projectSlug}/${nanoid}`,
+        {
+          withCredentials: true,
+        }
+      );
+      const data = response.data as {
+        details: ProjectDocumentDetails | null;
+      };
+      return {
+        status: "success",
+        data,
+      };
+    } catch (err: any) {
+      return {
+        status: "fail",
+        error: err.response.data.error,
+      };
+    }
+  },
+  async UpdateProjectDocumentDetails(
+    projectSlug: string,
+    workspaceId: number,
+    nanoid: string,
+    name: string,
+    content: string
+  ): Promise<
+    | {
+        status: "success";
+        data: { details: ProjectDocumentDetails | null };
+      }
+    | {
+        status: "fail";
+        error: string;
+      }
+  > {
+    try {
+      const bodyData = {
+        name,
+        content,
+      };
+      const response = await baseAxios.patch(
+        `/workspaces/${workspaceId}/documents/${projectSlug}/${nanoid}`,
+        bodyData,
+        {
+          withCredentials: true,
+        }
+      );
+      const data = response.data as {
+        details: ProjectDocumentDetails | null;
+      };
       return {
         status: "success",
         data,

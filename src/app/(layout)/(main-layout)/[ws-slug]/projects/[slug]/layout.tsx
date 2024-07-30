@@ -10,18 +10,24 @@ import { useSelector } from "react-redux";
 import Popover from "@/components/popover";
 import { createContext, useRef, useState } from "react";
 import Drawer from "@/components/drawer";
-import { ProjectDetails } from "@/services/api/projects-service";
+import {
+  ProjectDetails,
+  ProjectDocument,
+} from "@/services/api/projects-service";
 import useProjectDetails from "@/services/rquery/hooks/use-project-details";
 import useProjectTasks from "@/services/rquery/hooks/use-project-tasks";
+import useProjectDocuments from "@/services/rquery/hooks/use-project-documents";
 
 type ProjectDetailsContext = {
   details: ProjectDetails | null;
   tasks: any[];
+  documents: ProjectDocument[];
 };
 
 export const ProjectDetailsContext = createContext<ProjectDetailsContext>({
   details: null,
   tasks: [],
+  documents: [],
 });
 
 export default function Layout({
@@ -44,6 +50,14 @@ export default function Layout({
       workspaceSlice.workspace?.general_information.id,
       params.slug
     );
+  const {
+    documents,
+    isLoading: isLoadingGetProjectDocuments,
+    error: errorGetProjectDocuments,
+  } = useProjectDocuments(
+    workspaceSlice.workspace?.general_information.id,
+    params.slug
+  );
   const projectName = params.slug
     .split("-")
     .slice(0, -2)
@@ -129,7 +143,7 @@ export default function Layout({
             background:
               viewMode === "board" ? "var(--selected-bg)" : "transparent",
           }}
-          className="text-[0.8rem] py-[4px] px-[10px] text-[--base] font-semibold rounded-md"
+          className="text-[0.8rem] py-[4px] px-[10px] text-[--base] font-semibold rounded-md mr-[10px]"
           onClick={() =>
             router.push(
               `/${workspaceSlice.workspace?.general_information.slug}/projects/${params.slug}/board`
@@ -137,6 +151,20 @@ export default function Layout({
           }
         >
           Board
+        </button>
+        <button
+          style={{
+            background:
+              viewMode === "documents" ? "var(--selected-bg)" : "transparent",
+          }}
+          className="text-[0.8rem] py-[4px] px-[10px] text-[--base] font-semibold rounded-md"
+          onClick={() =>
+            router.push(
+              `/${workspaceSlice.workspace?.general_information.slug}/projects/${params.slug}/documents`
+            )
+          }
+        >
+          Documents
         </button>
       </div>
     );
@@ -148,6 +176,7 @@ export default function Layout({
         value={{
           details,
           tasks,
+          documents,
         }}
       >
         <div className="w-full h-full flex flex-col">

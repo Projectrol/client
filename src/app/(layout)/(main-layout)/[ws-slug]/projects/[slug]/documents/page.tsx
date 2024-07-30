@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import ProjectOverviewView from "./view";
+import ProjectDocuments from "./view";
 
 export const generateMetadata = ({
   params,
@@ -14,7 +15,7 @@ export const generateMetadata = ({
       ""
     );
   return {
-    title: "Overview: " + projectName,
+    title: "Documents: " + projectName,
   };
 };
 
@@ -23,5 +24,5 @@ export default function ProjectOverview({
 }: {
   params: { slug: string };
 }) {
-  return <ProjectOverviewView />;
+  return <ProjectDocuments />;
 }
