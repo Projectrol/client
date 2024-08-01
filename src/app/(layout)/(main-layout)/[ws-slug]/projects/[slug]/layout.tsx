@@ -14,9 +14,9 @@ import {
   ProjectDetails,
   ProjectDocument,
 } from "@/services/api/projects-service";
-import useProjectDetails from "@/services/rquery/hooks/use-project-details";
-import useProjectTasks from "@/services/rquery/hooks/use-project-tasks";
-import useProjectDocuments from "@/services/rquery/hooks/use-project-documents";
+import useProjectDetails from "@/services/rquery/queries/use-project-details";
+import useProjectTasks from "@/services/rquery/queries/use-project-tasks";
+import useProjectDocuments from "@/services/rquery/queries/use-project-documents";
 
 type ProjectDetailsContext = {
   details: ProjectDetails | null;

@@ -9,7 +9,7 @@ import {
   WorkspacesService,
 } from "@/services/api/workspaces-service";
 import { State } from "@/services/redux/store";
-import usePermissions from "@/services/rquery/hooks/use-permissions";
+import usePermissions from "@/services/rquery/queries/use-permissions";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";

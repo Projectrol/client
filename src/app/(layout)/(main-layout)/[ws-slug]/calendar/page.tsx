@@ -5,7 +5,7 @@ import MainBodyHeader from "@/components/layouts/main-layout/components/main-bod
 import Modal from "@/components/modal";
 import { StatusColors } from "@/configs/status-colors";
 import { getTotalDaysInMonth, monthNames } from "@/lib/datetime";
-import useProjects from "@/services/rquery/hooks/useProjects";
+import useProjects from "@/services/rquery/queries/useProjects";
 import moment from "moment";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";

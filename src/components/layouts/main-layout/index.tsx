@@ -68,7 +68,11 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="w-full flex flex-col h-full absolute overflow-y-hidden">
       <div
-        style={getTheme() === "LIGHT" ? headerLightStyle : {}}
+        style={
+          getTheme() === "LIGHT"
+            ? headerLightStyle
+            : { background: "var(--primary)" }
+        }
         className="w-full bg-[--secondary] border-solid border-b-[1px] border-[--border-color] 
                     px-[15px] flex flex-row items-center"
       >
@@ -87,7 +91,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         <div className="w-[30%]" />
       </div>
 
-      <div className="w-full flex-1 flex flex-row bg-[--secondary]">
+      <div className="w-full flex-1 flex flex-row bg-[--primary]">
         {userPermissions.length > 0 && (
           <Sidebar
             isOpen={isOpenSideMenu}
@@ -180,9 +184,8 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
             flex: 1,
             marginLeft: isOpenSideMenu ? 0 : "-250px",
             transition: "all 0.25s ease-in",
-            padding: "10px",
           }}
-          className="bg-[--primary] box-border overflow-y-auto border-solid border-l-[1px] border-l-[--border-color]"
+          className="bg-[--primary] box-border overflow-y-auto border-solid border-l-[1px] border-l-[--selected-bg]"
         >
           {children}
         </div>

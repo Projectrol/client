@@ -32,7 +32,7 @@ import { BUTTON_TYPES } from "@/configs/themes";
 import { useParams } from "next/navigation";
 import { useSelector } from "react-redux";
 import { State } from "@/services/redux/store";
-import useProjectDocumentDetails from "@/services/rquery/hooks/use-project-document-details";
+import useProjectDocumentDetails from "@/services/rquery/queries/use-project-document-details";
 import { ProjectsService } from "@/services/api/projects-service";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/services/rquery/consts";

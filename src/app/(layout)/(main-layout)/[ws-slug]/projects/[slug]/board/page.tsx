@@ -19,5 +19,5 @@ export const generateMetadata = ({
 };
 
 export default function ProjectBoard({ params }: { params: { slug: string } }) {
-  return <ProjectBoardView slug={params.slug} />;
+  return <ProjectBoardView />;
 }

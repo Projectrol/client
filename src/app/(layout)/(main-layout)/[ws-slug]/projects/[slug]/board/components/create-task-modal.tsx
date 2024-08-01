@@ -16,7 +16,11 @@ import {
   Strike,
   Highlight,
 } from "@yoopta/marks";
-import { CardStatus, Label } from "@/services/api/tasks-services";
+import {
+  CardStatus,
+  Label,
+  TasksServices,
+} from "@/services/api/tasks-services";
 import { useEffect, useMemo, useRef, useState } from "react";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
@@ -37,6 +41,26 @@ import { useSelector } from "react-redux";
 import { State } from "@/services/redux/store";
 import axios from "axios";
 import TaskAttributesBar from "./task-attribute-bar";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import useCreateProjectTask from "@/services/rquery/mutates/use-create-project-task";
+import { QUERY_KEYS } from "@/services/rquery/consts";
+
+const updateUser = async (userData: any) => {
+  // Perform the mutation logic, e.g., make an API request to update the user
+  const response = await fetch("/api/users", {
+    method: "PUT",
+    body: JSON.stringify(userData),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update user");
+  }
+
+  return response.json();
+};
 
 export default function CreateTaskModal({
   isOpen,
@@ -50,6 +74,8 @@ export default function CreateTaskModal({
   const workspaceSlice = useSelector(
     (state: State) => state.workspace.workspace
   );
+  const queryClient = useQueryClient();
+  const { mutateAsync, isSuccess, error } = useCreateProjectTask();
   const [assignedUserId, setAssignedUserId] = useState<number | null>(null);
   const params = useParams();
   const editor = useMemo(() => createYooptaEditor(), []);
@@ -123,18 +149,32 @@ export default function CreateTaskModal({
 
   const createTask = async () => {
     const body = {
-      project_slug: params["slug"],
-      title: projectNameDivRef.current?.innerText,
-      description: JSON.stringify(editor.getEditorValue()),
+      project_slug: params["slug"] as string,
+      title: projectNameDivRef.current?.innerText as string,
+      description: JSON.stringify(editor.getEditorValue()) as string,
       status,
       label,
       is_published: true,
     };
-    const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}/workspaces/${workspaceSlice?.general_information.id}/tasks/${params["slug"]}`;
-    await axios.post(url, body, {
-      withCredentials: true,
+    // const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}/workspaces/${workspaceSlice?.general_information.id}/tasks/${params["slug"]}`;
+    // await axios.post(url, body, {
+    //   withCredentials: true,
+    // });
+    mutateAsync({
+      bodyData: body,
+      projectSlug: params["slug"] as string,
+      workspaceId: workspaceSlice?.general_information.id as number,
     });
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.USE_PROJECT_TASKS],
+      });
+      onClose();
+    }
+  }, [isSuccess, error, queryClient, onClose]);
 
   return (
     <div

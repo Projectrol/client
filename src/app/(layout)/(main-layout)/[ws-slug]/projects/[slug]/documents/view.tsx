@@ -42,7 +42,12 @@ export default function ProjectDocuments() {
 
   if (value.documents) {
     return (
-      <div className="w-full flex flex-col">
+      <div
+        style={{
+          height: "calc(100% - 350px)",
+        }}
+        className="w-full h-full flex flex-col overflow-y-auto"
+      >
         <div className="w-full px-[20px] py-[10px]">
           <Button
             style={{
@@ -57,54 +62,56 @@ export default function ProjectDocuments() {
             + Create
           </Button>
         </div>
-        <Table
-          loading={false}
-          data={value.documents}
-          columns={[
-            {
-              field: "name",
-              headerTitle: "Name",
-              width: 30,
-              customRender: (item: ProjectDocument) => {
-                return (
-                  <p
-                    onClick={() => router.push("documents/" + item.nanoid)}
-                    className="font-semibold cursor-pointer hover:underline"
-                  >
-                    {item.name}
-                  </p>
-                );
+        <div className="w-full flex-1">
+          <Table
+            loading={false}
+            data={value.documents}
+            columns={[
+              {
+                field: "name",
+                headerTitle: "Name",
+                width: 30,
+                customRender: (item: ProjectDocument) => {
+                  return (
+                    <p
+                      onClick={() => router.push("documents/" + item.nanoid)}
+                      className="font-semibold cursor-pointer hover:underline"
+                    >
+                      {item.name}
+                    </p>
+                  );
+                },
               },
-            },
-            {
-              headerTitle: "Created",
-              width: 35,
-              customRender: (item: ProjectDocument) => {
-                return (
-                  <div className="w-full flex gap-[3px] text-ellipsis  overflow-x-hidden whitespace-nowrap">
-                    By {item.created_by} at{" "}
-                    {moment(item.created_at).format("ddd DD/MM/YY HH:mm")}
-                  </div>
-                );
+              {
+                headerTitle: "Created",
+                width: 35,
+                customRender: (item: ProjectDocument) => {
+                  return (
+                    <div className="w-full flex gap-[3px] text-ellipsis  overflow-x-hidden whitespace-nowrap">
+                      By {item.created_by} at{" "}
+                      {moment(item.created_at).format("ddd DD/MM/YY HH:mm")}
+                    </div>
+                  );
+                },
               },
-            },
-            {
-              headerTitle: "Updated",
-              width: 35,
-              customRender: (item: ProjectDocument) => {
-                return (
-                  <div className="w-full flex gap-[3px] text-ellipsis overflow-x-hidden whitespace-nowrap">
-                    {item.updated_at
-                      ? `By ${item.updated_by} at ${moment(
-                          item.updated_at
-                        ).format("ddd DD/MM/YY HH:mm")}`
-                      : "--"}
-                  </div>
-                );
+              {
+                headerTitle: "Updated",
+                width: 35,
+                customRender: (item: ProjectDocument) => {
+                  return (
+                    <div className="w-full flex gap-[3px] text-ellipsis overflow-x-hidden whitespace-nowrap">
+                      {item.updated_at
+                        ? `By ${item.updated_by} at ${moment(
+                            item.updated_at
+                          ).format("ddd DD/MM/YY HH:mm")}`
+                        : "--"}
+                    </div>
+                  );
+                },
               },
-            },
-          ]}
-        />
+            ]}
+          />
+        </div>
       </div>
     );
   }

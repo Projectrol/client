@@ -8,12 +8,17 @@ import {
 } from "@dnd-kit/core";
 import StatusBoard from "./status-board";
 import { useContext, useEffect, useState } from "react";
-import { CardStatus } from "@/services/api/tasks-services";
+import { CardStatus, Task, TasksServices } from "@/services/api/tasks-services";
 import CreateTaskModal from "./components/create-task-modal";
 import { ProjectDetailsContext } from "../layout";
+import { useSelector } from "react-redux";
+import { State } from "@/services/redux/store";
+import { useParams } from "next/navigation";
 
 export default function ProjectBoardView() {
-  const [isOpenCreateTaskModal, setOpenCreateTaskModal] = useState(true);
+  const params = useParams();
+  const workspaceSlice = useSelector((state: State) => state.workspace);
+  const [isOpenCreateTaskModal, setOpenCreateTaskModal] = useState(false);
   const [initStatus, setInitStatus] = useState<CardStatus>(CardStatus.TODO);
   const value = useContext(ProjectDetailsContext);
   const [tasks, setTasks] = useState<
@@ -34,15 +39,33 @@ export default function ProjectBoardView() {
   }, [value]);
 
   const handleDragEnd = async (event: any) => {
-    const droppedCard = event.active.data.current.card;
+    const droppedCard = event.active.data.current.card as Task;
     const newStatus = event.over.data.current.status;
+    const wsId = workspaceSlice.workspace?.general_information.id as number;
+    const projectSlug = params["slug"] as string;
+
     const updatedTasks = [...tasks];
     const index = updatedTasks.findIndex(
       (t) => t.nanoid === droppedCard.nanoid
     );
     if (index === -1) return;
-    updatedTasks[index].status = newStatus;
-    setTasks(updatedTasks);
+
+    if (newStatus !== updatedTasks[index].status) {
+      updatedTasks[index].status = newStatus;
+      setTasks(updatedTasks);
+      const response = await TasksServices.UpdateProjectTask(
+        wsId,
+        projectSlug,
+        droppedCard.nanoid,
+        {
+          changed_field: "status",
+          value: newStatus,
+        }
+      );
+      if (response.status === "fail") {
+        alert(false);
+      }
+    }
   };
 
   return (

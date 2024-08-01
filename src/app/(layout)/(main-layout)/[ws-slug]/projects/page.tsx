@@ -8,7 +8,7 @@ import { useState } from "react";
 import ProjectsTable from "./components/projects-table";
 import { useRouter, useSearchParams } from "next/navigation";
 import ProjectsHeader from "./components/header";
-import useProjects from "@/services/rquery/hooks/useProjects";
+import useProjects from "@/services/rquery/queries/useProjects";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/services/rquery/consts";
 import Timeline from "./components/timeline";
