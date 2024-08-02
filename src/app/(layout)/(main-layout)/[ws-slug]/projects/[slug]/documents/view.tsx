@@ -44,7 +44,7 @@ export default function ProjectDocuments() {
     return (
       <div
         style={{
-          height: "calc(100% - 350px)",
+          height: "calc(100vh - 125px)",
         }}
         className="w-full h-full flex flex-col overflow-y-auto"
       >

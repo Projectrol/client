@@ -181,10 +181,20 @@ export default function Layout({
       >
         <div className="w-full h-full flex flex-col">
           <MainBodyHeader
+            style={{
+              height: "60px",
+            }}
             leftStyle={{ padding: "15px 0" }}
             topLeftElement={renderTopLeftHeader()}
           />
-          {children}
+          <div
+            style={{
+              height: "calc(100vh - 60px)",
+            }}
+            className="w-full overflow-y-auto"
+          >
+            {children}
+          </div>
         </div>
       </ProjectDetailsContext.Provider>
     </PageRenderByPermission>

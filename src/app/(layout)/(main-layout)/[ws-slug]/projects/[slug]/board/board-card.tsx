@@ -26,7 +26,7 @@ export default function BoardCard({ card }: { card: any }) {
 
   return (
     <div
-      onClick={() => router.push(`/card/${card.nanoid}/${card.slug}`)}
+      onClick={() => router.push(`tasks/${card.nanoid}`)}
       className="w-full bg-[--primary] rounded-md p-[15px] text-[--base] text-[0.9rem]"
       ref={setNodeRef}
       style={style}
