@@ -2,24 +2,23 @@
 
 import Table from "@/components/table";
 import { UsersService } from "@/services/api/users-service";
-import { setUser } from "@/services/redux/slices/user";
 import { State } from "@/services/redux/store";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { WorkspaceMember } from "@/services/api/workspaces-service";
+import { useUserStore } from "@/services/zustand/user-store";
 
 const Preferences = () => {
-  const userSlice = useSelector((state: State) => state.user);
   const workspaceRoles = useSelector(
     (state: State) => state.workspace.workspaceRoles
   );
   const workspaceMembers = useSelector(
     (state: State) => state.workspace.workspaceMembers
   );
-  const dispatch = useDispatch();
+  const userStore = useUserStore();
 
   const updateTheme = async (theme: "DARK" | "LIGHT") => {
-    if (!userSlice.user) return;
-    const { name, avatar, phone_no } = userSlice.user.settings;
+    if (!userStore.user) return;
+    const { name, avatar, phone_no } = userStore.user.settings;
     const response = await UsersService.UpdateUserSettings({
       name,
       phone_no: phone_no ?? "",
@@ -29,9 +28,9 @@ const Preferences = () => {
     if (response.status === "fail") {
       return;
     }
-    const user = Object.assign({}, userSlice.user);
+    const user = Object.assign({}, userStore.user);
     user.settings = response.data.settings;
-    dispatch(setUser(user));
+    userStore.setUser(user);
   };
 
   return (

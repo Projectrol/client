@@ -11,6 +11,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { State } from "@/services/redux/store";
 import { setWorkspaceRoles } from "@/services/redux/slices/workspace";
+import { useUserStore } from "@/services/zustand/user-store";
 
 export default function PermissionGroup({
   rTag,
@@ -24,7 +25,7 @@ export default function PermissionGroup({
   hideDivider: boolean;
 }) {
   const dispatch = useDispatch();
-  const userPermissions = useSelector((state: State) => state.user.permissions);
+  const { permissions: userPermissions } = useUserStore();
   const workspaceSlice = useSelector((state: State) => state.workspace);
   const checkIfChecked = (p: Permission, r: WorkspaceRole) => {
     const permissionAction = p.can_create

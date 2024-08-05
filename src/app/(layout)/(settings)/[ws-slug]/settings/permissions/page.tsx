@@ -10,10 +10,11 @@ import PermissionGroup from "./permission-group";
 import Button from "@/components/button";
 import { BUTTON_TYPES } from "@/configs/themes";
 import { useRouter } from "next/navigation";
+import { useUserStore } from "@/services/zustand/user-store";
 
 const Permissions = () => {
   const router = useRouter();
-  const userPermissions = useSelector((state: State) => state.user.permissions);
+  const { permissions: userPermissions } = useUserStore();
   const { permissions, getPermissionsError, isLoadingPermissions } =
     usePermissions();
   const [permissionGroups, setPermissionGroups] = useState<{

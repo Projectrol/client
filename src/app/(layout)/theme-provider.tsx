@@ -1,17 +1,16 @@
 "use client";
 
 import useTheme from "@/hooks/useTheme";
-import { State } from "@/services/redux/store";
+import { useUserStore } from "@/services/zustand/user-store";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
 
 const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const { setTheme } = useTheme();
-  const userSlice = useSelector((state: State) => state.user);
+  const userStore = useUserStore();
 
   useEffect(() => {
-    if (userSlice?.user) {
-      const theme = userSlice.user.settings.theme;
+    if (userStore?.user) {
+      const theme = userStore.user.settings.theme;
       if (!theme) {
         setTheme("LIGHT");
         return;
@@ -20,7 +19,7 @@ const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     } else {
       setTheme("LIGHT");
     }
-  }, [userSlice, setTheme]);
+  }, [userStore, setTheme]);
 
   return children;
 };

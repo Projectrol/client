@@ -2,10 +2,7 @@
 
 import { UsersService } from "@/services/api/users-service";
 import { useEffect, useState } from "react";
-import loginBg from "/public/images/login-bg.jpg";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { setUser } from "@/services/redux/slices/user";
 import { baseThemes } from "@/configs/themes";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
@@ -14,12 +11,13 @@ import Loading from "../loading";
 import logo from "/public/images/logo.png";
 import Image from "next/image";
 import ThemeProvider from "../(layout)/theme-provider";
+import { useUserStore } from "@/services/zustand/user-store";
 import "./style.css";
 
 export default function Login() {
   const { user, isAuthenticating } = useAuth();
   const router = useRouter();
-  const dispatch = useDispatch();
+  const { setUser } = useUserStore();
   const [isLoading, setLoading] = useState(false);
   const {
     register,
@@ -46,7 +44,7 @@ export default function Login() {
       handleError(response.error);
     }
     if (response.status === "success") {
-      dispatch(setUser(response.data));
+      setUser(response.data);
       router.push("/");
       router.refresh();
     }

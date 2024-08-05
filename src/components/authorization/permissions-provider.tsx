@@ -1,14 +1,14 @@
 "use client";
 
 import { WorkspacesService } from "@/services/api/workspaces-service";
-import { setPermissions } from "@/services/redux/slices/user";
 import { State } from "@/services/redux/store";
+import { useUserStore } from "@/services/zustand/user-store";
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 const PermissionsProvider = ({ children }: { children: React.ReactNode }) => {
   const workspaceSlice = useSelector((state: State) => state.workspace);
-  const dispatch = useDispatch();
+  const { setPermissions } = useUserStore();
 
   useEffect(() => {
     if (workspaceSlice.workspace?.general_information) {
@@ -16,12 +16,12 @@ const PermissionsProvider = ({ children }: { children: React.ReactNode }) => {
       const getUserRoleInWS = async () => {
         const response = await WorkspacesService.GetUserRoleInWorkspace(wsId);
         if (response.status === "success") {
-          dispatch(setPermissions(response.data.role.permissions));
+          setPermissions(response.data.role.permissions);
         }
       };
       getUserRoleInWS();
     }
-  }, [workspaceSlice, dispatch]);
+  }, [workspaceSlice, setPermissions]);
 
   return children;
 };

@@ -62,7 +62,6 @@ function ProjectEditor({
   mode?: "create" | "edit";
 }) {
   const queryClient = useQueryClient();
-  const userSlice = useSelector((state: State) => state.user);
   const workspaceSlice = useSelector((state: State) => state.workspace);
   const { setTheme, theme } = useTheme();
   const projectNameDivRef = useRef<HTMLDivElement>(null);

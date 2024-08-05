@@ -8,15 +8,13 @@ import { BUTTON_TYPES, baseThemes } from "@/configs/themes";
 import MainLayout from "@/components/layouts/main-layout";
 // import Projects from "@/app/(main-layout)/[ws-slug]/projects/page";
 import useTheme from "@/hooks/useTheme";
-import { useSelector } from "react-redux";
-import { State } from "@/services/redux/store";
 import { WorkspacesService } from "@/services/api/workspaces-service";
-import { Router } from "next/router";
 import { useRouter } from "next/navigation";
+import { useUserStore } from "@/services/zustand/user-store";
 
 export default function WorkspaceSetup() {
   const router = useRouter();
-  const userSlice = useSelector((state: State) => state.user);
+  const userStore = useUserStore();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const { setTheme } = useTheme();
@@ -84,7 +82,7 @@ export default function WorkspaceSetup() {
               <input
                 autoFocus
                 defaultValue={`${
-                  userSlice.user ? userSlice.user.email.split("@")[0] : ""
+                  userStore.user ? userStore.user.email.split("@")[0] : ""
                 }'s workspace`}
                 placeholder="Enter your workspace name"
                 className={clsx(

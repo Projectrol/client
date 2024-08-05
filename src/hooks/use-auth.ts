@@ -1,34 +1,32 @@
 import { UsersService } from "@/services/api/users-service";
-import { setUser } from "@/services/redux/slices/user";
-import { State } from "@/services/redux/store";
+import { useUserStore } from "@/services/zustand/user-store";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 
 export default function useAuth() {
   const router = useRouter();
-  const dispatch = useDispatch();
+  const { setUser } = useUserStore();
   const pathName = usePathname();
-  const userSlice = useSelector((state: State) => state.user);
+  const userStore = useUserStore();
   const [isAuthenticating, setAuthenticating] = useState(true);
 
   useEffect(() => {
-    if (router && dispatch) {
+    if (router && setUser) {
       const authenticate = async () => {
         const response = await UsersService.Authenticate();
         if (response.status === "fail") {
-          dispatch(setUser(null));
+          setUser(null);
         } else {
-          dispatch(setUser(response.data));
+          setUser(response.data);
         }
         setAuthenticating(false);
       };
       authenticate();
     }
-  }, [router, dispatch, pathName]);
+  }, [router, setUser, pathName]);
 
   return {
-    user: userSlice.user,
+    user: userStore.user,
     isAuthenticating,
   };
 }

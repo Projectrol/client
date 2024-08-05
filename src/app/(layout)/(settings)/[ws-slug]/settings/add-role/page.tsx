@@ -17,6 +17,7 @@ import PermissionGroup from "./permission-group";
 import { BUTTON_TYPES } from "@/configs/themes";
 import Button from "@/components/button";
 import { setWorkspaceRoles } from "@/services/redux/slices/workspace";
+import { useUserStore } from "@/services/zustand/user-store";
 
 const AddRole = () => {
   const dispatch = useDispatch();
@@ -26,7 +27,7 @@ const AddRole = () => {
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const router = useRouter();
   const [errors, setErrors] = useState<string[]>([]);
-  const userPermissions = useSelector((state: State) => state.user.permissions);
+  const { permissions: userPermissions } = useUserStore();
   const { permissions, getPermissionsError, isLoadingPermissions } =
     usePermissions();
   const [permissionGroups, setPermissionGroups] = useState<{

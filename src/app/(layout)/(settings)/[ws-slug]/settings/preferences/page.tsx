@@ -1,19 +1,15 @@
 "use client";
 
-import useTheme from "@/hooks/useTheme";
 import { UsersService } from "@/services/api/users-service";
-import { setUser } from "@/services/redux/slices/user";
 import { State } from "@/services/redux/store";
-import { useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
+import { useUserStore } from "@/services/zustand/user-store";
 
 const Preferences = () => {
-  const userSlice = useSelector((state: State) => state.user);
-  const dispatch = useDispatch();
+  const userStore = useUserStore();
 
   const updateTheme = async (theme: "DARK" | "LIGHT") => {
-    if (!userSlice.user) return;
-    const { name, avatar, phone_no } = userSlice.user.settings;
+    if (!userStore.user) return;
+    const { name, avatar, phone_no } = userStore.user.settings;
     const response = await UsersService.UpdateUserSettings({
       name,
       phone_no: phone_no ?? "",
@@ -23,9 +19,9 @@ const Preferences = () => {
     if (response.status === "fail") {
       return;
     }
-    const user = Object.assign({}, userSlice.user);
+    const user = Object.assign({}, userStore.user);
     user.settings = response.data.settings;
-    dispatch(setUser(user));
+    userStore.setUser(user);
   };
 
   return (
@@ -38,7 +34,7 @@ const Preferences = () => {
           className="text-[--base] bg-[--primary] outline-none 
                   border-solid border-[1px] text-[0.85rem] w-[200px]
                   border-[--border-color] font-semibold py-[8px] px-[5px] rounded-md shadow-sm"
-          value={userSlice.user?.settings.theme}
+          value={userStore.user?.settings.theme}
           onChange={(e) => {
             updateTheme(e.target.value as "DARK" | "LIGHT");
           }}

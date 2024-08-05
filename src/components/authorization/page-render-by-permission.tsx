@@ -1,11 +1,9 @@
 "use client";
 
 import Loading from "@/app/loading";
-import { PermissionType, ResourceTag } from "@/services/api/workspaces-service";
-import { State } from "@/services/redux/store";
+import { useUserStore } from "@/services/zustand/user-store";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 
 export default function PageRenderByPermission({
   children,
@@ -14,15 +12,15 @@ export default function PageRenderByPermission({
 }) {
   const [isChecking, setChecking] = useState(true);
   const [isValid, setValid] = useState(false);
-  const userPermissions = useSelector((state: State) => state.user.permissions);
+  const { permissions } = useUserStore();
   const pathName = usePathname();
   const router = useRouter();
 
   useEffect(() => {
-    if (pathName && userPermissions.length > 0) {
+    if (pathName && permissions.length > 0) {
       const resourceTag = pathName.split("/").slice(2)[0];
       const isValid =
-        userPermissions.findIndex(
+        permissions.findIndex(
           (uP) => uP.resource_tag === resourceTag && uP.can_read
         ) !== -1;
       setValid(isValid);
@@ -31,7 +29,7 @@ export default function PageRenderByPermission({
       }
       setChecking(false);
     }
-  }, [userPermissions, pathName, router]);
+  }, [pathName, router, permissions]);
 
   if (isChecking) return <Loading />;
 

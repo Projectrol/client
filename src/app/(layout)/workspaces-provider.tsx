@@ -6,18 +6,18 @@ import {
   setWorkspaceMembers,
   setWorkspaceRoles,
 } from "@/services/redux/slices/workspace";
-import { State } from "@/services/redux/store";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import Loading from "../loading";
 import { WorkspacesService } from "@/services/api/workspaces-service";
+import { useUserStore } from "@/services/zustand/user-store";
 
 const WorkspacesProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setLoading] = useState(true);
   const [isNew, setNew] = useState(false);
   const router = useRouter();
-  const userSlice = useSelector((state: State) => state.user);
+  const userStore = useUserStore();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -62,10 +62,10 @@ const WorkspacesProvider = ({ children }: { children: React.ReactNode }) => {
       }
       setLoading(false);
     };
-    if (userSlice.user) {
+    if (userStore.user) {
       getUserWorkspaces();
     }
-  }, [userSlice.user, dispatch, router]);
+  }, [userStore.user, dispatch, router]);
 
   if (isLoading) {
     return <Loading />;

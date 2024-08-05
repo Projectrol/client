@@ -14,6 +14,7 @@ import SearchBar from "@/components/search-bar";
 import useTheme from "@/hooks/useTheme";
 import { UsersService } from "@/services/api/users-service";
 import { Permission } from "@/services/api/workspaces-service";
+import { useUserStore } from "@/services/zustand/user-store";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const { getTheme } = useTheme();
@@ -23,7 +24,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const [isOpenPopover, setOpenPopover] = useState(false);
   const workspaceSlice = useSelector((state: State) => state.workspace);
   const [isOpenSideMenu, setOpenSideMenu] = useState(true);
-  const userPermissions = useSelector((state: State) => state.user.permissions);
+  const { permissions } = useUserStore();
 
   useEffect(() => {
     setClient(true);
@@ -92,10 +93,10 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
       </div>
 
       <div className="w-full flex-1 flex flex-row bg-[--primary]">
-        {userPermissions.length > 0 && (
+        {permissions.length > 0 && (
           <Sidebar
             isOpen={isOpenSideMenu}
-            groups={getValidItems(mainSidebarGroups, userPermissions).map(
+            groups={getValidItems(mainSidebarGroups, permissions).map(
               (group) => {
                 return {
                   ...group,
