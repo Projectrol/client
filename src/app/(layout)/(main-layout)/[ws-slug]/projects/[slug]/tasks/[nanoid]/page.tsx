@@ -29,6 +29,7 @@ import useProjectTaskDetails from "@/services/rquery/queries/use-project-task-de
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { useMemo } from "react";
+import { TaskLog } from "@/services/api/tasks-services";
 
 export default function TaskDetails({
   params,
@@ -75,6 +76,31 @@ export default function TaskDetails({
     },
   };
 
+  const getProccessedTaskLogs = () => {
+    if (!details) return [];
+    const taskLogs: { [key: string]: TaskLog } = {};
+    details.task_logs.forEach((tLog) => {
+      const date = moment(tLog.created_at).date();
+      const month = moment(tLog.created_at).month();
+      const createdBy = tLog.created_by;
+      const changedField = tLog.changed_field;
+      const key = `${date}-${month}-${createdBy}-${changedField}`;
+      if (taskLogs[key]) {
+        const logCreatedAt = new Date(tLog.created_at).getTime();
+        const currentKeyCreatedAt = new Date(
+          taskLogs[key].created_at
+        ).getTime();
+        if (currentKeyCreatedAt < logCreatedAt) {
+          taskLogs[key] = tLog;
+        }
+      } else {
+        taskLogs[key] = tLog;
+      }
+    });
+    const logsArr = Object.keys(taskLogs).map((key) => taskLogs[key]) ?? [];
+    return logsArr;
+  };
+
   return (
     <div className="w-full flex flex-col">
       <div className="w-full px-[50px] py-[50px] flex flex-col">
@@ -100,32 +126,33 @@ export default function TaskDetails({
             )}
           </div>
         </div>
-        <div className="w-full h-[1px] bg-[--border-color]" />
+        <div className="w-full h-[1px] bg-[--border-color] " />
         <div className="w-full text-[--base] font-semibold pt-[20px]">
           Activities
         </div>
-        <div className="w-full flex flex-col py-[20px] gap-[20px]">
+        <div className="w-full flex flex-col py-[10px] pb-[100px]">
           {details &&
             details.task_logs?.length > 0 &&
-            details.task_logs.map((log, lIndex) => (
+            getProccessedTaskLogs &&
+            getProccessedTaskLogs().map((log, lIndex) => (
               <div
                 key={lIndex}
-                className="w-full flex flex-col gap-[5px] bg-[--primary] py-[15px] px-[15px] rounded-lg shadow-md"
+                className="w-full flex flex-row gap-[10px] py-[15px] px-[5px]"
               >
-                <div className="text-[--base] text-[0.75rem] font-medium">
+                <div className="text-[--base] text-[0.725rem] font-medium">
                   userId {log.created_by} changed {log.changed_field} from{" "}
                   {`${log.old_value} to ${log.new_value}`}
                 </div>
-                <div className="text-[--base] text-[0.75rem] font-medium">
+                <div className="text-[--base] text-[0.725rem] font-light">
                   {moment(log.created_at).fromNow()}
                 </div>
               </div>
             ))}
-          <div className="w-full flex flex-col gap-[5px] bg-[--primary] py-[15px] px-[15px] rounded-lg shadow-md">
-            <div className="text-[--base] text-[0.825rem] font-medium">
+          <div className="w-full flex flex-row gap-[10px] py-[15px] px-[5px]">
+            <div className="text-[--base] text-[0.725rem] font-medium">
               userId {details?.task.created_by} created the task
             </div>
-            <div className="text-[--base] text-[0.85rem] font-medium">
+            <div className="text-[--base] text-[0.725rem] font-light">
               {moment(details?.task.created_at).fromNow()}
             </div>
           </div>
