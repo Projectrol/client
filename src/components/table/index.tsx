@@ -15,14 +15,16 @@ function Table({
   data,
   columns,
   loading,
+  showToolbar = true,
 }: {
   data: any[];
   columns: Column[];
   loading: boolean;
+  showToolbar?: boolean;
 }) {
   const totalColumnsWidth = columns.reduce(
     (currTotal, currVal) => currTotal + currVal.width,
-    0
+    0,
   );
 
   const getFieldValue = (item: any, field: string) => {
@@ -30,36 +32,25 @@ function Table({
   };
 
   return (
-    <div className="w-full flex flex-col">
-      <div
-        className="w-full flex items-center justify-between px-[20px] py-[8px]
-                    border-b-solid border-b-[1px] border-b-[--border-color]"
-      >
-        <button
-          className="flex items-center text-[0.8rem] text-[--base] font-medium gap-[5px] 
-                    px-[8px] py-[3px] hover:bg-[--hover-bg] rounded-md select-none"
-        >
-          <FilterListIcon
-            htmlColor="var(--base)"
-            style={{ fontSize: "1.25rem" }}
-          />
-          Filter
-        </button>
-        <button
-          className="flex items-center text-[0.8rem] text-[--base] font-medium gap-[5px] 
-                    border-solid border-[1px] border-[--border-color] select-none
-                    px-[8px] py-[3px] hover:bg-[--hover-bg] rounded-md bg-[--primary] shadow-sm"
-        >
-          <TuneIcon htmlColor="var(--base)" style={{ fontSize: "1.1rem" }} />
-          Display
-        </button>
-      </div>
+    <div className="flex w-full flex-col">
+      {showToolbar && (
+        <div className="border-b-solid flex w-full items-center justify-between border-b-[1px] border-b-[--border-color] px-[20px] py-[8px]">
+          <button className="flex select-none items-center gap-[5px] rounded-md px-[8px] py-[3px] text-[0.8rem] font-medium text-[--base] hover:bg-[--hover-bg]">
+            <FilterListIcon
+              htmlColor="var(--base)"
+              style={{ fontSize: "1.25rem" }}
+            />
+            Filter
+          </button>
+          <button className="flex select-none items-center gap-[5px] rounded-md border-[1px] border-solid border-[--border-color] bg-[--primary] px-[8px] py-[3px] text-[0.8rem] font-medium text-[--base] shadow-sm hover:bg-[--hover-bg]">
+            <TuneIcon htmlColor="var(--base)" style={{ fontSize: "1.1rem" }} />
+            Display
+          </button>
+        </div>
+      )}
 
-      <div
-        className="w-full flex items-center justify-between px-[20px] py-[8px]
-                    border-b-solid border-b-[1px] border-b-[--border-color]"
-      >
-        <div className="w-full flex items-center text-[0.825rem] text-[--text-header-color] px-[8px] py-[1px]">
+      <div className="border-b-solid flex w-full items-center justify-between border-b-[1px] border-b-[--border-color] px-[20px] py-[8px]">
+        <div className="flex w-full items-center px-[8px] py-[1px] text-[0.825rem] text-[--text-header-color]">
           {columns.map((col, colIndex) => (
             <div
               style={{
@@ -73,11 +64,10 @@ function Table({
         </div>
       </div>
 
-      <div className="w-full flex flex-col">
+      <div className="flex w-full flex-col">
         {data.map((item, i) => (
           <div
-            className="w-full flex items-center justify-between px-[28px] py-[15px] gap-[5px]
-                    border-b-solid border-b-[1px] border-b-[--border-color] hover:bg-[--hover-bg]"
+            className="border-b-solid flex w-full items-center justify-between gap-[5px] border-b-[1px] border-b-[--border-color] px-[28px] py-[15px] hover:bg-[--hover-bg]"
             key={i}
           >
             {columns.map((col, colIndex) => (
@@ -94,8 +84,8 @@ function Table({
                 {col.customRender
                   ? col.customRender(item)
                   : col.field
-                  ? getFieldValue(item, col.field)
-                  : ""}
+                    ? getFieldValue(item, col.field)
+                    : ""}
               </div>
             ))}
           </div>

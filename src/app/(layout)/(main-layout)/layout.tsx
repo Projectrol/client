@@ -1,6 +1,7 @@
 "use client";
 
 import MainLayout from "@/components/layouts/main-layout";
+import WorkspaceToolbar from "@/components/workspace-toolbar";
 import { Suspense } from "react";
 
 export default function Layout({
@@ -46,9 +47,12 @@ export default function Layout({
   return (
     <MainLayout>
       <Suspense>
+        <>
         <div className="w-full h-full bg-[--secondary] shadow-md">
           {children}
         </div>
+        <WorkspaceToolbar />
+        </>
       </Suspense>
     </MainLayout>
   );

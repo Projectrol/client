@@ -20,6 +20,7 @@ import PageRenderByPermission from "@/components/authorization/page-render-by-pe
 const Projects = () => {
   const router = useRouter();
   const workspaceSlice = useSelector((state: State) => state.workspace);
+  const { projects, isLoadingProjects } = useProjects(workspaceSlice.workspace);
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
   const viewMode = searchParams.has("view_mode")
@@ -30,7 +31,6 @@ const Projects = () => {
     close: closeModal,
     isOpen: isOpenModal,
   } = useModal();
-  const { projects, isLoadingProjects } = useProjects(workspaceSlice.workspace);
   const [displayMode, setDisplayMode] = useState<"table" | "timeline">(
     viewMode
   );

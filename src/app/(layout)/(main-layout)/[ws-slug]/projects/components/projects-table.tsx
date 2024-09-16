@@ -12,9 +12,11 @@ import { Project } from "@/services/api/projects-service";
 export default function ProjectsTable({
   projects,
   loading,
+  showToolbar = true,
 }: {
   projects: Project[];
   loading: boolean;
+  showToolbar?: boolean; 
 }) {
   const router = useRouter();
   const workspaceSlice = useSelector((state: State) => state.workspace);
@@ -24,6 +26,7 @@ export default function ProjectsTable({
       <Table
         loading={loading}
         data={projects}
+        showToolbar={showToolbar}
         columns={[
           {
             field: "name",
