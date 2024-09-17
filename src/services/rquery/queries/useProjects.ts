@@ -9,18 +9,23 @@ async function getAllProjects({
   queryKey: any;
 }): Promise<Project[]> {
   const id = queryKey[1];
-  const response = await ProjectsService.GetProjectsByWorkspaceId(id);
+  const q = queryKey[2];
+  const response = await ProjectsService.GetProjectsByWorkspaceId(id, q);
   if (response.status === "success") {
     return response.data.projects ?? [];
   }
   return [];
 }
 
-const useProjects = (workspace: WorkspaceDetails | null) => {
+const useProjects = (
+  workspace: WorkspaceDetails | null,
+  q: string = "*",
+  enabled: boolean = true,
+) => {
   const { data, isLoading, error } = useQuery({
-    queryKey: [QUERY_KEYS.USE_PROJECTS, workspace?.general_information.id],
+    queryKey: [QUERY_KEYS.USE_PROJECTS, workspace?.general_information.id, q],
     queryFn: getAllProjects,
-    enabled: !!workspace,
+    enabled: !!workspace && enabled,
   });
   return {
     projects: data ?? [],

@@ -42,6 +42,7 @@ import { useRouter } from "next/navigation";
 import Button from "@/components/button";
 import { BUTTON_TYPES } from "@/configs/themes";
 import MainBodyHeader from "@/components/layouts/main-layout/components/main-body-header";
+import GenerateContentAIPlugin from "@/components/yoopta/custom-plugins/generate-content-ai";
 
 const toBase64 = (file: File) =>
   new Promise((resolve, reject) => {
@@ -98,6 +99,7 @@ function NewProject({
     Code,
     Link,
     Embed,
+    GenerateContentAIPlugin,
   ];
 
   const TOOLS = {

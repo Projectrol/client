@@ -1,8 +1,11 @@
 "use client";
 
+import AIModal from "@/components/ai-modal";
 import MainLayout from "@/components/layouts/main-layout";
 import WorkspaceToolbar from "@/components/workspace-toolbar";
+import { State } from "@/services/redux/store";
 import { Suspense } from "react";
+import { useSelector } from "react-redux";
 
 export default function Layout({
   children,
@@ -11,6 +14,7 @@ export default function Layout({
   params: any;
   children: React.ReactNode;
 }>) {
+  const aiModalState = useSelector((state: State) => state.app.aiModal)
   // const pathName = usePathname();
   // const [pageToBeRendered, setPageToBeRendered] =
   //   useState<React.ReactElement | null>(null);
@@ -52,6 +56,7 @@ export default function Layout({
           {children}
         </div>
         <WorkspaceToolbar />
+        {aiModalState.isOpen && <AIModal />}
         </>
       </Suspense>
     </MainLayout>

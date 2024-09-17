@@ -42,7 +42,7 @@ export type ProjectDocumentDetails = {
 } & ProjectDocument;
 
 export const ProjectsService = {
-  async GetProjectsByWorkspaceId(id: number): Promise<
+  async GetProjectsByWorkspaceId(id: number, q: string = "*"): Promise<
     | {
         status: "success";
         data: { projects: Project[] | null };
@@ -53,8 +53,8 @@ export const ProjectsService = {
       }
   > {
     try {
-      const response = await baseAxios.get(`/workspaces/${id}/projects`, {
-        withCredentials: true,
+      const response = await baseAxios.get(`/workspaces/${id}/search-projects/${q}`, {
+        withCredentials: true
       });
       const data = response.data as { projects: Project[] | null };
       return {

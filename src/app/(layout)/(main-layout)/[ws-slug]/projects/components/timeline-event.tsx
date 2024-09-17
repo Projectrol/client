@@ -122,15 +122,15 @@ export const TimelineEvent = ({
           onMouseLeave={() => setDisabled(false)}
           className={clsx(
             {
-              "cursor-w-resize rounded-e-md round right-[0px] absolute text-[--btn-ok-color] text-[0.4rem] w-[10px] h-full flex items-center justify-center hover:bg-[--btn-ok-bg]":
+              "round absolute right-[0px] flex h-full w-[10px] cursor-w-resize items-center justify-center rounded-e-md text-[0.4rem] text-[--btn-ok-color] hover:bg-[--btn-ok-bg]":
                 true,
             },
             {
               "bg-[--btn-ok-bg]": isResizing,
             },
             {
-              " bg-[#9E9E9E]": !isResizing,
-            }
+              "bg-[#9E9E9E]": !isResizing,
+            },
           )}
         >
           <CircleIcon
@@ -149,7 +149,7 @@ export const TimelineEvent = ({
         onClick={onClick}
         onDoubleClick={() =>
           router.push(
-            `/${workspaceSlice.workspace?.general_information.slug}/projects/${pos.project.slug}/overview`
+            `/${workspaceSlice.workspace?.general_information.slug}/projects/${pos.project.slug}/overview`,
           )
         }
         id={`event-${pos.project.id}`}
@@ -167,32 +167,29 @@ export const TimelineEvent = ({
         {...attributes}
         className={clsx(
           {
-            "h-[35px] text-[#ffffff] box-border shadow-sm text-[0.8rem] relative select-none flex items-center pl-[10px] rounded-md border-solid z-[600]":
+            "relative z-[600] box-border flex h-[35px] select-none items-center rounded-md border-solid pl-[10px] text-[0.8rem] text-[#ffffff] shadow-sm":
               true,
           },
           {
-            "hover:border-[--btn-ok-bg] hover:border-[1px]":
+            "hover:border-[1px] hover:border-[--btn-ok-bg]":
               selectedProject?.id !== pos.project.id,
-            "border-[--btn-ok-bg] border-[1px]":
+            "border-[1px] border-[--btn-ok-bg]":
               selectedProject?.id === pos.project.id,
-          }
+          },
         )}
       >
         {(updatedX || isResizing) && draggingOnDate && (
-          <div
-            className="absolute bg-[--btn-ok-bg]  text-[white] text-[0.75rem] whitespace-nowrap
-        -translate-y-[45px] z-[600] px-[15px] py-[5px] rounded-md select-none opacity-90"
-          >
+          <div className="absolute z-[600] -translate-y-[45px] select-none whitespace-nowrap rounded-md bg-[--btn-ok-bg] px-[15px] py-[5px] text-[0.75rem] text-[white] opacity-90">
             {moment(draggingOnDate.start).format("ddd, MMM DD")} -{" "}
             {moment(draggingOnDate.target).format("ddd, MMM DD")} (
             {moment(draggingOnDate.target).diff(
               moment(draggingOnDate.start),
-              "days"
+              "days",
             )}
             &nbsp;days)
           </div>
         )}
-        <div className="whitespace-nowrap overflow-hidden text-ellipsis w-full">
+        <div className="w-full overflow-hidden text-ellipsis whitespace-nowrap">
           {pos.project.name}
         </div>
       </div>
