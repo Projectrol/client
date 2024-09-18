@@ -2,51 +2,69 @@
 
 import { useRef, useState } from "react";
 import { useOnClickOutside } from "usehooks-ts";
-import SearchIcon from "@mui/icons-material/Search";
-import SearchToolbarModal from "./search-toolbar-modal";
 import { useDispatch, useSelector } from "react-redux";
-import { openAIModal } from "@/services/redux/slices/app";
+import { closeAIModal } from "@/services/redux/slices/app";
 import { State } from "@/services/redux/store";
-
-type ToolBarModalType = "SEARCH" | "MEMBERS" | "TASKS" | null;
+import GenerateProjectDes from "./generate-project-des";
+import GenerateTaskDes from "./generate-task-des";
 
 export default function AIModal() {
+  const [selectedModel, setSelectedModel] = useState<"groq" | "gemini">("groq");
   const aiModal = useSelector((state: State) => state.app.aiModal);
   const dispatch = useDispatch();
-  const [currentHoverTabIndex, setCurrentHoverTabIndex] = useState(-1);
-  const [isExpand, setExpand] = useState<boolean | null>(null);
-  const [toolbarModalType, setToolbarModalType] =
-    useState<ToolBarModalType>(null);
   const ref = useRef(null);
 
   const handleClickOutside = () => {
-    setExpand(false);
+    dispatch(closeAIModal());
   };
 
   useOnClickOutside(ref, handleClickOutside);
 
-  const openToolbarModal = (type: ToolBarModalType) => {
-    setToolbarModalType(type);
-    setExpand(true);
-  };
-
-  const renderToolbarModal = () => {
-    switch (toolbarModalType) {
-      case "SEARCH":
-        return <SearchToolbarModal />;
-      default:
-        return null;
-    }
-  };
-
   return (
     <div
-      onClick={() => dispatch(openAIModal({ ...aiModal, isOpen: false }))}
-      className="fixed left-0 top-0 z-[1001] flex h-screen w-screen items-start justify-end"
+      ref={ref}
+      style={{
+        position: "absolute",
+        top: aiModal.position.y,
+        left: aiModal.position.x,
+        zIndex: 100,
+      }}
+      className="top-0 mt-[50px] flex h-[220px] w-[350px] origin-top animate-scaleUp flex-col overflow-hidden rounded-xl bg-[--primary] py-4 shadow-2xl"
     >
-      <div 
-      onClick={(e) => e.stopPropagation()}
-      className="h-screen w-[25%] bg-[white] shadow-2xl"></div>
+      <div className="flex w-full items-center justify-between px-6 pb-3 shadow-md">
+        <div
+          onClick={() => setSelectedModel("groq")}
+          style={
+            selectedModel === "groq"
+              ? {
+                  background: "var(--selected-bg)",
+                }
+              : {}
+          }
+          className="flex w-[49%] cursor-pointer items-center justify-center rounded-md py-1 text-sm text-[--base] transition-all"
+        >
+          Groq
+        </div>
+        <div
+          onClick={() => setSelectedModel("gemini")}
+          style={
+            selectedModel === "gemini"
+              ? {
+                  background: "var(--selected-bg)",
+                }
+              : {}
+          }
+          className="flex w-[49%] cursor-pointer items-center justify-center rounded-md py-1 text-sm text-[--base] transition-all"
+        >
+          Gemini
+        </div>
+      </div>
+      {aiModal.type === "generate_project_des" && (
+        <GenerateProjectDes selectedModel={selectedModel} />
+      )}
+        {aiModal.type === "generate_task_des" && (
+        <GenerateTaskDes selectedModel={selectedModel} />
+      )}
     </div>
   );
 }

@@ -30,6 +30,7 @@ import moment from "moment";
 import { useSelector } from "react-redux";
 import { useMemo } from "react";
 import { TaskLog } from "@/services/api/tasks-services";
+import GenerateContentAIPlugin from "@/components/yoopta/custom-plugins/generate-project-des-ai";
 
 export default function TaskDetails({
   params,
@@ -58,6 +59,7 @@ export default function TaskDetails({
     Code,
     Link,
     Embed,
+    GenerateContentAIPlugin
   ];
   const MARKS = [Bold, Italic, CodeMark, Underline, Strike, Highlight];
   const TOOLS: Partial<Tools> = {

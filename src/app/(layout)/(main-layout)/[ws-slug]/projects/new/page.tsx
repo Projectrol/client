@@ -32,7 +32,7 @@ import {
   ProjectsService,
 } from "@/services/api/projects-service";
 import moment from "moment";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { State } from "@/services/redux/store";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/services/rquery/consts";
@@ -42,7 +42,8 @@ import { useRouter } from "next/navigation";
 import Button from "@/components/button";
 import { BUTTON_TYPES } from "@/configs/themes";
 import MainBodyHeader from "@/components/layouts/main-layout/components/main-body-header";
-import GenerateContentAIPlugin from "@/components/yoopta/custom-plugins/generate-content-ai";
+import { closeAIModal } from "@/services/redux/slices/app";
+import GenerateProjectDesAIPlugin from "@/components/yoopta/custom-plugins/generate-project-des-ai";
 
 const toBase64 = (file: File) =>
   new Promise((resolve, reject) => {
@@ -65,6 +66,8 @@ function NewProject({
   initValue?: Project;
   mode?: "create" | "edit";
 }) {
+  const dispatch = useDispatch();
+  const aiModal = useSelector((state: State) => state.app.aiModal);
   const router = useRouter();
   const queryClient = useQueryClient();
   const workspaceSlice = useSelector((state: State) => state.workspace);
@@ -76,10 +79,10 @@ function NewProject({
   const [summary, setSummary] = useState(initValue?.description ?? "");
   const [isPrivate, setPrivate] = useState(false);
   const [startDate, setStartDate] = useState<Date | null>(
-    initValue?.dtstart ? new Date(initValue.dtstart) : null
+    initValue?.dtstart ? new Date(initValue.dtstart) : null,
   );
   const [targetDate, setTargetDate] = useState<Date | null>(
-    initValue?.dtend ? new Date(initValue?.dtend) : null
+    initValue?.dtend ? new Date(initValue?.dtend) : null,
   );
   const [assignedMembers, setAssignedMembers] = useState<WorkspaceMember[]>([]);
   const editor = useMemo(() => createYooptaEditor(), []);
@@ -99,7 +102,7 @@ function NewProject({
     Code,
     Link,
     Embed,
-    GenerateContentAIPlugin,
+    GenerateProjectDesAIPlugin,
   ];
 
   const TOOLS = {
@@ -180,27 +183,55 @@ function NewProject({
     };
     const response = await ProjectsService.CreateProject(
       input.workspace_id,
-      input
+      input,
     );
     if (response.status === "success") {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.USE_PROJECTS] });
       router.push(
-        `/${workspaceSlice.workspace?.general_information.slug}/projects?view_mode=table`
+        `/${workspaceSlice.workspace?.general_information.slug}/projects?view_mode=table`,
       );
     }
   };
+
+  useEffect(() => {
+    if (aiModal.response && aiModal.type.toString() === "generate_project_des") {
+      editor.insertBlock({
+        id: "e339dea6-d20d-45c0-a1d7-e12823793713",
+        value: [
+          {
+            id: "23cf6a14-45c9-4176-b6be-9607a84909b2",
+            type: "paragraph",
+            children: [
+              {
+                text: aiModal.response,
+              },
+            ],
+            props: {
+              nodeType: "block",
+            },
+          },
+        ],
+        type: "Paragraph",
+        meta: {
+          order: 0,
+          depth: 0,
+        },
+      });
+      dispatch(closeAIModal());
+    }
+  }, [aiModal.response]);
 
   return (
     <div className="w-[90%] overflow-y-auto">
       <MainBodyHeader
         title=""
         topLeftElement={
-          <div className="py-[15px] flex items-center gap-[2px]">
+          <div className="flex items-center gap-[2px] py-[15px]">
             <button
               className="text-[--base]"
               onClick={() =>
                 router.push(
-                  `/${workspaceSlice.workspace?.general_information.slug}/projects?view_mode=table`
+                  `/${workspaceSlice.workspace?.general_information.slug}/projects?view_mode=table`,
                 )
               }
             >
@@ -213,9 +244,9 @@ function NewProject({
           </div>
         }
       />
-      <div className="w-[100%] flex flex-wrap justify-between px-[40px] pt-[20px]">
-        <div className="w-[49%] flex flex-col gap-[10px] mb-[20px]">
-          <div className="w-full text-[--base] text-[0.9rem] font-semibold">
+      <div className="flex w-[100%] flex-wrap justify-between px-[40px] pt-[20px]">
+        <div className="mb-[20px] flex w-[49%] flex-col gap-[10px]">
+          <div className="w-full text-[0.9rem] font-semibold text-[--base]">
             Project name
           </div>
           <div className="w-full">
@@ -223,12 +254,12 @@ function NewProject({
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
               placeholder="Enter name of the project"
-              className="w-full py-[8px] px-[10px] text-[0.9rem] text-[--base] rounded-sm outline-none bg-[--selected-bg] shadow-sm"
+              className="w-full rounded-sm bg-[--selected-bg] px-[10px] py-[8px] text-[0.9rem] text-[--base] shadow-sm outline-none"
             />
           </div>
         </div>
-        <div className="w-[49%] flex flex-col gap-[10px] mb-[20px]">
-          <div className="w-full text-[--base] text-[0.9rem] font-semibold">
+        <div className="mb-[20px] flex w-[49%] flex-col gap-[10px]">
+          <div className="w-full text-[0.9rem] font-semibold text-[--base]">
             Summary
           </div>
           <div className="w-full">
@@ -236,14 +267,14 @@ function NewProject({
               value={summary}
               onChange={(e) => setSummary(e.target.value)}
               placeholder="Enter project's summary"
-              className="w-full text-[0.9rem] py-[8px] px-[10px] text-[--base] rounded-sm outline-none bg-[--selected-bg] shadow-sm"
+              className="w-full rounded-sm bg-[--selected-bg] px-[10px] py-[8px] text-[0.9rem] text-[--base] shadow-sm outline-none"
             />
           </div>
         </div>
-        <div className="w-full text-[--base] text-[0.9rem] mb-[10px] font-semibold">
+        <div className="mb-[10px] w-full text-[0.9rem] font-semibold text-[--base]">
           Date
         </div>
-        <div className="w-[100%] mb-[20px]">
+        <div className="mb-[20px] w-[100%]">
           <ProjectAttributesBar
             status={status}
             startDate={startDate}
@@ -255,16 +286,17 @@ function NewProject({
             checkIfExisted={checkIfExisted}
           />
         </div>
-        <div className="w-full text-[--base] text-[0.9rem] mb-[10px] font-semibold">
+        <div className="mb-[10px] w-full text-[0.9rem] font-semibold text-[--base]">
           Description
         </div>
         <div
           style={{
-            height: "calc(200px)",
+            minHeight:"250px",
+            maxHeight: "500px",
             overflowY: "auto",
           }}
           onClick={() => setFocusElement("description")}
-          className="w-[100%] mb-[15px] bg-[--selected-bg] px-[10px] rounded-sm shadow-sm text-[--base]"
+          className="mb-[15px] w-[100%] rounded-sm bg-[--selected-bg] px-[10px] text-[--base] shadow-sm"
           ref={selectionRef}
         >
           <YooptaEditor
@@ -283,7 +315,7 @@ function NewProject({
             selectionBoxRoot={selectionRef}
             className={clsx(
               {
-                "before:font-medium before:text-[--text-header-color] before:opacity-60 before:absolute":
+                "before:absolute before:font-medium before:text-[--text-header-color] before:opacity-60":
                   true,
               },
               {
@@ -293,20 +325,20 @@ function NewProject({
               {
                 "before:content-none":
                   focusElement === "description" || initValue,
-              }
+              },
             )}
           />
         </div>
-        <div className="w-[100%] flex items-center gap-[8px] text-[0.95rem] text-[--base]">
+        <div className="flex w-[100%] items-center gap-[8px] text-[0.95rem] text-[--base]">
           <input
             checked={isPrivate}
             onChange={(e) => setPrivate(!isPrivate)}
             type="checkbox"
-            className="w-[16px] h-[16px]"
+            className="h-[16px] w-[16px]"
           />
           Restricted access to members only
         </div>
-        <div className="w-full flex-1 flex items-center justify-end mt-[30px]">
+        <div className="mt-[30px] flex w-full flex-1 items-center justify-end">
           <Button
             style={{
               padding: "10px 20px",

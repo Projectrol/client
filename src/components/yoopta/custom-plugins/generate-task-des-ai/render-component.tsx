@@ -7,20 +7,28 @@ import { PluginElementRenderProps } from "@yoopta/editor";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 
-export default function GenerateWithAIElement({
+export default function GenerateTaskDesAIElement({
   attributes,
   children,
 }: PluginElementRenderProps) {
-  const dispatch = useDispatch()
+  const containerRef = useRef<HTMLDivElement>(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(openAIModal({ isOpen: true, type:"translate" }))
-  }, [])
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      const { x, y } = rect;
+      dispatch(
+        openAIModal({ isOpen: true, type: "generate_task_des", position: { x, y } }),
+      );
+    }
+  }, []); 
 
   return (
     <div
       {...attributes}
-      className="flex relative"
+      ref={containerRef}
+      className="relative flex"
       contentEditable={false}
     >
       {children}

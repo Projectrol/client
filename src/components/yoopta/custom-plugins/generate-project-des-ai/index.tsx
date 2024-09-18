@@ -1,12 +1,12 @@
 import { YooptaPlugin } from "@yoopta/editor";
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import GenerateWithAIElement from "./render-component";
+import GeneratProjectDesWithAIElement from "./render-component";
 
-const GenerateContentAIPlugin = new YooptaPlugin({
+const GenerateProjectDesAIPlugin = new YooptaPlugin({
   type: "Divider",
   elements: {
     divider: {
-      render: GenerateWithAIElement,
+      render: GeneratProjectDesWithAIElement,
       props: {
         nodeType: "void",
       },
@@ -19,10 +19,10 @@ const GenerateContentAIPlugin = new YooptaPlugin({
     shortcuts: ["/", "ai"],
     display: {
       title: "Generate with AI",
-      description: "Generate content with AI",
+      description: "Generate description with AI",
       icon: <AutoAwesomeIcon />,
     },
   },
 });
 
-export default GenerateContentAIPlugin;
+export default GenerateProjectDesAIPlugin;

@@ -1,14 +1,14 @@
-"use server";
-
-import { ChatGroq } from "@langchain/groq";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { StringOutputParser } from "@langchain/core/output_parsers";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+
+const apiKey = "AIzaSyByVV9wzipSNSKevwIv-TxcXaP8FxZjeFU";
 
 export async function prompt(promptMsg: string, promptTemplate: string) {
-  const model = new ChatGroq({
-    model: "mixtral-8x7b-32768",
-    temperature: 0,
-    apiKey: "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",
+  const model = new ChatGoogleGenerativeAI({
+    model: "gemini-pro",
+    maxOutputTokens: 2048,
+    apiKey,
   });
 
   const parser = new StringOutputParser();

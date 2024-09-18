@@ -37,13 +37,15 @@ import clsx from "clsx";
 import Button from "@/components/button";
 import { BUTTON_TYPES } from "@/configs/themes";
 import { useParams } from "next/navigation";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { State } from "@/services/redux/store";
 import axios from "axios";
 import TaskAttributesBar from "./task-attribute-bar";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useCreateProjectTask from "@/services/rquery/mutates/use-create-project-task";
 import { QUERY_KEYS } from "@/services/rquery/consts";
+import GenerateTaskDesAIPlugin from "@/components/yoopta/custom-plugins/generate-task-des-ai";
+import { closeAIModal } from "@/services/redux/slices/app";
 
 const updateUser = async (userData: any) => {
   // Perform the mutation logic, e.g., make an API request to update the user
@@ -71,9 +73,11 @@ export default function CreateTaskModal({
   onClose: () => void;
   initStatus: CardStatus;
 }) {
+  const dispatch = useDispatch()
   const workspaceSlice = useSelector(
     (state: State) => state.workspace.workspace
   );
+  const aiModal = useSelector((state: State) => state.app.aiModal);
   const queryClient = useQueryClient();
   const { mutateAsync, isSuccess, error } = useCreateProjectTask();
   const [assignedUserId, setAssignedUserId] = useState<number | null>(null);
@@ -101,6 +105,7 @@ export default function CreateTaskModal({
     Code,
     Link,
     Embed,
+    GenerateTaskDesAIPlugin
   ];
 
   const MARKS = [Bold, Italic, CodeMark, Underline, Strike, Highlight];
@@ -175,6 +180,34 @@ export default function CreateTaskModal({
       onClose();
     }
   }, [isSuccess, error, queryClient, onClose]);
+
+  useEffect(() => {
+    if (aiModal.response && aiModal.type.toString() === "generate_task_des") {
+      editor.insertBlock({
+        id: "e339dea6-d20d-45c0-a1d7-e12823793713",
+        value: [
+          {
+            id: "23cf6a14-45c9-4176-b6be-9607a84909b2",
+            type: "paragraph",
+            children: [
+              {
+                text: aiModal.response,
+              },
+            ],
+            props: {
+              nodeType: "block",
+            },
+          },
+        ],
+        type: "Paragraph",
+        meta: {
+          order: 0,
+          depth: 0,
+        },
+      });
+      dispatch(closeAIModal());
+    }
+  }, [aiModal.response]);
 
   return (
     <div

@@ -3,9 +3,10 @@
 import { useRef, useState } from "react";
 import { useOnClickOutside } from "usehooks-ts";
 import SearchIcon from "@mui/icons-material/Search";
+import AssistantIcon from "@mui/icons-material/Assistant";
 import SearchToolbarModal from "./search-toolbar-modal";
 
-type ToolBarModalType = "SEARCH" | "MEMBERS" | "TASKS" | null;
+type ToolBarModalType = "SEARCH" | "SUPPORT" | null;
 
 export default function WorkspaceToolbar() {
   const [currentHoverTabIndex, setCurrentHoverTabIndex] = useState(-1);
@@ -22,13 +23,44 @@ export default function WorkspaceToolbar() {
 
   const openToolbarModal = (type: ToolBarModalType) => {
     setToolbarModalType(type);
-    setExpand(true);
+    setTimeout(() => {
+      setExpand(true);
+    }, 10);
+    // setExpand(true);
   };
 
   const renderToolbarModal = () => {
     switch (toolbarModalType) {
       case "SEARCH":
-        return <SearchToolbarModal />;
+        return (
+          <div
+            ref={ref}
+            style={{
+              left: "25%",
+              transformOrigin: "bottom center",
+              transform: isExpand ? "scale(1)" : " scale(0)",
+              transition: "all 0.25s ease-in-out",
+            }}
+            className="fixed bottom-12 z-[1001] flex h-[50%] w-[50%] items-center rounded-2xl border-[1px] border-solid border-[--border-color] bg-[--primary] py-5 text-[--base] shadow-xl"
+          >
+            <SearchToolbarModal />
+          </div>
+        );
+      case "SUPPORT":
+        return (
+          <div
+            ref={ref}
+            style={{
+              left: "30%",
+              transformOrigin: "bottom center",
+              transform: isExpand ? "scale(1)" : " scale(0)",
+              transition: "all 0.25s ease-in-out",
+            }}
+            className="fixed bottom-12 z-[1001] flex h-[50%] w-[40%] items-center rounded-2xl border-[1px] border-solid border-[--border-color] bg-[--primary] py-5 text-[--base] shadow-xl"
+          >
+            <h1>Support</h1>
+          </div>
+        );
       default:
         return null;
     }
@@ -36,18 +68,7 @@ export default function WorkspaceToolbar() {
 
   return (
     <>
-      <div
-        ref={ref}
-        style={{
-          left: "25%",
-          transformOrigin: "bottom center",
-          transform: isExpand ? "scale(1)" : " scale(0)",
-          transition: "all 0.25s ease-in-out",
-        }}
-        className="fixed bottom-12 z-[1001] flex h-[50%] w-[50%] items-center rounded-2xl border-[1px] border-solid border-[--border-color] bg-[--primary] py-5 text-[--base] shadow-xl"
-      >
-        {renderToolbarModal()}
-      </div>
+      {renderToolbarModal()}
 
       <div
         style={{
@@ -77,7 +98,7 @@ export default function WorkspaceToolbar() {
             onMouseLeave={() => setCurrentHoverTabIndex(-1)}
             onMouseEnter={() => setCurrentHoverTabIndex(0)}
             onClick={() => openToolbarModal("SEARCH")}
-            className="aspect-square rounded-full p-2"
+            className="aspect-square p-2"
           >
             <SearchIcon />
           </button>
@@ -86,10 +107,10 @@ export default function WorkspaceToolbar() {
           <button
             onMouseLeave={() => setCurrentHoverTabIndex(-1)}
             onMouseEnter={() => setCurrentHoverTabIndex(1)}
-            onClick={() => openToolbarModal("SEARCH")}
-            className="aspect-square rounded-full p-2"
+            onClick={() => openToolbarModal("SUPPORT")}
+            className="aspect-square p-2"
           >
-            <SearchIcon />
+            <AssistantIcon />
           </button>
         </div>
       </div>

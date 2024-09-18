@@ -68,7 +68,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="w-full flex flex-col h-full absolute overflow-y-hidden">
-      <div
+      {/* <div
         style={
           getTheme() === "LIGHT"
             ? headerLightStyle
@@ -90,7 +90,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
           <SearchBar />
         </div>
         <div className="w-[30%]" />
-      </div>
+      </div> */}
 
       <div className="w-full flex-1 flex flex-row bg-[--primary]">
         {permissions.length > 0 && (
