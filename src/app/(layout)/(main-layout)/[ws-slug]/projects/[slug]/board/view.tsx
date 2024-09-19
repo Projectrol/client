@@ -95,7 +95,8 @@ export default function ProjectBoardView() {
         ) {
           const projectDes = des[key].value[0].children[0].text
             .split("Project Description:")[1]
-            .split("\n")[1];
+            .trim()
+            .split("\n")[0];
           setProjectDes(projectDes);
         }
       }
@@ -185,11 +186,11 @@ export default function ProjectBoardView() {
           });
         }),
       );
-      // const frontendFeatures = Object.keys(resObj.frontend).map((key) => {
-      //   Object.keys(resObj.frontend[key]).map((key2) => {
-      //     return resObj.frontend[key][key2];
-      //   });
-      // });
+      const frontendFeatures = Object.keys(resObj.frontend).map((key) => {
+        Object.keys(resObj.frontend[key]).map((key2) => {
+          return resObj.frontend[key][key2];
+        });
+      });
     }
   };
 
