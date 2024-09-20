@@ -2,7 +2,7 @@ import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 
-const apiKey = "AIzaSyByVV9wzipSNSKevwIv-TxcXaP8FxZjeFU";
+const apiKey = process.env.GOOGLE_AI_API_KEY;
 
 export async function prompt(promptMsg: string, promptTemplate: string) {
   const model = new ChatGoogleGenerativeAI({
@@ -10,7 +10,7 @@ export async function prompt(promptMsg: string, promptTemplate: string) {
     maxOutputTokens: 2048,
     apiKey,
   });
-
+  
   const parser = new StringOutputParser();
 
   const messages = [

@@ -7,31 +7,31 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import StatusBoard from "./status-board";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   CardStatus,
   Label,
-  Task,
+  Task, 
   TasksServices,
 } from "@/services/api/tasks-services";
 import CreateTaskModal from "./components/create-task-modal";
 import { ProjectDetailsContext } from "../layout";
 import { useSelector } from "react-redux";
 import { State } from "@/services/redux/store";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
-import { prompt } from "@/app/actions/groq";
+import { prompt, promptTasks } from "@/app/actions/groq";
 import { promptTemplate } from "@/app/actions/prompt-template";
 import { createYooptaEditor } from "@yoopta/editor";
 import { isArray } from "util";
-
-export type GenerateTasksRes = Record<
-  "backend" | "frontend",
-  Record<string, Record<string, string[]>>
->;
+import Loading from "@/app/loading";
+import { useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/services/rquery/consts";
 
 export default function ProjectBoardView() {
   const params = useParams();
+  const queryClient = useQueryClient();
+  const [isLoading, setLoading] = useState(false);
   const workspaceSlice = useSelector((state: State) => state.workspace);
   const [isOpenCreateTaskModal, setOpenCreateTaskModal] = useState(false);
   const [initStatus, setInitStatus] = useState<CardStatus>(CardStatus.TODO);
@@ -128,33 +128,15 @@ export default function ProjectBoardView() {
 
   const generateTasks = async () => {
     if (projectDes) {
-      const resStr = await prompt(
+      setLoading(true)
+      const res = await promptTasks(
         projectDes.trim(),
         promptTemplate.projectTasks,
       );
-      console.log(resStr);
-      const resObj = JSON.parse(resStr) as GenerateTasksRes;
-      const backendFeaturesDes: { name: string; description: string }[] = [];
-      Object.keys(resObj.backend).map((key) => {
-        // console.log(key)
-        Object.keys(resObj.backend[key]).map((key2) => {
-          let featureDes = `${key} service that contains following sub features: `;
-          if (Array.isArray(resObj.backend[key][key2])) {
-            resObj.backend[key][key2].forEach((subFeature) => {
-              featureDes += subFeature + ", ";
-            });
-          } else {
-            featureDes += resObj.backend[key][key2]; 
-          }
-          backendFeaturesDes.push({
-            name: key,
-            description: featureDes,
-          });
-        });
-      });
-      await Promise.all(
-        backendFeaturesDes.map(async (featureDes) => {
-          const { description, name } = featureDes;
+      console.log(res);
+      await Promise.all([
+        ...res.tasks.backend.map(async (task) => {
+          const { description, name } = task;
           const res = await prompt(description, promptTemplate.taskDescription);
           const editor = createYooptaEditor();
           editor.insertBlock({
@@ -185,17 +167,53 @@ export default function ProjectBoardView() {
               name.charAt(0).toUpperCase() + name.substring(1) + " service",
           });
         }),
-      );
-      const frontendFeatures = Object.keys(resObj.frontend).map((key) => {
-        Object.keys(resObj.frontend[key]).map((key2) => {
-          return resObj.frontend[key][key2];
-        });
+        ...res.tasks.frontend.map(async (task) => {
+          const { description, name } = task;
+          const res = await prompt(description, promptTemplate.taskDescription);
+          const editor = createYooptaEditor();
+          editor.insertBlock({
+            id: "asd12345-45c9-4176-b6be-9607a84909b2",
+            value: [
+              {
+                id: "23cf6a14-45c9-4176-b6be-9607a84909b2",
+                type: "paragraph",
+                children: [
+                  {
+                    text: res,
+                  },
+                ],
+                props: {
+                  nodeType: "block",
+                },
+              },
+            ],
+            type: "Paragraph",
+            meta: {
+              order: 0,
+              depth: 0,
+            },
+          });
+          await createTask({
+            description: JSON.stringify(editor.getEditorValue()),
+            title:
+              name.charAt(0).toUpperCase() + name.substring(1) + " screen",
+          });
+        }),
+      ]);
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.USE_PROJECT_TASKS]
       });
+      setLoading(false);
     }
   };
 
   return (
     <div className="h-full w-full bg-[--primary] px-[10px] py-[10px]">
+      {isLoading &&
+      <div className="fixed top-0 left-0 bg-[rgba(0,0,0,0.1)] flex  h-full w-full items-center justify-center">
+        <Loading />
+      </div>
+      }
       <div className="h-[50px] w-full px-1 pt-2 text-sm font-semibold text-[--base]">
         {`Don't know where to start? Try generating tasks with`}{" "}
         <span className="px-1 text-green-600">
